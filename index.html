@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>株式会社ベアシステム</title>
+<style>
+  :root { --brown:#5C3D2E; --orange:#D97B4F; --light:#FDF6EF; --dark:#2C1A0E; --gray:#6B6B6B; --border:#E8D5C4; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Hiragino Kaku Gothic ProN',sans-serif; color:var(--dark); line-height:1.8; }
+
+  /* NAV */
+  nav { background:var(--brown); position:sticky; top:0; z-index:100; box-shadow:0 2px 8px rgba(0,0,0,.2); }
+  .nav-inner { max-width:1100px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; padding:0 20px; height:60px; }
+  .logo { color:#fff; font-size:1rem; font-weight:700; cursor:pointer; }
+  .nav-links { display:flex; gap:2px; list-style:none; }
+  .nav-links li { cursor:pointer; color:rgba(255,255,255,.85); font-size:.8rem; padding:6px 9px; border-radius:4px; transition:background .2s; }
+  .nav-links li:hover { background:rgba(255,255,255,.15); }
+  .hamburger { display:none; flex-direction:column; gap:5px; cursor:pointer; }
+  .hamburger span { width:22px; height:2px; background:#fff; border-radius:2px; }
+
+  .page { display:none; }
+  .page.active { display:block; }
+
+  /* PLACEHOLDER */
+  .ph-img { width:100%; height:100%; background:linear-gradient(135deg,#b8916e,#6b3f24); display:flex; flex-direction:column; align-items:center; justify-content:center; color:rgba(255,255,255,.8); font-size:.75rem; gap:6px; text-align:center; padding:8px; }
+  .img-wrap { position:relative; overflow:hidden; }
+  .img-wrap .lbl { position:absolute; bottom:5px; right:6px; background:rgba(0,0,0,.5); color:#fff; font-size:.6rem; padding:2px 5px; border-radius:3px; z-index:2; }
+
+  /* HERO */
+  .hero { position:relative; color:#fff; text-align:center; padding:100px 24px 80px; overflow:hidden; min-height:520px; display:flex; align-items:center; justify-content:center; }
+  .hero-bg { position:absolute; inset:0; }
+  .hero-overlay { position:absolute; inset:0; background:rgba(0,0,0,.52); }
+  .hero-content { position:relative; z-index:1; }
+  .hero-catch { font-size:.9rem; letter-spacing:.15em; color:rgba(255,255,255,.75); margin-bottom:14px; }
+  .hero h1 { font-size:clamp(1.5rem,4vw,2.6rem); font-weight:900; line-height:1.4; margin-bottom:20px; }
+  .hero h1 em { color:var(--orange); font-style:normal; }
+  .hero-sub { font-size:1rem; color:rgba(255,255,255,.85); max-width:560px; margin:0 auto 36px; }
+  .btn { display:inline-block; background:var(--orange); color:#fff; padding:14px 36px; border-radius:4px; font-weight:700; cursor:pointer; transition:background .2s; margin:4px; border:none; font-size:.95rem; }
+  .btn:hover { background:#c06a3d; }
+  .btn-out { background:transparent; border:2px solid #fff; }
+  .btn-out:hover { background:rgba(255,255,255,.1); }
+  .btn-sm { padding:10px 24px; font-size:.88rem; }
+
+  section { padding:70px 24px; }
+  .inner { max-width:980px; margin:0 auto; }
+  .sec-label { font-size:.75rem; letter-spacing:.2em; color:var(--orange); font-weight:700; margin-bottom:6px; }
+  .sec-title { font-size:clamp(1.3rem,3vw,1.9rem); font-weight:800; margin-bottom:12px; }
+  .sec-lead { color:var(--gray); margin-bottom:40px; }
+  .alt { background:var(--light); }
+
+  /* MISSION */
+  .mission-grid { display:grid; grid-template-columns:1fr 1fr; gap:48px; align-items:center; }
+  .mission-img { border-radius:12px; overflow:hidden; height:360px; }
+  .msg { background:#fff; border-left:4px solid var(--orange); padding:28px; border-radius:0 8px 8px 0; box-shadow:0 2px 10px rgba(0,0,0,.06); }
+  .msg p { margin-bottom:14px; font-size:.93rem; }
+  .msg p:last-child { margin-bottom:0; }
+  .hl { color:var(--brown); font-weight:700; font-size:1rem; }
+
+  /* CARDS */
+  .grid3 { display:grid; grid-template-columns:repeat(auto-fit,minmax(270px,1fr)); gap:24px; }
+  .card { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,.06); transition:transform .2s,box-shadow .2s; }
+  .card:hover { transform:translateY(-4px); box-shadow:0 8px 20px rgba(0,0,0,.12); }
+  .card-img { height:180px; }
+  .ch { padding:18px 20px 14px; background:var(--brown); color:#fff; }
+  .ch .plan { font-size:.72rem; color:rgba(255,255,255,.65); margin-bottom:3px; }
+  .ch .ct { font-size:1rem; font-weight:800; line-height:1.4; }
+  .ch .cs { font-size:.76rem; color:rgba(255,255,255,.75); margin-top:4px; }
+  .cb { padding:20px; }
+  .cb p { color:var(--gray); font-size:.87rem; margin-bottom:14px; }
+  .cl { list-style:none; }
+  .cl li { font-size:.85rem; padding:5px 0; border-bottom:1px solid var(--border); display:flex; gap:6px; }
+  .cl li:last-child { border:none; }
+  .cl li::before { content:"✓"; color:var(--orange); font-weight:700; flex-shrink:0; }
+  .tag { display:inline-block; background:var(--light); border:1px solid var(--border); color:var(--brown); font-size:.72rem; padding:3px 9px; border-radius:20px; margin-top:12px; }
+
+  /* FLOW */
+  .flow { display:grid; grid-template-columns:repeat(5,1fr); }
+  .fs { text-align:center; padding:28px 12px; position:relative; }
+  .fs::after { content:"→"; position:absolute; right:-10px; top:38px; font-size:1.3rem; color:var(--orange); }
+  .fs:last-child::after { display:none; }
+  .sn { width:48px; height:48px; background:var(--orange); color:#fff; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:900; font-size:1.1rem; margin:0 auto 10px; }
+  .st { font-weight:700; font-size:.85rem; margin-bottom:4px; }
+  .sd { font-size:.75rem; color:var(--gray); }
+
+  /* NEWS */
+  .news-list { display:flex; flex-direction:column; gap:16px; }
+  .ni { display:grid; grid-template-columns:160px 1fr; background:#fff; border-radius:10px; border:1px solid var(--border); overflow:hidden; }
+  .ni-img { min-height:110px; }
+  .ni-body { padding:16px 20px; }
+  .nd { font-size:.78rem; color:var(--gray); }
+  .nt { font-size:.93rem; font-weight:700; margin:3px 0 6px; }
+  .nb { font-size:.82rem; color:var(--gray); }
+
+  /* ABOUT */
+  .about-grid { display:grid; grid-template-columns:1fr 1fr; gap:44px; align-items:start; }
+  .ceo-img { border-radius:10px; overflow:hidden; margin-bottom:20px; height:260px; }
+  .ag p { margin-bottom:14px; font-size:.93rem; color:var(--gray); }
+  .sig { font-weight:700; color:var(--brown) !important; margin-top:20px !important; }
+  .tbl { width:100%; border-collapse:collapse; }
+  .tbl tr { border-bottom:1px solid var(--border); }
+  .tbl th { text-align:left; padding:10px 8px; font-size:.8rem; color:var(--gray); font-weight:600; width:100px; vertical-align:top; }
+  .tbl td { padding:10px 8px; font-size:.85rem; }
+
+  /* VOICES / DIALOGUE */
+  .voice-card { display:grid; grid-template-columns:200px 1fr; background:#fff; border-radius:10px; border:1px solid var(--border); overflow:hidden; margin-bottom:24px; }
+  .voice-img { min-height:200px; }
+  .voice-body { padding:28px; }
+  .voice-body .company { font-size:.8rem; color:var(--gray); margin-bottom:4px; }
+  .voice-body .name { font-size:1rem; font-weight:800; color:var(--brown); margin-bottom:16px; }
+  .dialogue { display:flex; flex-direction:column; gap:28px; }
+  .dialogue-section { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; }
+  .dialogue-section h3 { background:var(--brown); color:#fff; padding:14px 20px; font-size:.95rem; font-weight:800; }
+  .dialogue-item { padding:16px 20px; border-bottom:1px solid var(--border); }
+  .dialogue-item:last-child { border-bottom:none; }
+  .dialogue-item.bear { background:#fff; }
+  .dialogue-item.guest { background:var(--light); }
+  .speaker { font-size:.75rem; font-weight:700; color:var(--orange); margin-bottom:4px; }
+  .dialogue-item.guest .speaker { color:var(--brown); }
+  .dialogue-item p { font-size:.9rem; }
+  .afterword { background:var(--light); border-left:4px solid var(--orange); border-radius:0 10px 10px 0; padding:28px; margin-top:8px; }
+  .afterword h3 { font-size:1rem; font-weight:800; color:var(--brown); margin-bottom:16px; }
+  .afterword p { font-size:.9rem; color:var(--gray); margin-bottom:12px; }
+
+  /* CASES */
+  .case-intro { background:var(--light); border-left:4px solid var(--orange); padding:24px 28px; border-radius:0 8px 8px 0; margin-bottom:40px; }
+  .case-intro p { font-size:.93rem; color:var(--dark); }
+  .case-item { background:#fff; border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:28px; display:grid; grid-template-columns:220px 1fr; }
+  .case-item-img { min-height:200px; }
+  .case-item-body { padding:28px; }
+  .case-item-body .case-tag { display:inline-block; background:var(--brown); color:#fff; font-size:.72rem; padding:3px 10px; border-radius:20px; margin-bottom:10px; }
+  .case-item-body h3 { font-size:1.05rem; font-weight:800; margin-bottom:12px; }
+  .case-item-body blockquote { font-size:.9rem; color:var(--gray); border-left:3px solid var(--orange); padding-left:14px; line-height:1.9; margin-top:12px; }
+  .case-result { display:inline-block; background:var(--orange); color:#fff; font-size:.75rem; font-weight:700; padding:4px 12px; border-radius:20px; margin-top:14px; }
+
+  /* RECRUIT */
+  .recruit-msg { background:linear-gradient(135deg,var(--brown),var(--dark)); color:#fff; padding:40px; border-radius:12px; margin-bottom:40px; }
+  .recruit-msg h2 { font-size:1.2rem; font-weight:800; margin-bottom:16px; line-height:1.5; }
+  .recruit-msg p { font-size:.92rem; color:rgba(255,255,255,.85); margin-bottom:12px; }
+  .recruit-msg p:last-child { margin-bottom:0; }
+  .job-item { border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:24px; display:grid; grid-template-columns:200px 1fr; }
+  .job-img { min-height:180px; }
+  .job-body { padding:24px; }
+  .job-body h3 { font-size:1.05rem; font-weight:800; color:var(--brown); margin-bottom:8px; }
+  .job-body .job-lead { font-size:.88rem; color:var(--dark); margin-bottom:12px; font-style:italic; }
+  .job-body p { font-size:.88rem; color:var(--gray); margin-bottom:8px; }
+  .job-body .for { font-size:.82rem; color:var(--gray); border-top:1px solid var(--border); padding-top:10px; margin-top:10px; }
+  .perks { background:var(--light); border-radius:10px; padding:28px; margin-top:32px; }
+  .perks h3 { font-size:1rem; font-weight:800; color:var(--brown); margin-bottom:16px; }
+  .perks ul { list-style:none; display:flex; flex-direction:column; gap:10px; }
+  .perks ul li { font-size:.9rem; display:flex; gap:8px; align-items:flex-start; }
+  .perks ul li::before { content:"★"; color:var(--orange); flex-shrink:0; }
+  .apply-box { text-align:center; background:var(--brown); color:#fff; border-radius:10px; padding:32px; margin-top:32px; }
+  .apply-box p { color:rgba(255,255,255,.8); margin-bottom:20px; font-size:.92rem; }
+
+  /* PRIVACY */
+  .priv-content { max-width:760px; }
+  .priv-content h2 { font-size:1rem; font-weight:800; color:var(--brown); margin:28px 0 8px; padding-bottom:4px; border-bottom:1px solid var(--border); }
+  .priv-content h3 { font-size:.92rem; font-weight:700; margin:16px 0 6px; color:var(--dark); }
+  .priv-content p { font-size:.88rem; color:var(--gray); margin-bottom:10px; }
+  .priv-content ol, .priv-content ul { padding-left:20px; margin-bottom:10px; }
+  .priv-content li { font-size:.88rem; color:var(--gray); margin-bottom:6px; }
+  .priv-content .priv-info { background:var(--light); border-radius:8px; padding:20px; margin-top:8px; font-size:.88rem; color:var(--gray); }
+
+  /* PAGE BANNER */
+  .page-banner { position:relative; min-height:160px; display:flex; align-items:flex-end; overflow:hidden; }
+  .page-banner .ph-img { position:absolute; inset:0; font-size:.8rem; }
+  .page-banner .overlay { position:absolute; inset:0; background:rgba(0,0,0,.5); }
+  .page-banner h1 { position:relative; z-index:1; color:#fff; font-size:clamp(1.3rem,3vw,2rem); font-weight:800; max-width:980px; margin:0 auto; width:100%; padding:36px 24px 28px; }
+  .pb { max-width:980px; margin:0 auto; padding:44px 24px; }
+
+  /* CONTACT */
+  .cf { max-width:620px; }
+  .fg { margin-bottom:18px; }
+  .fg label { display:block; font-size:.85rem; font-weight:600; margin-bottom:5px; }
+  .fg input,.fg textarea,.fg select { width:100%; padding:11px 13px; border:1px solid var(--border); border-radius:6px; font-size:.93rem; font-family:inherit; outline:none; transition:border .2s; }
+  .fg input:focus,.fg textarea:focus { border-color:var(--orange); }
+  .fg textarea { height:130px; resize:vertical; }
+
+  /* CTA */
+  .cta { background:linear-gradient(135deg,var(--brown),var(--dark)); color:#fff; text-align:center; padding:72px 24px; }
+  .cta h2 { font-size:clamp(1.3rem,3vw,1.9rem); margin-bottom:14px; }
+  .cta p { color:rgba(255,255,255,.8); margin-bottom:32px; }
+  .cta-btns { display:flex; gap:14px; justify-content:center; flex-wrap:wrap; }
+
+  footer { background:var(--dark); color:rgba(255,255,255,.55); text-align:center; padding:28px 24px; font-size:.8rem; }
+  .fl { display:flex; gap:18px; justify-content:center; flex-wrap:wrap; margin-bottom:12px; }
+  .fl span { cursor:pointer; color:rgba(255,255,255,.55); }
+  .fl span:hover { color:#fff; }
+
+  @media(max-width:768px){
+    .nav-links { display:none; flex-direction:column; position:absolute; top:60px; left:0; right:0; background:var(--brown); padding:12px; }
+    .nav-links.open { display:flex; }
+    .hamburger { display:flex; }
+    .mission-grid,.about-grid,.voice-card,.case-item,.job-item { grid-template-columns:1fr; }
+    .flow { grid-template-columns:1fr 1fr; }
+    .fs::after { display:none; }
+    .ni { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo" data-page="home" style="display:flex;align-items:center;gap:10px;">
+      <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAdsAAACfCAYAAACxxHP6AAAQAElEQVR4Aex9B4AdVfX+d+7MvLJ9N5tk0zuhhB56U8SuFAVEsPcKYu/lr/izI2JFREURFaQXkd5rCqT3skk22d5fm5n7/868fZtNsoEQKQnOMGduO/fcc8/cud89974NBvEVWyC2QGyB2AKxBWILvKgWiMH2RTVvLDy2QGyB2AKxBWILADHY7sooiHliC8QWiC0QWyC2wH9hgRhs/wvjxVVjC8QWiC0QWyC2wK5YIAbbXbFSzLMrFoh5YgvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJ+YLTbHYArEFYgvEFogtEFsgtsALZYEYbF8oS8ZyYgvsigVintgCsQX+Jy0Qg+3/5GuPOx1bILZAbIHYAi+lBWKwfSmtHbcVWyC2wK5YIOaJLfCKs0AMtq+4Vxp3KLZAbIHYArEF9jQLxGC7p72RWJ/YArEFYgvsigVintgCsQX+Jy0Qg+1e/wrjDuyKBWKe2AKxBWILvJwWiMH25bR+3HZsgdgCsQViC/xPWCAG2/+J1xx3MrbArlgg5oktEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJxaIwXYnhomzYwvEFogtEFtgJ+YLTbHYArEFYgvEFogtEFsgtsALZYEYbF8oS8ZyYgvsigVintgCsQX+Jy0Qg+3/5GuPOx1bILZAbIHYAi+lBWKwfSmtHbcVWyC2wK5YIOaJLfCKs0AMtq+4Vxp3KLZAbIHYArEF9jQLxGC7p72RWJ/YArEFYgvsigVintgCsQX+Jy0Qg+1e/wrjDuyKBWKe2AKxBWILvJwWiMH25bR+3HZsgdgCsQViC/xPWCAG2/+J1xx3MrbArlgg5oktEFvgxbJADLYvlmVjubEFYgvEFogtEFtgwAIx2A4YIg5iC8QWiC2wKxaIeWIL7I4FYrDdHavFdWILxBaILRBbILbA87BADLZ7ylixa2yB2AKxBWILxBaILRBb4AW2QAy2L7BBY3GxBWILxBaILRBb4AW2QAy2L7BBY3GxBWILxBaILRBb4AW2QAy2L7BBY3GxBWILxBaILRBb4AW2QAy2L7BBY3GxBWILxBaILRBb4AW2QAy2L7BBY3GxBWILxBaILRBb4AW2QAy2L7BBY3GxBWILxBaILfAiWCAG2xfBqrEFYgvEFogtEFvg/9oCAO3h5oMQAAABJRU5ErkJggg==" style="height:36px;object-fit:contain;" alt="Bear System Logo">
+      株式会社ベアシステム
+    </div>
+    <ul class="nav-links" id="navLinks">
+      <li data-page="home">ホーム</li>
+      <li data-page="news">お知らせ</li>
+      <li data-page="voices">お客様の声</li>
+      <li data-page="cases">活用事例</li>
+      <li data-page="about">当社について</li>
+      <li data-page="contact">お問い合わせ</li>
+      <li data-page="recruit">採用</li>
+      <li data-page="privacy">個人情報保護方針</li>
+    </ul>
+    <div class="hamburger" id="hbg"><span></span><span></span><span></span></div>
+  </div>
+</nav>
+
+<!-- ========== HOME ========== -->
+<div id="home" class="page active">
+  <div class="hero">
+    <div class="hero-bg img-wrap"><div class="ph-img"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 ヒーロー背景画像</div><div class="lbl">hero-bg</div></div>
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <p class="hero-catch">東京・渋谷から、日本一泥臭い「外部DX推進室」を。</p>
+      <h1>AIをもっと身近に、<br><em>中小企業にAIのあたりまえを</em></h1>
+      <p class="hero-sub">「どぎゃしこでん、ITで解決します。」<br>貴社の困りごとに、最後まで走り続けるパートナー。</p>
+      <button class="btn" data-page="contact">まずは無料相談する</button>
+      <button class="btn btn-out" data-page="about">ベアシステムとは</button>
+    </div>
+  </div>
+
+  <section>
+    <div class="inner">
+      <div class="mission-grid">
+        <div class="mission-img img-wrap"><div class="ph-img"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 代表・社内雰囲気写真</div><div class="lbl">mission</div></div>
+        <div>
+          <p class="sec-label">Our Mission</p>
+          <h2 class="sec-title">「ITは、もっと体温の通ったものであるべきだ。」</h2>
+          <div class="msg">
+            <p>なぜ、東京の会社なのに熊本弁を掲げているのか。それは、私がこの業界でずっと感じてきた「違和感」があるからです。</p>
+            <p class="hl">「求人を出しても人が来ない。どうにかしてほしい」<br>「現場の無駄を、今すぐ動くアプリで解決してほしい」<br>「AIを、明日から使える『武器』として定着させてほしい」</p>
+            <p>そんな切実な悩みに、泥臭く、お節介で、最後まで見捨てないサポートで応えたい。貴社の「外部DX推進室」として、現場に笑顔が戻るまで共に走り続けるパートナーです。</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="alt">
+    <div class="inner">
+      <p class="sec-label">Services</p>
+      <h2 class="sec-title">当社が提供するサービス</h2>
+      <p class="sec-lead">貴社の状況に合わせた3つのプランをご用意しています。</p>
+      <div class="grid3">
+        <div class="card"><div class="card-img img-wrap"><div class="ph-img"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 サービス①</div><div class="lbl">service-1</div></div><div class="ch"><p class="plan">サービス ①</p><p class="ct">IT/DX推進室プラン</p><p class="cs">どぎゃしこでんあっですプラン</p></div><div class="cb"><p>AI構築から専用アプリ制作まで。貴社専属のDXチームを丸ごと提供する最上位フルパッケージプランです。</p><ul class="cl"><li>AI活用支援（むしゃんよかプラン含む）</li><li>DX戦略顧問・経営会議サポート</li><li>全社的なIT定着支援</li><li>専用Webアプリ制作</li></ul><span class="tag">ITで利益を出したい / 会社をDXしたい</span></div></div>
+        <div class="card"><div class="card-img img-wrap"><div class="ph-img"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 サービス②</div><div class="lbl">service-2</div></div><div class="ch"><p class="plan">サービス ②</p><p class="ct">カスタムAIエージェント構築プラン</p><p class="cs">むしゃんよかプラン</p></div><div class="cb"><p>AI活用に特化した実利重視のプラン。24時間働く「AI社員」が日報作成や事務作業を代行します。</p><ul class="cl"><li>カスタムAIエージェント構築</li><li>生成AI活用コンサル・ワークショップ</li><li>業務自動化設計</li></ul><span class="tag">人手不足を解消したい / 生産性を上げたい</span></div></div>
+        <div class="card"><div class="card-img img-wrap"><div class="ph-img"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 サービス③</div><div class="lbl">service-3</div></div><div class="ch"><p class="plan">サービス ③</p><p class="ct">ITツール定着・活用プラン</p><p class="cs">たいぎゃよかプラン</p></div><div class="cb"><p>「何から始めればいい？」という方のためのIT健康診断。無駄なコストを削減し、足元を整えます。</p><ul class="cl"><li>ITコスト・契約診断</li><li>活用定着レクチャー</li><li>ITセカンドオピニオン</li></ul><span class="tag">ITの無駄をなくしたい / 現場に慣れさせたい</span></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="inner">
+      <p class="sec-label">Flow</p>
+      <h2 class="sec-title">導入までの流れ</h2>
+      <p class="sec-lead">専門用語を使わず、丁寧に伴走いたします。</p>
+      <div class="flow">
+        <div class="fs"><div class="sn">1</div><p class="st">お問い合わせ</p><p class="sd">フォームまたはメールで</p></div>
+        <div class="fs"><div class="sn">2</div><p class="st">無料ヒアリング</p><p class="sd">課題・ご要望をお聞きします</p></div>
+        <div class="fs"><div class="sn">3</div><p class="st">ご提案</p><p class="sd">最適プランをご提案</p></div>
+        <div class="fs"><div class="sn">4</div><p class="st">ご契約・開始</p><p class="sd">すぐに伴走支援スタート</p></div>
+        <div class="fs"><div class="sn">5</div><p class="st">運用・定着</p><p class="sd">笑顔が戻るまで継続支援</p></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta">
+    <h2>まずは、「困った」を聞かせてください。</h2>
+    <p>ご相談は無料です。お気軽にお問い合わせください。</p>
+    <div class="cta-btns">
+      <button class="btn" data-page="contact">お問い合わせフォーム</button>
+      <button class="btn btn-out">info@bear-system.net</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== NEWS ========== -->
+<div id="news" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 お知らせ ヘッダー画像</div><div class="overlay"></div><h1>お知らせ</h1></div>
+  <div class="pb">
+    <div class="news-list">
+      <div class="ni"><div class="ni-img img-wrap"><div class="ph-img"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁</div><div class="lbl">news-1</div></div><div class="ni-body"><span class="nd">2026年4月17日</span><p class="nt">日本一泥臭いIT・AI支援プランをリリースしました</p><p class="nb">サービスラインナップを全面刷新。「どぎゃしこでんあっですプラン」「むしゃんよかプラン」「たいぎゃよかプラン」の3つの新プランをリリースしました。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><div class="ph-img"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁</div><div class="lbl">news-2</div></div><div class="ni-body"><span class="nd">2026年2月25日</span><p class="nt">特別対談記事を追加しました</p><p class="nb">株式会社コミュニティ・ケアの代表取締役、北楯利宗様との対談記事をアップしました。実際の導入背景やご利用後の変化をご紹介しています。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><div class="ph-img"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁</div><div class="lbl">news-3</div></div><div class="ni-body"><span class="nd">2026年2月5日</span><p class="nt">AI活用無料訪問セミナー開催中</p><p class="nb">中小企業のみなさまを対象にAI活用無料訪問セミナーを開催。参加者にはカスタムAIエージェントを一体プレゼントいたします。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><div class="ph-img"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁</div><div class="lbl">news-4</div></div><div class="ni-body"><span class="nd">2026年1月19日</span><p class="nt">長崎県壱岐島でAI活用セミナーを開催いたします</p><p class="nb">中小企業を対象としたAI活用無料セミナーを長崎県壱岐島にて開催いたします。詳細は追ってお知らせいたします。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><div class="ph-img"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁</div><div class="lbl">news-5</div></div><div class="ni-body"><span class="nd">2026年1月13日</span><p class="nt">クリエイティブ・ワークスタイルの導入について</p><p class="nb">服装・時間・場所に捉われない働き方で、充実したプライベートと成果の出せる仕事を両立することを目指します。</p></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== VOICES ========== -->
+<div id="voices" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 お客様の声 ヘッダー画像</div><div class="overlay"></div><h1>お客様の声</h1></div>
+  <div class="pb">
+    <div class="voice-card" style="margin-bottom:32px;">
+      <div class="voice-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>🔁 対談写真</div><div class="lbl">voice-1</div></div>
+      <div class="voice-body">
+        <p class="company">特別対談</p>
+        <p class="name">お客様の声</p>
+        <p style="font-size:.88rem;color:var(--gray);margin-bottom:6px;"><strong>ゲスト：</strong>株式会社コミュニティ・ケア 代表取締役 北楯 利宗 様（写真右）<br>練馬区を中心に訪問介護・デイサービス等を複数運営。</p>
+        <p style="font-size:.88rem;color:var(--gray);"><strong>ホスト：</strong>株式会社ベアシステム 代表取締役社長 井上 俊（写真左）</p>
+      </div>
+    </div>
+    <div class="dialogue">
+      <div class="dialogue-section">
+        <h3>1. 出会いのきっかけ：ITへの期待と、現場のリアルのギャップ</h3>
+        <div class="dialogue-item bear"><div class="speaker">井上（ベアシステム）</div><p>北楯さんと最初にお話しした時、「ITで何かしたいけど、現場がついてこれるか不安だ」と仰っていたのが印象的でした。</p></div>
+        <div class="dialogue-item guest"><div class="speaker">北楯様（コミュニティケア）</div><p>そうなんです。介護業界はとにかくアナログ。うちの現場も、LINEの操作すらおぼつかないスタッフがいます。世間で「AIだDXだ」と言われても、正直「うちはそれ以前の問題だよな」と諦めていました。</p></div>
+        <div class="dialogue-item bear"><div class="speaker">井上</div><p>私たちが最初にご提案したのは、AIを入れることではなく、今のネット環境やリース契約の「整理整頓」でしたね。</p></div>
+        <div class="dialogue-item guest"><div class="speaker">北楯様</div><p>驚きました。「AIの会社が、なんで通信費やコピー機のリースの見直しから始めるの？」って（笑）。でも、そこで浮いた経費や、紹介してもらった補助金で「自分たちの手出しを最小限にして新しいことに挑戦できる」というスキームを見せてもらって、これならリスクがないなと納得できました。</p></div>
+      </div>
+      <div class="dialogue-section">
+        <h3>2. 介護現場の「最大のリスク」をAIで防ぐ</h3>
+        <div class="dialogue-item bear"><div class="speaker">井上</div><p>今回、特に力を入れたのが「運営指導（実地指導）対策」としてのAI活用です。</p></div>
+        <div class="dialogue-item guest"><div class="speaker">北楯様</div><p>これは本当に助かっています。介護経営者にとって、数年に一度の監査は本当に胃が痛い。記録の不備一つで「返還金100万円」なんて話もザラにある業界ですから。</p></div>
+        <div class="dialogue-item bear"><div class="speaker">井上</div><p>現場のスタッフさんが入力した箇条書きのメモを、AIが「加算要件」や「不適切な表現」をチェックして、正式な報告書形式に整える仕組みを作りました。</p></div>
+        <div class="dialogue-item guest"><div class="speaker">北楯様</div><p>今までは管理者が夜遅くまでかかって添削していたのが、AIが一次チェックをしてくれる。これだけで管理者の精神的な負担が激減しました。AIが「現場の言葉」を「行政に通じる言葉」に翻訳してくれるイメージですね。</p></div>
+      </div>
+      <div class="dialogue-section">
+        <h3>3. 「業者」ではなく、隣に座る「身内」のような存在</h3>
+        <div class="dialogue-item bear"><div class="speaker">井上</div><p>私たちは「Make it Simple」を掲げています。専門用語を使わずにお話しすることを心がけていますが、その点はいかがでしたか？</p></div>
+        <div class="dialogue-item guest"><div class="speaker">北楯様</div><p>井上さんは、良い意味で「ITの人」っぽくない（笑）。私たちの業界の課題や、練馬区のローカルな事情まで理解しようとしてくれる。PCの調子が悪いといった些細なことから、補助金の難しい書類まで、「まずはベアさんに聞こう」と思える。外注業者というより、月8万円で「プロの情シス担当」を一人雇っている感覚です。</p></div>
+      </div>
+      <div class="dialogue-section">
+        <h3>4. 今後の展望と、同じ悩みを持つ経営者へのメッセージ</h3>
+        <div class="dialogue-item bear"><div class="speaker">井上</div><p>今後は、この仕組みをさらに磨いて、練馬区から「介護DXの成功モデル」を作っていきたいですね。</p></div>
+        <div class="dialogue-item guest"><div class="speaker">北楯様</div><p>介護業界は、真面目にやっているところほど事務作業に追われて疲弊しています。でも、ITやAIを味方につければ、その分、利用者さんと向き合う時間が増える。「うちの現場にはまだ早い」と思っている社長さんこそ、一度ベアシステムさんに「うちの無駄、どこにある？」と聞いてみることをお勧めします。きっと、明るい兆しが見えるはずです。</p></div>
+      </div>
+      <div class="afterword">
+        <h3>対談後記：パートナーとして共に歩むということ</h3>
+        <p>対談を終えて、北楯様が何度も口にされていた「安心感」という言葉が、私たちの胸に深く残りました。</p>
+        <p>介護の現場で本当に求められているのは、きらびやかな最新技術ではありません。日々の泥臭い事務作業から解放されること、そして「いつ来るかわからない監査」への不安を払拭し、目の前の利用者様に100%の力を注げる環境を作ること。それこそが、現場にとっての「真のDX」なのだと再確認いたしました。</p>
+        <p>ベアシステムは、単なる「ITの専門家」ではありません。経営者の皆様のすぐ隣に座り、一緒に課題を悩み、共に汗をかく「身内のパートナー」でありたいと考えています。</p>
+        <p>「うちの現場はITなんて無理だよ」と笑う前に、ぜひ一度お話しを聞かせてください。明日から現場が笑顔になる具体的な一歩を、私たちはご提案いたします。</p>
+        <p class="sig">株式会社ベアシステム 代表取締役社長　井上 俊</p>
+      </div>
+    </div>
+    <div class="img-wrap" style="height:280px;border-radius:10px;overflow:hidden;margin-top:32px;"><div class="ph-img"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 対談補足画像</div><div class="lbl">voice-2</div></div>
+    <p style="color:var(--gray);font-size:.88rem;margin-top:20px;">※掲載をご希望の方はお問い合わせください。</p>
+  </div>
+</div>
+
+<!-- ========== CASES ========== -->
+<div id="cases" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 活用事例 ヘッダー画像</div><div class="overlay"></div><h1>活用事例</h1></div>
+  <div class="pb">
+    <div class="case-intro">
+      <p><strong>AIツールを「買い足す」のは、もうやめませんか？</strong></p>
+      <p style="margin-top:10px;">いま、世の中には特定の業務に特化したAIツールが溢れています。しかし、業務ごとにツールを導入していては、コストは膨らむばかり。結局「どれを、どう使えばいいかわからない」と現場が混乱するケースも少なくありません。</p>
+      <p style="margin-top:10px;">ベアシステムは、ChatGPTやGeminiといった強力な汎用AIを、貴社専用の「万能アシスタント」へと作り変えます。貴社のマニュアルや過去のデータを学習した一つのAIが、日報作成から見積書の草案作り、新人教育まで、あらゆるシーンで「即戦力」として機能します。</p>
+    </div>
+
+    <div class="case-item">
+      <div class="case-item-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 建設現場の写真</div><div class="lbl">case-1</div></div>
+      <div class="case-item-body">
+        <span class="case-tag">建設現場での活用事例</span>
+        <h3>土木現場でのAI活用に大満足。残業も減らせました！</h3>
+        <blockquote>「これまでは大規模現場だけの話だと思っていた『リスクアセスメント』が、今や小規模な公共工事でも必須となり、正直その事務作業の負担に頭を抱えていました。そんな時に導入したのがベアシステムのAIエージェント構築です。仕様書をアップロードして数秒待つだけ。それだけで、建災防方式に則った完璧なリストが出てきた時は、鳥肌が立ちましたよ。『この工種なら、このリスクは見落としがち』といった細かな部分までAIがサポートしてくれるので、ヒヤリハットの防止にも直結しています。何より嬉しかったのは、検査の時に検査官から『今回の安全書類、非常によく整理されていますね』と褒められたこと。結果として工事成績も上がり、次の入札への自信にもなりました。もうこれ無しでの現場管理は考えられません。」</blockquote>
+        <span class="case-result">残業削減 ＋ 工事成績向上</span>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <div class="case-item-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 旅行代理店の写真</div><div class="lbl">case-2</div></div>
+      <div class="case-item-body">
+        <span class="case-tag">旅行代理店での活用事例</span>
+        <h3>新人スタッフの「知識不足」を即座にカバー</h3>
+        <blockquote>「旅行先は全世界。新人や若手スタッフにとって、行ったことのない国や地域の質問（治安、ビザ、チップ事情、ベストシーズン）に即答するのは難しく、確認のためにバックヤードのベテラン社員の手を止めてしまうことが頻発していました。ベアシステムのAIエージェント構築で、社内にある独自の問い合わせ履歴や、最新の渡航情報をAIスーパーバイザーとして導入。新人が「ウズベキスタンの11月の服装は？」と聞けば、即座に気温データと推奨の服装、注意点を回答してくれます。以前は冷や汗をかいていましたが、今は手元のタブレットでAIが瞬時に教えてくれるので、まるでベテランの先輩が隣に座ってくれているような安心感があります。『頼りになるね』とお客様に言っていただけて、仕事が本当に楽しくなりました」</blockquote>
+        <span class="case-result">顧客満足度向上 ＋ 新人即戦力化</span>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <div class="case-item-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 町工場の写真</div><div class="lbl">case-3</div></div>
+      <div class="case-item-body">
+        <span class="case-tag">町工場での活用事例</span>
+        <h3>トラブルシューティング・バディ「現場の知恵袋」</h3>
+        <blockquote>「古い機械も多く、故障時の対応が属人化。過去の故障履歴、修理報告書、マニュアルのPDFを全てAIに学習させたAIエージェントに作業員が「Cラインのプレス機から異音がして、油圧が下がってる」と音声で話しかけると、AIが「過去の事例から、バルブBのパッキン劣化の可能性が高いです。交換手順の動画を表示しますか？」と回答してくれます。AIが『3年前にも同じ症状があり、その時は高橋さんがこうやって直しました』と、先輩が残してくれたメモまで検索して教えてくれた時は本当に感動しました。復旧時間が半日かかっていたのが30分になり、社長からも感謝されています」</blockquote>
+        <span class="case-result">復旧時間 半日 → 30分</span>
+      </div>
+    </div>
+
+    <div class="case-item">
+      <div class="case-item-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 営業シーンの写真</div><div class="lbl">case-4</div></div>
+      <div class="case-item-body">
+        <span class="case-tag">提案営業での活用事例</span>
+        <h3>準備1時間を30秒に。営業訪問前の「最強のカンペ」</h3>
+        <blockquote>「営業にとって、訪問前の準備は『勝率』を左右する最も重要な時間です。しかし、1件1件のホームページを読み込み、業績やニュース、社長の経歴を調べるには、ベテランでも1時間はかかります。今は自社のサービス紹介資料や営業資料、過去の提案書を学習させたベアシステムのAIエージェントに、ターゲット企業のURLを一つ送るだけ。たった30秒で、その会社の『経営課題』『最近の動向』『刺さるトークスクリプト』など、自社のサービスに合わせた『攻略レポート』が自動生成されます。リサーチにかけていた1時間が、わずか30秒に。余った時間で1件でも多くのお客様の元へ足を運べるようになり、チーム全体の訪問件数が1.5倍に増えました。」</blockquote>
+        <span class="case-result">訪問件数 1.5倍 ＋ リサーチ時間 98%削減</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== ABOUT ========== -->
+<div id="about" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 当社について ヘッダー画像</div><div class="overlay"></div><h1>当社について</h1></div>
+  <div class="pb">
+    <div class="about-grid">
+      <div>
+        <div class="ceo-img img-wrap"><div class="ph-img"><svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>🔁 井上社長のお写真</div><div class="lbl">ceo</div></div>
+        <div class="ag">
+          <h2 style="font-size:1.1rem;margin-bottom:18px;color:var(--brown);">ご挨拶</h2>
+          <p>貴社の「IT戦略室」として、ビジネスの変革を共に歩む。</p>
+          <p>株式会社ベアシステムが目指すのは、ITとAIの力で中小企業の皆様が持つポテンシャルを「最大化」することです。</p>
+          <p>技術はあくまで手段に過ぎません。重要なのは「貴社のビジネスがどう変わるか」です。</p>
+          <p>運用・保守はもちろん、社内IT人材の育成や無駄なITコストの削減まで踏み込み、貴社のビジネスに深く寄り添います。</p>
+          <p>「何から始めればいいかわからない」という段階からでも構いません。実効性のあるIT戦略を共に描き、貴社のさらなる飛躍を支えるパートナーでありたいと願っています。</p>
+          <p class="sig">株式会社ベアシステム<br>代表取締役社長　井上 俊</p>
+        </div>
+      </div>
+      <div>
+        <h2 style="font-size:1.1rem;margin-bottom:18px;color:var(--brown);">会社概要</h2>
+        <table class="tbl">
+          <tr><th>会社名</th><td>株式会社ベアシステム</td></tr>
+          <tr><th>代表者</th><td>代表取締役社長　井上 俊</td></tr>
+          <tr><th>所在地</th><td>〒150-0044 東京都渋谷区円山町５番３号<br>MIEUX渋谷ビル８階</td></tr>
+          <tr><th>代表電話</th><td>03－6367－2529</td></tr>
+          <tr><th>事業年度</th><td>毎年1月1日〜12月31日</td></tr>
+          <tr><th>取引銀行</th><td>三井住友銀行　みずほ銀行</td></tr>
+          <tr><th>主な事業</th><td>・情報システムの導入・運用・保守支援<br>・IT/DXコンサルティング<br>・AI活用による業務効率化支援<br>・クラウド/SaaS導入支援<br>・IT人材育成および教育研修</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== CONTACT ========== -->
+<div id="contact" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 お問い合わせ ヘッダー画像</div><div class="overlay"></div><h1>お問い合わせ</h1></div>
+  <div class="pb">
+    <p style="margin-bottom:28px;color:var(--gray);">ご相談・ご質問はフォームまたはメール（info@bear-system.net）にてお気軽にどうぞ。</p>
+    <div class="cf">
+      <div class="fg"><label>会社名 <span style="color:var(--orange)">*</span></label><input type="text" placeholder="株式会社〇〇"></div>
+      <div class="fg"><label>お名前 <span style="color:var(--orange)">*</span></label><input type="text" placeholder="山田 太郎"></div>
+      <div class="fg"><label>メールアドレス <span style="color:var(--orange)">*</span></label><input type="email" placeholder="example@company.co.jp"></div>
+      <div class="fg"><label>電話番号</label><input type="tel" placeholder="03-0000-0000"></div>
+      <div class="fg"><label>お問い合わせ種別</label><select><option>サービスについて</option><option>料金について</option><option>無料相談の申込み</option><option>採用について</option><option>その他</option></select></div>
+      <div class="fg"><label>お問い合わせ内容 <span style="color:var(--orange)">*</span></label><textarea placeholder="ご相談内容をお気軽にご記入ください。"></textarea></div>
+      <button class="btn" onclick="alert('送信ありがとうございます！\n※Squarespaceのフォームブロックに差し替えてください')">送信する</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== RECRUIT ========== -->
+<div id="recruit" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 採用 ヘッダー画像</div><div class="overlay"></div><h1>採用情報</h1></div>
+  <div class="pb">
+    <div class="recruit-msg">
+      <h2>中小企業の未来を、あなたの「自由な発想」で変えていく。</h2>
+      <p>私たちベアシステムは、日本の産業を支える中小企業の「生産性向上」に本気で向き合っている会社です。「難しそうな技術を、もっと身近に」「忙しい現場を、もっと楽に」。そんな想いを持った和気藹々としたメンバーが、日々切磋琢磨しています。</p>
+      <p>私たちの強みは、「個人の裁量を最大限に尊重する」こと。裁量労働制と在宅勤務を組み合わせた柔軟な働き方で、あなたのライフスタイルに合わせたパフォーマンスの発揮を全力でサポートします。</p>
+      <p>やらされる仕事ではなく、自ら考え、創り出す楽しさを、ここで一緒に味わいませんか？</p>
+    </div>
+
+    <div class="job-item">
+      <div class="job-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 営業職イメージ</div><div class="lbl">recruit-1</div></div>
+      <div class="job-body">
+        <h3>1. 営業職</h3>
+        <p class="job-lead">「売り込み」ではなく、お客様の「最高の相談相手」へ。</p>
+        <p>中小企業の経営者様や現場担当者様が抱える「困った」を丁寧にヒアリングし、ITの力で解決策を提案します。ノルマに追われるだけの営業ではありません。お客様と深い信頼関係を築き、「あなたのおかげで助かった」と感謝される瞬間が最大のやりがいです。</p>
+        <p class="for">📌 こんな方に：人と話すのが好きな方、課題解決を通じてお客様の成長を応援したい方。</p>
+      </div>
+    </div>
+
+    <div class="job-item">
+      <div class="job-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 バックオフィスイメージ</div><div class="lbl">recruit-2</div></div>
+      <div class="job-body">
+        <h3>2. バックオフィス</h3>
+        <p class="job-lead">チームのパフォーマンスを最大化する、組織の「要（かなめ）」。</p>
+        <p>営業やエンジニアが安心して業務に集中できるよう、経理・総務・労務など幅広い業務で会社を支えます。単なる事務処理にとどまらず、「どうすればもっと会社が良くなるか？」という視点で、社内の業務改善や環境づくりにも裁量を持って取り組んでいただけます。</p>
+        <p class="for">📌 こんな方に：ホスピタリティを持って人をサポートしたい方、効率化や仕組みづくりが好きな方。</p>
+      </div>
+    </div>
+
+    <div class="job-item">
+      <div class="job-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 エンジニアイメージ</div><div class="lbl">recruit-3</div></div>
+      <div class="job-body">
+        <h3>3. AIエンジニア</h3>
+        <p class="job-lead">最先端の技術を、現場の「使いやすさ」に変える。</p>
+        <p>最新のAI技術を活用し、中小企業の業務効率を劇的に改善するソリューションを開発します。技術力はもちろん重要ですが、私たちが大切にしているのは「現場で本当に使えるもの」を作ること。技術選定から実装まで、あなたのアイデアとスキルを存分に発揮できる環境です。</p>
+        <p class="for">📌 こんな方に：新しい技術への好奇心が旺盛な方、自分のコードが社会の役に立つ実感を味わいたい方。</p>
+      </div>
+    </div>
+
+    <div class="job-item">
+      <div class="job-img img-wrap"><div class="ph-img"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>🔁 PMイメージ</div><div class="lbl">recruit-4</div></div>
+      <div class="job-body">
+        <h3>4. PM（プロジェクトマネージャー）</h3>
+        <p class="job-lead">プロジェクトを成功へ導く、チームの「司令塔」。</p>
+        <p>クライアントの要望を的確に把握し、エンジニアチームと連携してプロジェクトを推進します。予算・スケジュール管理だけでなく、メンバーが楽しく働けるようなチームビルディングもお任せします。</p>
+        <p class="for">📌 こんな方に：全体を見渡す視野をお持ちの方、コミュニケーション力でチームをまとめ上げたい方。</p>
+      </div>
+    </div>
+
+    <div class="perks">
+      <h3>ベアシステムで働く魅力</h3>
+      <ul>
+        <li><strong>和気藹々としたチーム：</strong>困ったときはすぐに相談できる、フラットで温かい人間関係が自慢です。</li>
+        <li><strong>フルフレックス・裁量労働制：</strong>「成果」を重視するため、働く時間や場所はあなたの裁量にお任せします。</li>
+        <li><strong>リモートワーク推奨：</strong>在宅勤務と出社を自由に組み合わせ、プライベートと仕事を両立できます。</li>
+      </ul>
+    </div>
+
+    <div class="apply-box">
+      <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:12px;">少しでも興味を持っていただけたら、まずはカジュアルにお話ししませんか？</h3>
+      <p>あなたにお会いできることを、スタッフ一同楽しみにしています！</p>
+      <a href="https://forms.gle/paiLccod3KSTHBfk8" target="_blank"><button class="btn" style="margin-top:4px;">応募はこちらから</button></a>
+    </div>
+  </div>
+</div>
+
+<!-- ========== PRIVACY ========== -->
+<div id="privacy" class="page">
+  <div class="page-banner"><div class="ph-img">🔁 個人情報保護方針 ヘッダー画像</div><div class="overlay"></div><h1>個人情報保護方針</h1></div>
+  <div class="pb">
+    <div class="priv-content">
+      <p>株式会社ベアシステム（以下、「当社」といいます。）は、当社の提供するサービス（以下、「本サービス」といいます。）における、ユーザーおよび採用応募者の個人情報の取扱いについて、以下のとおりプライバシーポリシー（以下、「本ポリシー」といいます。）を定めます。</p>
+
+      <h2>第1条（個人情報）</h2>
+      <p>「個人情報」とは、個人情報保護法にいう「個人情報」を指すものとし、生存する個人に関する情報であって、当該情報に含まれる氏名、生年月日、住所、電話番号、連絡先その他の記述等により特定の個人を識別できる情報、および容貌、指紋、声紋にかかるデータ、及び健康保険証の保険者番号などの当該情報単体から特定の個人を識別できる情報（個人識別符号）を指します。</p>
+
+      <h2>第2条（個人情報の収集方法）</h2>
+      <p>当社は、以下の方法により個人情報を適法かつ公正に取得します。</p>
+      <ol>
+        <li><strong>サービス利用に関する収集：</strong>ユーザーが利用登録やお問い合わせをする際に氏名、会社名、電話番号、メールアドレス等の情報を収集します。</li>
+        <li><strong>採用活動に関する収集：</strong>採用応募時に、履歴書、職務経歴書、成績証明書等の応募書類を通じて情報を収集します。</li>
+      </ol>
+
+      <h2>第3条（個人情報の利用目的）</h2>
+      <h3>1. 事業・サービス提供に関する目的</h3>
+      <ul>
+        <li>当社が提供するITコンサルティング、システム導入・運用支援、AI活用支援等の業務遂行のため</li>
+        <li>ユーザーからのお問い合わせやご相談に回答するため</li>
+        <li>情報システムや通信回線等の利用状況分析および最適化提案を行うため</li>
+        <li>当社のサービスに関する新機能、更新情報、キャンペーン等の案内メールを送付するため</li>
+        <li>重要なお知らせなど必要に応じたご連絡のため</li>
+      </ul>
+      <h3>2. 採用活動に関する目的</h3>
+      <ul>
+        <li>採用選考およびその結果の連絡のため</li>
+        <li>採用決定後の入社手続きのご案内のため</li>
+      </ul>
+
+      <h2>第4条（利用目的の変更）</h2>
+      <p>当社は、利用目的が変更前と関連性を有すると合理的に認められる場合に限り、個人情報の利用目的を変更するものとします。利用目的の変更を行った場合には、変更後の目的について、当社所定の方法により、ユーザーに通知し、または本ウェブサイト上に公表するものとします。</p>
+
+      <h2>第5条（個人情報の第三者提供）</h2>
+      <p>当社は、次に掲げる場合を除いて、あらかじめユーザーの同意を得ることなく、第三者に個人情報を提供することはありません。</p>
+      <ol>
+        <li>人の生命、身体または財産の保護のために必要がある場合であって、本人の同意を得ることが困難であるとき</li>
+        <li>公衆衛生の向上または児童の健全な育成の推進のために特に必要がある場合であって、本人の同意を得ることが困難であるとき</li>
+        <li>国の機関もしくは地方公共団体またはその委託を受けた者が法令の定める事務を遂行することに対して協力する必要がある場合</li>
+        <li>予め第三者への提供を含む利用目的を告知あるいは公表し、かつ当社が個人情報保護委員会に届出をしたとき</li>
+      </ol>
+      <p>なお、ITベンダーとの代理折衝業務等において、業務遂行に必要な範囲で、お客様の同意に基づき情報システム事業者等へ情報を提供・共有する場合があります。</p>
+
+      <h2>第6条（個人情報の安全管理措置）</h2>
+      <p>当社は、取り扱う個人情報の漏洩、滅失またはき損の防止その他の個人情報の安全管理のために必要かつ適切な措置を講じます。個人情報取扱責任者が責任を持ってデータのアクセス権限管理やセキュリティ対策ソフトの導入等の管理監督を行います。</p>
+
+      <h2>第7条（個人情報の開示・訂正・利用停止等）</h2>
+      <p>当社は、本人から個人情報の開示、内容の訂正・追加・削除、利用の停止・消去を求められたときは、本人確認を行った上で、遅滞なく対応いたします。</p>
+
+      <h2>第8条（お問い合わせ窓口）</h2>
+      <div class="priv-info">
+        <p>📮 住所：〒150-0044 東京都渋谷区円山町５番３号 MIEUX渋谷ビル８階</p>
+        <p>🏢 社名：株式会社ベアシステム</p>
+        <p>👤 個人情報取扱責任者：井上 俊</p>
+        <p>✉️ Eメールアドレス：info@bear-system.net</p>
+      </div>
+      <p style="margin-top:24px;font-size:.83rem;color:var(--gray);">制定日：2026年1月13日</p>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="fl">
+    <span data-page="home">ホーム</span>
+    <span data-page="news">お知らせ</span>
+    <span data-page="about">当社について</span>
+    <span data-page="contact">お問い合わせ</span>
+    <span data-page="recruit">採用</span>
+    <span data-page="privacy">個人情報保護方針</span>
+  </div>
+  <p>〒150-0044 東京都渋谷区円山町５番３号 MIEUX渋谷ビル８階　TEL: 03－6367－2529</p>
+  <p style="margin-top:6px;">© 2026 株式会社ベアシステム. All rights reserved.</p>
+</footer>
+
+<script>
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    var el = document.getElementById(id);
+    if (el) el.classList.add('active');
+    window.scrollTo(0, 0);
+    document.getElementById('navLinks').classList.remove('open');
+  }
+  document.addEventListener('click', function(e) {
+    var t = e.target.closest('[data-page]');
+    if (t) { e.preventDefault(); showPage(t.getAttribute('data-page')); }
+  });
+  document.getElementById('hbg').addEventListener('click', function() {
+    document.getElementById('navLinks').classList.toggle('open');
+  });
+</script>
+</body>
+</html>
