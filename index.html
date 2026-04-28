@@ -39,8 +39,8 @@
   /* ヒーロー下部コンテンツ（ボタン等） */
   .hero-foot{
     background:var(--ink);
-    padding:36px 24px;
-    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;
+    padding:20px 24px 0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
   }
   .hero-foot-btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;}
 
@@ -52,7 +52,7 @@
   .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,.25);color:rgba(255,255,255,.85);padding:16px 40px;border-radius:8px;font-weight:700;cursor:pointer;font-size:.95rem;letter-spacing:.03em;transition:all .3s;}
   .btn-ghost:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.5);transform:translateY(-3px);}
 
-  section{padding:100px 24px;}
+  section{padding:60px 24px;}
   .inner{max-width:1100px;margin:0 auto;}
   .sec-eyebrow{font-size:.7rem;letter-spacing:.3em;color:var(--blue);font-weight:700;margin-bottom:12px;text-transform:uppercase;}
   .sec-title{font-size:clamp(1.6rem,3vw,2.4rem);font-weight:900;margin-bottom:16px;color:var(--ink);letter-spacing:-.02em;line-height:1.3;}
@@ -85,7 +85,7 @@
   .svc-tag{display:inline-block;border:1px solid var(--border);color:var(--gray);font-size:.7rem;padding:4px 12px;border-radius:100px;font-weight:600;transition:all .3s;}
 
   .numbers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1);border-radius:16px;overflow:hidden;}
-  .num-card{padding:40px 32px;text-align:center;background:rgba(255,255,255,.04);}
+  .num-card{padding:24px 32px;text-align:center;background:rgba(255,255,255,.04);}
   .num-val{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff,var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px;}
   .num-label{font-size:.8rem;color:rgba(255,255,255,.5);letter-spacing:.05em;}
 
@@ -260,6 +260,7 @@
     </div>
     <div class="hero-foot">
       <div class="hero-badge">TOKYO · SHIBUYA ● DX PARTNER</div>
+      <p style="color:#fff;font-size:clamp(1.6rem,4vw,2.8rem);font-weight:900;letter-spacing:-.02em;text-align:center;line-height:1.4;margin-bottom:16px;">AIをもっと身近に、<br>中小企業にDXのあたりまえを</p>
       <div class="hero-foot-btns">
         <button class="btn-primary" data-page="contact">まずは無料相談する</button>
         <button class="btn-ghost" data-page="about">ベアシステムとは</button>
