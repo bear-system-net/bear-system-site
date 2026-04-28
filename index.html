@@ -466,15 +466,15 @@
         <div class="contact-row"><div class="contact-icon">📍</div><div class="contact-row-text">〒150-0044<br>東京都渋谷区円山町５番３号<br>MIEUX渋谷ビル８階</div></div>
         <p style="margin-top:24px;font-size:.8rem;color:rgba(255,255,255,.4);border-top:1px solid rgba(255,255,255,.08);padding-top:20px;">ご相談は無料です。<br>まずはお気軽にご連絡ください。</p>
       </div>
-      <div class="cf">
-        <div class="fg"><label>会社名 <span style="color:var(--blue)">*</span></label><input type="text" placeholder="株式会社〇〇"></div>
-        <div class="fg"><label>お名前 <span style="color:var(--blue)">*</span></label><input type="text" placeholder="山田 太郎"></div>
-        <div class="fg"><label>メールアドレス <span style="color:var(--blue)">*</span></label><input type="email" placeholder="example@company.co.jp"></div>
-        <div class="fg"><label>電話番号</label><input type="tel" placeholder="03-0000-0000"></div>
-        <div class="fg"><label>お問い合わせ種別</label><select><option>サービスについて</option><option>料金について</option><option>無料相談の申込み</option><option>採用について</option><option>その他</option></select></div>
-        <div class="fg"><label>お問い合わせ内容 <span style="color:var(--blue)">*</span></label><textarea placeholder="ご相談内容をお気軽にご記入ください。"></textarea></div>
-        <button class="btn-primary" style="width:100%;" onclick="alert('送信ありがとうございます！')">送信する →</button>
-      </div>
+      <form class="cf" action="https://formspree.io/f/mojyoypq" method="POST">
+        <div class="fg"><label>会社名 <span style="color:var(--blue)">*</span></label><input type="text" name="会社名" placeholder="株式会社〇〇" required></div>
+        <div class="fg"><label>お名前 <span style="color:var(--blue)">*</span></label><input type="text" name="お名前" placeholder="山田 太郎" required></div>
+        <div class="fg"><label>メールアドレス <span style="color:var(--blue)">*</span></label><input type="email" name="email" placeholder="example@company.co.jp" required></div>
+        <div class="fg"><label>電話番号</label><input type="tel" name="電話番号" placeholder="03-0000-0000"></div>
+        <div class="fg"><label>お問い合わせ種別</label><select name="お問い合わせ種別"><option>サービスについて</option><option>料金について</option><option>無料相談の申込み</option><option>採用について</option><option>その他</option></select></div>
+        <div class="fg"><label>お問い合わせ内容 <span style="color:var(--blue)">*</span></label><textarea name="お問い合わせ内容" placeholder="ご相談内容をお気軽にご記入ください。" required></textarea></div>
+        <button type="submit" class="btn-primary" style="width:100%;">送信する →</button>
+      </form>
     </div>
   </div>
 </div>
