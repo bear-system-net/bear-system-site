@@ -35,22 +35,16 @@
   .hero{position:relative;width:100%;overflow:hidden;}
   .hero-img-wrap{position:relative;width:100%;line-height:0;}
   .hero-img-wrap img{width:100%;height:auto;display:block;max-height:90vh;object-fit:cover;object-position:center;}
-  /* グラデオーバーレイ：下部のみ薄暗く */
-  .hero-img-wrap::after{
-    content:'';
-    position:absolute;inset:0;
-    background:linear-gradient(
-      to bottom,
-      rgba(10,14,26,0) 50%,
-      rgba(10,14,26,.55) 100%
-    );
-    pointer-events:none;
-  }
+
   /* ヒーロー下部コンテンツ（ボタン等） */
   .hero-foot{
     background:var(--ink);
     padding:36px 24px;
     display:flex;align-items:center;justify-content:center;gap:20px;flex-wrap:wrap;
+  }
+  .hero-badge-wrap{
+    position:absolute;top:24px;left:50%;transform:translateX(-50%);
+    z-index:2;white-space:nowrap;
   }
   .hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(45,107,228,.2);border:1px solid rgba(45,107,228,.4);color:var(--blue2);font-size:.72rem;font-weight:700;padding:6px 16px;border-radius:100px;letter-spacing:.1em;}
   .hero-badge::before{content:'';width:6px;height:6px;background:var(--cyan);border-radius:50%;animation:pulse 2s infinite;}
@@ -266,8 +260,10 @@
     <div class="hero-img-wrap">
       <img src="hero-top.jpg" alt="どぎゃしこでん — 株式会社ベアシステム">
     </div>
-    <div class="hero-foot">
+    <div class="hero-badge-wrap">
       <div class="hero-badge">TOKYO · SHIBUYA ● DX PARTNER</div>
+    </div>
+    <div class="hero-foot">
       <button class="btn-primary" data-page="contact">まずは無料相談する</button>
       <button class="btn-ghost" data-page="about">ベアシステムとは</button>
     </div>
