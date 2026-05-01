@@ -101,10 +101,12 @@ table.items td input:focus{background:#f0f4fa;outline:none}
     <div class="section-title" id="doc-section-title">見積書情報</div>
     <div id="estimate-info">
       <div class="form-grid">
-        <div class="form-group"><label>書類番号</label><input id="est-no" readonly style="background:#f5f7fa;color:#555"></div>
+        <div class="form-group"><label>書類番号</label><input id="est-no" readonly style="background:#f5f7fa;color:#555" placeholder="番号を発行してください"></div>
         <div class="form-group"><label>発行日</label><input id="est-date" type="date" oninput="onEstDateChange()"></div>
         <div class="form-group"><label>有効期限（修正可）</label><input id="est-expire" type="date"></div>
-        <div class="form-group"></div>
+        <div class="form-group" style="justify-content:flex-end;padding-top:18px">
+          <button id="issue-btn" onclick="issueNos()" style="padding:7px 16px;background:#1a56b0;color:#fff;border:none;border-radius:6px;font-size:12px;cursor:pointer;font-family:inherit">番号を発行</button>
+        </div>
       </div>
     </div>
     <div id="contract-info" style="display:none">
@@ -216,17 +218,59 @@ var rows=[];
 function today(){return new Date().toISOString().split('T')[0];}
 function addDays(d,n){var dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
 function fmtDate(s){if(!s)return '';var p=s.split('-');return p[0]+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日';}
-function fmt(n){return Math.round(n).toLocaleString('ja-JP');}
+function fmt(n){
+  if(n<0) return '▲'+Math.abs(Math.round(n)).toLocaleString('ja-JP');
+  return Math.round(n).toLocaleString('ja-JP');
+}
 function g(id){var el=document.getElementById(id);return el?el.value:'';}
 function sv(id,v){var el=document.getElementById(id);if(el)el.value=v;}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function fmtInput(n){return n?Math.round(n).toLocaleString('ja-JP'):'';}
-function onPriceInput(el,i){var raw=el.value.replace(/[^\d]/g,'');rows[i].price=raw?parseInt(raw):0;renderTotals();}
-function onPriceBlur(el,i){el.value=rows[i].price?fmt(rows[i].price):'';}
+function onPriceInput(el,i){
+  // マイナス符号も許可
+  var raw=el.value.replace(/[^\d\-]/g,'');
+  // 先頭のマイナスだけ保持
+  var neg=raw.charAt(0)==='-';
+  var num=raw.replace(/-/g,'');
+  rows[i].price=num?(neg?-parseInt(num):parseInt(num)):0;
+  renderTotals();
+}
+function onPriceBlur(el,i){
+  el.value=rows[i].price!==0?fmt(rows[i].price):'';
+}
+function getYM(){
+  var d=g('est-date')||today();
+  var p=d.split('-');
+  return p[0]+'-'+p[1];
+}
+function padNo(n){ return n<10?'00'+n:n<100?'0'+n:String(n); }
 
-function genNo(prefix){var d=g('est-date')||today();var p=d.split('-');return prefix+p[0]+'-'+p[1]+'001';}
-function updateNos(){sv('est-no',genNo('EST'));sv('con-no',genNo('CON'));sv('inv-no',genNo('INV'));}
-function onEstDateChange(){var d=g('est-date');if(d){sv('est-expire',addDays(d,14));updateNos();}}
+// 番号を発行してフィールドにセット
+function issueNos(){
+  var ym=getYM();
+  var btn=document.getElementById('issue-btn');
+  btn.textContent='発行中...';btn.disabled=true;
+  Promise.all([
+    window.getNextNo('EST',ym),
+    window.getNextNo('CON',ym),
+    window.getNextNo('INV',ym)
+  ]).then(function(vals){
+    sv('est-no','EST'+ym+'-'+padNo(vals[0]));
+    sv('con-no','CON'+ym+'-'+padNo(vals[1]));
+    sv('inv-no','INV'+ym+'-'+padNo(vals[2]));
+    btn.textContent='番号を発行';btn.disabled=false;
+  }).catch(function(){
+    // Firebase未接続時はローカル連番にフォールバック
+    var n=Date.now()%1000;
+    sv('est-no','EST'+ym+'-'+padNo(n));
+    sv('con-no','CON'+ym+'-'+padNo(n));
+    sv('inv-no','INV'+ym+'-'+padNo(n));
+    btn.textContent='番号を発行';btn.disabled=false;
+  });
+}
+function genNo(prefix){ return prefix+(g('est-date')||today()).split('-').slice(0,2).join('-')+'-001'; }
+function updateNos(){ /* 番号は発行ボタンで管理 */ }
+function onEstDateChange(){ var d=g('est-date');if(d) sv('est-expire',addDays(d,14)); }
 
 function togglePlan(idx){
   if(currentTab!=='estimate') return;
