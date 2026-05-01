@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>書類作成ツール</title>
+<title>書類作成ツール｜株式会社ベアシステム</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;font-size:14px;background:#f5f5f5;color:#333}
@@ -67,12 +67,8 @@ table.items td input:focus{background:#f0f4fa;outline:none}
         style="width:100%;border:1px solid #ddd;border-radius:6px;padding:10px 12px;font-size:14px;margin-top:4px;font-family:inherit"
         onkeydown="if(event.key==='Enter')doLogin()">
     </div>
-    <div id="login-err" style="display:none;color:#cc3333;font-size:12px;margin-bottom:10px">
-      パスワードが正しくありません
-    </div>
-    <button onclick="doLogin()" style="width:100%;background:#1a56b0;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">
-      ログイン
-    </button>
+    <div id="login-err" style="display:none;color:#cc3333;font-size:12px;margin-bottom:10px">パスワードが正しくありません</div>
+    <button onclick="doLogin()" style="width:100%;background:#1a56b0;color:#fff;border:none;border-radius:6px;padding:11px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit">ログイン</button>
   </div>
 </div>
 
@@ -89,6 +85,7 @@ table.items td input:focus{background:#f0f4fa;outline:none}
     <div class="tab" onclick="switchTab('invoice')">請求書</div>
   </div>
   <div class="panel">
+
     <div class="section-title">自社情報 <span class="fixed-badge">固定</span></div>
     <div class="form-grid">
       <div class="form-group"><label>会社名</label><input value="株式会社ベアシステム" readonly></div>
@@ -189,6 +186,7 @@ table.items td input:focus{background:#f0f4fa;outline:none}
     </div>
   </div>
 </div>
+</div><!-- /#main-app -->
 
 <div id="modal-overlay" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.45);z-index:100;align-items:center;justify-content:center" onclick="closeModal(event)">
   <div style="background:#fff;border-radius:8px;width:720px;max-height:92vh;overflow-y:auto;box-shadow:0 8px 32px rgba(0,0,0,0.18)">
@@ -203,475 +201,464 @@ table.items td input:focus{background:#f0f4fa;outline:none}
 <canvas id="stamp-canvas" style="display:none"></canvas>
 
 <script>
-var BANK='みずほ銀行 渋谷支店（210）\n普通　3316122\n株式会社ベアシステム';
-var MY={company:'株式会社ベアシステム',address:'東京都渋谷区円山町5−3 MIEUX渋谷ビル8階',tel:'03-6367-2529'};
-var PLANS=[
-  {name:'IT／DX推進室プラン',nick:'どぎゃしこでんあっですプラン',price:2400000,desc:'IT・DX推進室機能を包括的に代行します。AI活用、ITツール導入・定着、社内情シス対応をワンストップで提供します。'},
-  {name:'カスタムAIエージェント構築プラン',nick:'むしゃんよかプラン',price:1200000,desc:'貴社専用のAIエージェントを構築・運用します。業務データを活用したAIアシスタントの設計・開発・保守を提供します。'},
-  {name:'ITツール定着・活用プラン',nick:'たいぎゃよかプラン',price:600000,desc:'導入済みITツールの定着・活用を支援します。利用状況の診断、活用研修、継続的なサポートを提供します。'}
-];
-
-var selectedPlans={};
-var currentTab='estimate';
-var rows=[];
-
-function today(){return new Date().toISOString().split('T')[0];}
-function addDays(d,n){var dt=new Date(d);dt.setDate(dt.getDate()+n);return dt.toISOString().split('T')[0];}
-function fmtDate(s){if(!s)return '';var p=s.split('-');return p[0]+'年'+parseInt(p[1])+'月'+parseInt(p[2])+'日';}
-function fmt(n){
-  if(n<0) return '▲'+Math.abs(Math.round(n)).toLocaleString('ja-JP');
-  return Math.round(n).toLocaleString('ja-JP');
-}
-function g(id){var el=document.getElementById(id);return el?el.value:'';}
-function sv(id,v){var el=document.getElementById(id);if(el)el.value=v;}
-function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
-function fmtInput(n){return n?Math.round(n).toLocaleString('ja-JP'):'';}
-function onPriceInput(el,i){
-  // マイナス符号も許可
-  var raw=el.value.replace(/[^\d\-]/g,'');
-  // 先頭のマイナスだけ保持
-  var neg=raw.charAt(0)==='-';
-  var num=raw.replace(/-/g,'');
-  rows[i].price=num?(neg?-parseInt(num):parseInt(num)):0;
-  renderTotals();
-}
-function onPriceBlur(el,i){
-  el.value=rows[i].price!==0?fmt(rows[i].price):'';
-}
-function getYM(){
-  var d=g('est-date')||today();
-  var p=d.split('-');
-  return p[0]+'-'+p[1];
-}
-function padNo(n){ return n<10?'00'+n:n<100?'0'+n:String(n); }
-
-// 番号を発行してフィールドにセット
-function issueNos(){
-  var ym=getYM();
-  var btn=document.getElementById('issue-btn');
-  btn.textContent='発行中...';btn.disabled=true;
-  Promise.all([
-    window.getNextNo('EST',ym),
-    window.getNextNo('CON',ym),
-    window.getNextNo('INV',ym)
-  ]).then(function(vals){
-    sv('est-no','EST'+ym+'-'+padNo(vals[0]));
-    sv('con-no','CON'+ym+'-'+padNo(vals[1]));
-    sv('inv-no','INV'+ym+'-'+padNo(vals[2]));
-    btn.textContent='番号を発行';btn.disabled=false;
-  }).catch(function(){
-    // Firebase未接続時はローカル連番にフォールバック
-    var n=Date.now()%1000;
-    sv('est-no','EST'+ym+'-'+padNo(n));
-    sv('con-no','CON'+ym+'-'+padNo(n));
-    sv('inv-no','INV'+ym+'-'+padNo(n));
-    btn.textContent='番号を発行';btn.disabled=false;
-  });
-}
-function genNo(prefix){ return prefix+(g('est-date')||today()).split('-').slice(0,2).join('-')+'-001'; }
-function updateNos(){ /* 番号は発行ボタンで管理 */ }
-function onEstDateChange(){ var d=g('est-date');if(d) sv('est-expire',addDays(d,14)); }
-
-function togglePlan(idx){
-  if(currentTab!=='estimate') return;
-  if(idx===-1){
-    var cur=document.getElementById('pr-none').checked;
-    document.getElementById('pr-none').checked=!cur;
-    document.getElementById('pc-none').classList.toggle('selected',!cur);
-  } else {
-    selectedPlans[idx]=!selectedPlans[idx];
-    document.getElementById('pr-'+idx).checked=selectedPlans[idx];
-    document.getElementById('pc-'+idx).classList.toggle('selected',selectedPlans[idx]);
-  }
-  updateContractBody();
-  renderTotals();
-}
-
-function updateContractBody(){
-  var selected=[];
-  for(var i=0;i<3;i++){if(selectedPlans[i])selected.push(PLANS[i]);}
-  var planLine='【以下の契約条項に同意の上、本サービス利用を申し込みます】\n'+
-    '申込日：　　年　　月　　日\n'+
-    '貴社名：　　　　　　　　　　　　　　　　　　　印\n'+
-    '代表者名：\n'+
-    'ご住所：〒\n'+
-    '担当者名：（連絡先：　　　　　　　　　）\n\n'+
-    '【ご契約プラン】\n';
-  if(selected.length>0){
-    for(var j=0;j<selected.length;j++){
-      planLine+=selected[j].name+'（'+selected[j].nick+'）　年額：¥'+fmt(selected[j].price)+'（税別）\n';
-    }
-  } else {
-    planLine+='個別明細による\n';
-  }
-  var descParts=[];for(var k=0;k<selected.length;k++)descParts.push(selected[k].desc);
-  var desc=descParts.length>0?descParts.join('また、'):'サービスの詳細は別途協議の上決定します。';
-  sv('con-body', planLine+
-'\n【契約条項】\n'+
-'第1条（契約の成立）\n本契約は、本申込書を契約者が提出し、株式会社ベアシステム（以下「当社」）が承諾した時点で成立します。\n\n'+
-'第2条（サービス内容）\n当社は申込書記載のプランを契約期間中に提供します。'+desc+'\n\n'+
-'第3条（利用料金・支払）\n契約者は請求書受領後、指定期日までに利用料金を一括前払いするものとします。支払遅延の場合、未払額に年14.6%の遅延損害金が加算されます。契約期間中の途中解約による既払利用料の返金は行いません。ただし、当社の責めに帰すべき事由による終了の場合は未経過期間分を日割返金します。\n\n'+
-'第4条（契約期間・更新）\n契約期間は1年間とし、期間満了1ヶ月前までに書面による解約申し出がない場合、同条件で自動更新されます。\n\n'+
-'第5条（秘密保持・データ保護）\n当社は契約者の秘密情報を第三者に開示しません。入力データをAIモデルの機械学習に利用しない設定を適用し、機密性を保持します。本条の義務は契約終了後3年間存続します。\n\n'+
-'第6条（知的財産権）\n本サービスで生成された成果物の著作権は契約者に帰属します。当社が従前より保有するシステム・ノウハウ等は当社に留保されます。\n\n'+
-'第7条（免責・損害賠償）\n生成AIの特性上、当社は生成情報の完全性・正確性を保証しません。当社の損害賠償責任は過去12ヶ月の受領利用料累計額を上限とします（故意・重過失を除く）。\n\n'+
-'第8条（解除）\n相手方の規約違反が是正されない場合、催告の上で契約を解除できます。支払停止・破産申立て・反社会的勢力との関与が判明した場合は即時解除できます。\n\n'+
-'第9条（管轄）\n本契約に関する紛争は東京地方裁判所を第一審の専属的合意管轄裁判所とします。');
-}
-
 // ====================================
 // パスワード設定（変更する場合はここを修正）
 // ====================================
 var APP_PASSWORD = '2529';
-// ====================================
 
-function checkLogin(){
-  return sessionStorage.getItem('bs_auth')==='1';
+// ====================================
+// Firebase 連番管理（REST API）
+// ====================================
+var FB_URL = 'https://bear-system-docs-default-rtdb.asia-southeast1.firebasedatabase.app/docNos';
+
+function getNextNo(prefix, ym) {
+  return new Promise(function(resolve) {
+    var url = FB_URL + '/' + prefix + '/' + ym + '.json';
+    fetch(url)
+      .then(function(r) { return r.json(); })
+      .then(function(cur) {
+        var next = (cur && typeof cur === 'number' ? cur : 0) + 1;
+        return fetch(url, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(next)
+        }).then(function() { return next; });
+      })
+      .then(function(n) { resolve(n); })
+      .catch(function(e) { console.error('Firebase error:', e); resolve(1); });
+  });
 }
-function doLogin(){
-  var pw=document.getElementById('login-pw').value;
-  if(pw===APP_PASSWORD){
-    sessionStorage.setItem('bs_auth','1');
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('main-app').style.display='block';
+
+// ====================================
+// 定数・グローバル変数
+// ====================================
+var BANK = 'みずほ銀行 渋谷支店（210）\n普通　3316122\n株式会社ベアシステム';
+var MY = { company: '株式会社ベアシステム', address: '東京都渋谷区円山町5−3 MIEUX渋谷ビル8階', tel: '03-6367-2529' };
+var PLANS = [
+  { name: 'IT／DX推進室プラン', nick: 'どぎゃしこでんあっですプラン', price: 2400000, desc: 'IT・DX推進室機能を包括的に代行します。AI活用、ITツール導入・定着、社内情シス対応をワンストップで提供します。' },
+  { name: 'カスタムAIエージェント構築プラン', nick: 'むしゃんよかプラン', price: 1200000, desc: '貴社専用のAIエージェントを構築・運用します。業務データを活用したAIアシスタントの設計・開発・保守を提供します。' },
+  { name: 'ITツール定着・活用プラン', nick: 'たいぎゃよかプラン', price: 600000, desc: '導入済みITツールの定着・活用を支援します。利用状況の診断、活用研修、継続的なサポートを提供します。' }
+];
+var selectedPlans = {};
+var currentTab = 'estimate';
+var rows = [];
+
+// ====================================
+// ユーティリティ
+// ====================================
+function today() { return new Date().toISOString().split('T')[0]; }
+function addDays(d, n) { var dt = new Date(d); dt.setDate(dt.getDate() + n); return dt.toISOString().split('T')[0]; }
+function fmtDate(s) { if (!s) return ''; var p = s.split('-'); return p[0] + '年' + parseInt(p[1]) + '月' + parseInt(p[2]) + '日'; }
+function fmt(n) { if (n < 0) return '▲' + Math.abs(Math.round(n)).toLocaleString('ja-JP'); return Math.round(n).toLocaleString('ja-JP'); }
+function g(id) { var el = document.getElementById(id); return el ? el.value : ''; }
+function sv(id, v) { var el = document.getElementById(id); if (el) el.value = v; }
+function esc(s) { return (s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;'); }
+function fmtInput(n) { return n ? fmt(n) : ''; }
+
+// ====================================
+// ログイン
+// ====================================
+function checkLogin() { return sessionStorage.getItem('bs_auth') === '1'; }
+function doLogin() {
+  var pw = document.getElementById('login-pw').value;
+  if (pw === APP_PASSWORD) {
+    sessionStorage.setItem('bs_auth', '1');
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
     initApp();
   } else {
-    document.getElementById('login-err').style.display='block';
-    document.getElementById('login-pw').value='';
+    document.getElementById('login-err').style.display = 'block';
+    document.getElementById('login-pw').value = '';
     document.getElementById('login-pw').focus();
   }
 }
-function doLogout(){
+function doLogout() {
   sessionStorage.removeItem('bs_auth');
-  document.getElementById('main-app').style.display='none';
-  document.getElementById('login-screen').style.display='flex';
-  document.getElementById('login-pw').value='';
-  document.getElementById('login-err').style.display='none';
+  document.getElementById('main-app').style.display = 'none';
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('login-pw').value = '';
+  document.getElementById('login-err').style.display = 'none';
 }
 
-window.onload=function(){
-  if(checkLogin()){
-    document.getElementById('login-screen').style.display='none';
-    document.getElementById('main-app').style.display='block';
+window.onload = function() {
+  if (checkLogin()) {
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('main-app').style.display = 'block';
     initApp();
   }
 };
 
-function initApp(){
-  var td=today();
-  sv('est-date',td);sv('est-expire',addDays(td,14));
-  sv('con-date',td);sv('inv-date',td);sv('inv-payment',addDays(td,30));
-  updateNos();
-  selectedPlans={};
-  updateContractBody();
-  addRow();addRow();addRow();
-};
+// ====================================
+// 書類番号
+// ====================================
+function getYM() {
+  var d = g('est-date') || today();
+  var p = d.split('-');
+  return p[0] + '-' + p[1];
+}
+function padNo(n) { return n < 10 ? '00' + n : n < 100 ? '0' + n : String(n); }
 
-function switchTab(tab){
-  currentTab=tab;
-  var ts=document.querySelectorAll('.tab');
-  ['estimate','contract','invoice'].forEach(function(t,i){ts[i].classList.toggle('active',t===tab);});
-  document.getElementById('doc-section-title').textContent={estimate:'見積書情報',contract:'契約書 兼 申込書情報',invoice:'請求書情報'}[tab];
-  document.getElementById('estimate-info').style.display=tab==='estimate'?'':'none';
-  document.getElementById('contract-info').style.display=tab==='contract'?'':'none';
-  document.getElementById('invoice-info').style.display=tab==='invoice'?'':'none';
-  ['cust-company','cust-person','cust-address'].forEach(function(id){
-    var el=document.getElementById(id);if(!el)return;
-    el.readOnly=tab!=='estimate';el.style.background=tab!=='estimate'?'#f5f7fa':'';
+function issueNos() {
+  var ym = getYM();
+  var btn = document.getElementById('issue-btn');
+  btn.textContent = '発行中...';
+  btn.disabled = true;
+  Promise.all([
+    getNextNo('EST', ym),
+    getNextNo('CON', ym),
+    getNextNo('INV', ym)
+  ]).then(function(vals) {
+    sv('est-no', 'EST' + ym + '-' + padNo(vals[0]));
+    sv('con-no', 'CON' + ym + '-' + padNo(vals[1]));
+    sv('inv-no', 'INV' + ym + '-' + padNo(vals[2]));
+    btn.textContent = '番号を発行';
+    btn.disabled = false;
+  }).catch(function() {
+    btn.textContent = '番号を発行';
+    btn.disabled = false;
+    alert('番号の発行に失敗しました。ネットワークを確認してください。');
   });
-  document.getElementById('linked-badge-cust').style.display=tab!=='estimate'?'':'none';
-  document.getElementById('linked-badge-plan').style.display=tab!=='estimate'?'':'none';
-  var cbs=document.querySelectorAll('input[type="checkbox"][id^="pr-"]');
-  for(var i=0;i<cbs.length;i++) cbs[i].disabled=(tab!=='estimate');
-  var cards=document.querySelectorAll('.plan-card');
-  for(var j=0;j<cards.length;j++) cards[j].style.cursor=(tab!=='estimate'?'default':'pointer');
-  document.getElementById('linked-badge-items').style.display=tab!=='estimate'?'':'none';
-  document.getElementById('add-row-btn-wrap').style.display=tab==='estimate'?'':'none';
-  document.getElementById('bank-section').style.display=tab==='invoice'?'':'none';
-  var notesEl=document.getElementById('doc-notes');
-  notesEl.readOnly=tab!=='estimate';notesEl.style.background=tab!=='estimate'?'#f5f7fa':'';
+}
+
+function onEstDateChange() {
+  var d = g('est-date');
+  if (d) sv('est-expire', addDays(d, 14));
+}
+
+// ====================================
+// 価格入力
+// ====================================
+function onPriceInput(el, i) {
+  var raw = el.value.replace(/[^\d\-]/g, '');
+  var neg = raw.charAt(0) === '-';
+  var num = raw.replace(/-/g, '');
+  rows[i].price = num ? (neg ? -parseInt(num) : parseInt(num)) : 0;
+  renderTotals();
+}
+function onPriceBlur(el, i) {
+  el.value = rows[i].price !== 0 ? fmt(rows[i].price) : '';
+}
+
+// ====================================
+// プラン選択
+// ====================================
+function togglePlan(idx) {
+  if (currentTab !== 'estimate') return;
+  if (idx === -1) {
+    var cur = document.getElementById('pr-none').checked;
+    document.getElementById('pr-none').checked = !cur;
+    document.getElementById('pc-none').classList.toggle('selected', !cur);
+  } else {
+    selectedPlans[idx] = !selectedPlans[idx];
+    document.getElementById('pr-' + idx).checked = selectedPlans[idx];
+    document.getElementById('pc-' + idx).classList.toggle('selected', selectedPlans[idx]);
+  }
+  updateContractBody();
+  renderTotals();
+}
+
+function updateContractBody() {
+  var selected = [];
+  for (var i = 0; i < 3; i++) { if (selectedPlans[i]) selected.push(PLANS[i]); }
+  var planLine = '【以下の契約条項に同意の上、本サービス利用を申し込みます】\n' +
+    '申込日：　　年　　月　　日\n' +
+    '貴社名：　　　　　　　　　　　　　　　　　　　印\n' +
+    '代表者名：\nご住所：〒\n担当者名：（連絡先：　　　　　　　　　）\n\n【ご契約プラン】\n';
+  if (selected.length > 0) {
+    for (var j = 0; j < selected.length; j++) {
+      planLine += selected[j].name + '（' + selected[j].nick + '）　年額：¥' + fmt(selected[j].price) + '（税別）\n';
+    }
+  } else {
+    planLine += '個別明細による\n';
+  }
+  var descParts = []; for (var k = 0; k < selected.length; k++) descParts.push(selected[k].desc);
+  var desc = descParts.length > 0 ? descParts.join('また、') : 'サービスの詳細は別途協議の上決定します。';
+  sv('con-body', planLine +
+    '\n【契約条項】\n' +
+    '第1条（契約の成立）\n本契約は、本申込書を契約者が提出し、株式会社ベアシステム（以下「当社」）が承諾した時点で成立します。\n\n' +
+    '第2条（サービス内容）\n当社は申込書記載のプランを契約期間中に提供します。' + desc + '\n\n' +
+    '第3条（利用料金・支払）\n契約者は請求書受領後、指定期日までに利用料金を一括前払いするものとします。支払遅延の場合、未払額に年14.6%の遅延損害金が加算されます。契約期間中の途中解約による既払利用料の返金は行いません。ただし、当社の責めに帰すべき事由による終了の場合は未経過期間分を日割返金します。\n\n' +
+    '第4条（契約期間・更新）\n契約期間は1年間とし、期間満了1ヶ月前までに書面による解約申し出がない場合、同条件で自動更新されます。\n\n' +
+    '第5条（秘密保持・データ保護）\n当社は契約者の秘密情報を第三者に開示しません。入力データをAIモデルの機械学習に利用しない設定を適用し、機密性を保持します。本条の義務は契約終了後3年間存続します。\n\n' +
+    '第6条（知的財産権）\n本サービスで生成された成果物の著作権は契約者に帰属します。当社が従前より保有するシステム・ノウハウ等は当社に留保されます。\n\n' +
+    '第7条（免責・損害賠償）\n生成AIの特性上、当社は生成情報の完全性・正確性を保証しません。当社の損害賠償責任は過去12ヶ月の受領利用料累計額を上限とします（故意・重過失を除く）。\n\n' +
+    '第8条（解除）\n相手方の規約違反が是正されない場合、催告の上で契約を解除できます。支払停止・破産申立て・反社会的勢力との関与が判明した場合は即時解除できます。\n\n' +
+    '第9条（管轄）\n本契約に関する紛争は東京地方裁判所を第一審の専属的合意管轄裁判所とします。');
+}
+
+// ====================================
+// アプリ初期化
+// ====================================
+function initApp() {
+  var td = today();
+  sv('est-date', td); sv('est-expire', addDays(td, 14));
+  sv('con-date', td); sv('inv-date', td); sv('inv-payment', addDays(td, 30));
+  selectedPlans = {};
+  updateContractBody();
+  addRow(); addRow(); addRow();
+}
+
+// ====================================
+// タブ切り替え
+// ====================================
+function switchTab(tab) {
+  currentTab = tab;
+  var ts = document.querySelectorAll('.tab');
+  ['estimate', 'contract', 'invoice'].forEach(function(t, i) { ts[i].classList.toggle('active', t === tab); });
+  document.getElementById('doc-section-title').textContent = { estimate: '見積書情報', contract: '契約書 兼 申込書情報', invoice: '請求書情報' }[tab];
+  document.getElementById('estimate-info').style.display = tab === 'estimate' ? '' : 'none';
+  document.getElementById('contract-info').style.display = tab === 'contract' ? '' : 'none';
+  document.getElementById('invoice-info').style.display = tab === 'invoice' ? '' : 'none';
+  ['cust-company', 'cust-person', 'cust-address'].forEach(function(id) {
+    var el = document.getElementById(id); if (!el) return;
+    el.readOnly = tab !== 'estimate'; el.style.background = tab !== 'estimate' ? '#f5f7fa' : '';
+  });
+  document.getElementById('linked-badge-cust').style.display = tab !== 'estimate' ? '' : 'none';
+  document.getElementById('linked-badge-plan').style.display = tab !== 'estimate' ? '' : 'none';
+  var cbs = document.querySelectorAll('input[type="checkbox"][id^="pr-"]');
+  for (var i = 0; i < cbs.length; i++) cbs[i].disabled = (tab !== 'estimate');
+  var cards = document.querySelectorAll('.plan-card');
+  for (var j = 0; j < cards.length; j++) cards[j].style.cursor = (tab !== 'estimate' ? 'default' : 'pointer');
+  document.getElementById('linked-badge-items').style.display = tab !== 'estimate' ? '' : 'none';
+  document.getElementById('add-row-btn-wrap').style.display = tab === 'estimate' ? '' : 'none';
+  document.getElementById('bank-section').style.display = tab === 'invoice' ? '' : 'none';
+  var notesEl = document.getElementById('doc-notes');
+  notesEl.readOnly = tab !== 'estimate'; notesEl.style.background = tab !== 'estimate' ? '#f5f7fa' : '';
   renderRows();
 }
 
-function addRow(){rows.push({id:Date.now()+Math.random(),item:'',qty:1,unit:'式',price:0});renderRows();}
-function removeRow(id){rows=rows.filter(function(r){return r.id!==id;});renderRows();}
-function renderRows(){
-  var ro=currentTab!=='estimate';
-  var tbody=document.getElementById('items-body');if(!tbody)return;
-  var html='';
-  for(var i=0;i<rows.length;i++){
-    var r=rows[i];
-    html+='<tr>'+
-      '<td class="col-no" style="text-align:center;color:#888;font-size:12px">'+(i+1)+'</td>'+
-      '<td><input value="'+esc(r.item)+'" '+(ro?'readonly style="background:#f5f7fa"':'')+' oninput="rows['+i+'].item=this.value" placeholder="品目・内容"></td>'+
-      '<td class="col-qty"><input type="number" value="'+r.qty+'" min="0" '+(ro?'readonly style="background:#f5f7fa;text-align:right"':'style="text-align:right"')+' oninput="rows['+i+'].qty=parseFloat(this.value)||0;renderRows()"></td>'+
-      '<td class="col-unit"><input value="'+esc(r.unit)+'" '+(ro?'readonly style="background:#f5f7fa;text-align:center"':'style="text-align:center"')+' oninput="rows['+i+'].unit=this.value"></td>'+
-      '<td class="col-price"><input type="text" value="'+fmtInput(r.price)+'" '+(ro?'readonly style="background:#f5f7fa;text-align:right"':'style="text-align:right"')+' oninput="onPriceInput(this,'+i+')" onblur="onPriceBlur(this,'+i+')"></td>'+
-      '<td class="col-sub" style="text-align:right;font-size:12px;padding:0 8px;background:#fafafa">'+fmt(r.qty*r.price)+'</td>'+
-      '<td class="col-del">'+(!ro?'<button class="del-btn" onclick="removeRow('+r.id+')">×</button>':'')+'</td>'+
+// ====================================
+// 明細
+// ====================================
+function addRow() { rows.push({ id: Date.now() + Math.random(), item: '', qty: 1, unit: '式', price: 0 }); renderRows(); }
+function removeRow(id) { rows = rows.filter(function(r) { return r.id !== id; }); renderRows(); }
+function renderRows() {
+  var ro = currentTab !== 'estimate';
+  var tbody = document.getElementById('items-body'); if (!tbody) return;
+  var html = '';
+  for (var i = 0; i < rows.length; i++) {
+    var r = rows[i];
+    html += '<tr>' +
+      '<td class="col-no" style="text-align:center;color:#888;font-size:12px">' + (i + 1) + '</td>' +
+      '<td><input value="' + esc(r.item) + '" ' + (ro ? 'readonly style="background:#f5f7fa"' : '') + ' oninput="rows[' + i + '].item=this.value" placeholder="品目・内容"></td>' +
+      '<td class="col-qty"><input type="number" value="' + r.qty + '" min="0" ' + (ro ? 'readonly style="background:#f5f7fa;text-align:right"' : 'style="text-align:right"') + ' oninput="rows[' + i + '].qty=parseFloat(this.value)||0;renderRows()"></td>' +
+      '<td class="col-unit"><input value="' + esc(r.unit) + '" ' + (ro ? 'readonly style="background:#f5f7fa;text-align:center"' : 'style="text-align:center"') + ' oninput="rows[' + i + '].unit=this.value"></td>' +
+      '<td class="col-price"><input type="text" value="' + fmtInput(r.price) + '" ' + (ro ? 'readonly style="background:#f5f7fa;text-align:right"' : 'style="text-align:right"') + ' oninput="onPriceInput(this,' + i + ')" onblur="onPriceBlur(this,' + i + ')"></td>' +
+      '<td class="col-sub" style="text-align:right;font-size:12px;padding:0 8px;background:#fafafa">' + fmt(r.qty * r.price) + '</td>' +
+      '<td class="col-del">' + (!ro ? '<button class="del-btn" onclick="removeRow(' + r.id + ')">×</button>' : '') + '</td>' +
       '</tr>';
   }
-  tbody.innerHTML=html;
+  tbody.innerHTML = html;
   renderTotals();
 }
-function renderTotals(){
-  var planSub=0;
-  for(var p=0;p<3;p++){if(selectedPlans[p])planSub+=PLANS[p].price;}
-  var rowSub=0;
-  for(var i=0;i<rows.length;i++)rowSub+=rows[i].qty*rows[i].price;
-  var sub=planSub+rowSub;
-  var tax=Math.floor(sub*0.1);
-  var html='';
-  for(var q=0;q<3;q++){
-    if(selectedPlans[q]) html+='<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">'+PLANS[q].name+'</span><span class="total-val">'+fmt(PLANS[q].price)+' 円</span></div>';
+
+function renderTotals() {
+  var planSub = 0;
+  for (var p = 0; p < 3; p++) { if (selectedPlans[p]) planSub += PLANS[p].price; }
+  var rowSub = 0;
+  for (var i = 0; i < rows.length; i++) rowSub += rows[i].qty * rows[i].price;
+  var sub = planSub + rowSub;
+  var tax = Math.floor(sub * 0.1);
+  var html = '';
+  for (var q = 0; q < 3; q++) {
+    if (selectedPlans[q]) html += '<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">' + PLANS[q].name + '</span><span class="total-val">' + fmt(PLANS[q].price) + ' 円</span></div>';
   }
-  if(rowSub>0) html+='<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">追加明細 小計</span><span class="total-val">'+fmt(rowSub)+' 円</span></div>';
-  html+='<div class="total-row"><span class="total-label">小計</span><span class="total-val">'+fmt(sub)+' 円</span></div>'+
-    '<div class="total-row"><span class="total-label">消費税（10%）</span><span class="total-val">'+fmt(tax)+' 円</span></div>'+
-    '<div class="total-row grand"><span class="total-label">合計金額</span><span class="total-val">'+fmt(sub+tax)+' 円</span></div>';
-  document.getElementById('totals').innerHTML=html;
-}
-function calcTotals(){
-  var planSub=0;for(var p=0;p<3;p++){if(selectedPlans[p])planSub+=PLANS[p].price;}
-  var rowSub=0;for(var i=0;i<rows.length;i++)rowSub+=rows[i].qty*rows[i].price;
-  var sub=planSub+rowSub;
-  return{sub:sub,tax:Math.floor(sub*0.1),total:sub+Math.floor(sub*0.1)};
+  if (rowSub !== 0) html += '<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">追加明細 小計</span><span class="total-val">' + fmt(rowSub) + ' 円</span></div>';
+  html += '<div class="total-row"><span class="total-label">小計</span><span class="total-val">' + fmt(sub) + ' 円</span></div>' +
+    '<div class="total-row"><span class="total-label">消費税（10%）</span><span class="total-val">' + fmt(tax) + ' 円</span></div>' +
+    '<div class="total-row grand"><span class="total-label">合計金額</span><span class="total-val">' + fmt(sub + tax) + ' 円</span></div>';
+  document.getElementById('totals').innerHTML = html;
 }
 
-function getDocData(){
-  var t=calcTotals();
-  var noKey={estimate:'est-no',contract:'con-no',invoice:'inv-no'};
-  var dtKey={estimate:'est-date',contract:'con-date',invoice:'inv-date'};
-  var labels={estimate:'見積書',contract:'契約書 兼 サービス利用申込書',invoice:'請求書'};
-  var selPlans=[];for(var p=0;p<3;p++){if(selectedPlans[p])selPlans.push(PLANS[p]);}
-  // 空行を除外した追加明細
-  var rr=[];
-  for(var i=0;i<rows.length;i++){
-    if(rows[i].item||rows[i].price>0) rr.push({item:rows[i].item,qty:rows[i].qty,unit:rows[i].unit,price:rows[i].price,subtotal:rows[i].qty*rows[i].price});
+function calcTotals() {
+  var planSub = 0; for (var p = 0; p < 3; p++) { if (selectedPlans[p]) planSub += PLANS[p].price; }
+  var rowSub = 0; for (var i = 0; i < rows.length; i++) rowSub += rows[i].qty * rows[i].price;
+  var sub = planSub + rowSub;
+  return { sub: sub, tax: Math.floor(sub * 0.1), total: sub + Math.floor(sub * 0.1) };
+}
+
+function getDocData() {
+  var t = calcTotals();
+  var noKey = { estimate: 'est-no', contract: 'con-no', invoice: 'inv-no' };
+  var dtKey = { estimate: 'est-date', contract: 'con-date', invoice: 'inv-date' };
+  var labels = { estimate: '見積書', contract: '契約書 兼 サービス利用申込書', invoice: '請求書' };
+  var selPlans = []; for (var p = 0; p < 3; p++) { if (selectedPlans[p]) selPlans.push(PLANS[p]); }
+  var rr = [];
+  for (var i = 0; i < rows.length; i++) {
+    if (rows[i].item || rows[i].price !== 0) rr.push({ item: rows[i].item, qty: rows[i].qty, unit: rows[i].unit, price: rows[i].price, subtotal: rows[i].qty * rows[i].price });
   }
-  return{
-    type:currentTab,label:labels[currentTab],
-    no:g(noKey[currentTab]),date:g(dtKey[currentTab]),
-    expire:g('est-expire'),payment:g('inv-payment'),
-    contractPeriod:g('con-period'),contractBody:g('con-body'),
-    myCompany:MY.company,myAddress:MY.address,myTel:MY.tel,
-    myPerson:g('my-person'),myEmail:g('my-email'),
-    custCompany:g('cust-company'),custPerson:g('cust-person'),custAddress:g('cust-address'),
-    notes:g('doc-notes'),plans:selPlans,rows:rr,sub:t.sub,tax:t.tax,total:t.total
+  return {
+    type: currentTab, label: labels[currentTab],
+    no: g(noKey[currentTab]), date: g(dtKey[currentTab]),
+    expire: g('est-expire'), payment: g('inv-payment'),
+    contractPeriod: g('con-period'), contractBody: g('con-body'),
+    myCompany: MY.company, myAddress: MY.address, myTel: MY.tel,
+    myPerson: g('my-person'), myEmail: g('my-email'),
+    custCompany: g('cust-company'), custPerson: g('cust-person'), custAddress: g('cust-address'),
+    notes: g('doc-notes'), plans: selPlans, rows: rr, sub: t.sub, tax: t.tax, total: t.total
   };
 }
 
-function makeStamp(size){
-  var c=document.getElementById('stamp-canvas');
-  c.width=size;c.height=size;
-  var ctx=c.getContext('2d');
-  ctx.clearRect(0,0,size,size);
-  var clr='rgba(160,10,10,1)';
-  var pad=size*0.045,rad=size*0.055;
-  function rr(x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.lineTo(x+w-r,y);ctx.arcTo(x+w,y,x+w,y+r,r);ctx.lineTo(x+w,y+h-r);ctx.arcTo(x+w,y+h,x+w-r,y+h,r);ctx.lineTo(x+r,y+h);ctx.arcTo(x,y+h,x,y+h-r,r);ctx.lineTo(x,y+r);ctx.arcTo(x,y,x+r,y,r);ctx.closePath();}
-  rr(pad,pad,size-pad*2,size-pad*2,rad);ctx.fillStyle='rgba(180,15,15,0.07)';ctx.fill();
-  rr(pad,pad,size-pad*2,size-pad*2,rad);ctx.strokeStyle=clr;ctx.lineWidth=size*0.07;ctx.stroke();
-  var mg=pad+size*0.08,aH=size-mg*2,aW=size-mg*2;
-  var lines=['テム之印','ベアシス','株式会社'];
-  var colW=aW/3;
-  ctx.fillStyle=clr;ctx.textAlign='center';ctx.textBaseline='middle';
-  for(var col=0;col<lines.length;col++){
-    var chars=lines[col].split('');
-    var fs=Math.floor(Math.min(colW*0.98,aH/chars.length*0.99));
-    ctx.font='900 '+fs+'px "Hiragino Mincho ProN","Yu Mincho","MS PMincho",serif';
-    var stepH=aH/chars.length,cx=mg+colW*col+colW/2;
-    for(var row=0;row<chars.length;row++){
-      var cy=mg+stepH*row+stepH/2;
-      ctx.save();ctx.translate(cx,cy);ctx.scale(1,1.1);
-      ctx.shadowColor='rgba(130,5,5,0.4)';ctx.shadowBlur=size*0.018;
-      ctx.strokeStyle=clr;ctx.lineWidth=fs*0.09;ctx.lineJoin='round';
-      ctx.strokeText(chars[row],0,0);ctx.fillText(chars[row],0,0);
+// ====================================
+// 角印
+// ====================================
+function makeStamp(size) {
+  var c = document.getElementById('stamp-canvas');
+  c.width = size; c.height = size;
+  var ctx = c.getContext('2d');
+  ctx.clearRect(0, 0, size, size);
+  var clr = 'rgba(160,10,10,1)';
+  var pad = size * 0.045, rad = size * 0.055;
+  function rr(x, y, w, h, r) { ctx.beginPath(); ctx.moveTo(x + r, y); ctx.lineTo(x + w - r, y); ctx.arcTo(x + w, y, x + w, y + r, r); ctx.lineTo(x + w, y + h - r); ctx.arcTo(x + w, y + h, x + w - r, y + h, r); ctx.lineTo(x + r, y + h); ctx.arcTo(x, y + h, x, y + h - r, r); ctx.lineTo(x, y + r); ctx.arcTo(x, y, x + r, y, r); ctx.closePath(); }
+  rr(pad, pad, size - pad * 2, size - pad * 2, rad); ctx.fillStyle = 'rgba(180,15,15,0.07)'; ctx.fill();
+  rr(pad, pad, size - pad * 2, size - pad * 2, rad); ctx.strokeStyle = clr; ctx.lineWidth = size * 0.07; ctx.stroke();
+  var mg = pad + size * 0.08, aH = size - mg * 2, aW = size - mg * 2;
+  var lines = ['テム之印', 'ベアシス', '株式会社'];
+  var colW = aW / 3;
+  ctx.fillStyle = clr; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  for (var col = 0; col < lines.length; col++) {
+    var chars = lines[col].split('');
+    var fs = Math.floor(Math.min(colW * 0.98, aH / chars.length * 0.99));
+    ctx.font = '900 ' + fs + 'px "Hiragino Mincho ProN","Yu Mincho","MS PMincho",serif';
+    var stepH = aH / chars.length, cx = mg + colW * col + colW / 2;
+    for (var row = 0; row < chars.length; row++) {
+      var cy = mg + stepH * row + stepH / 2;
+      ctx.save(); ctx.translate(cx, cy); ctx.scale(1, 1.1);
+      ctx.shadowColor = 'rgba(130,5,5,0.4)'; ctx.shadowBlur = size * 0.018;
+      ctx.strokeStyle = clr; ctx.lineWidth = fs * 0.09; ctx.lineJoin = 'round';
+      ctx.strokeText(chars[row], 0, 0); ctx.fillText(chars[row], 0, 0);
       ctx.restore();
     }
   }
-  ctx.shadowBlur=0;
-  ctx.fillStyle='rgba(255,255,255,0.4)';
-  for(var i=0;i<260;i++){
-    var rx=pad+(Math.abs(Math.sin(i*13.7))*0.88+0.06)*(size-pad*2);
-    var ry=pad+(Math.abs(Math.cos(i*7.3))*0.88+0.06)*(size-pad*2);
-    var rr2=(Math.abs(Math.sin(i*2.1))*0.5+0.2)*size*0.011;
-    ctx.beginPath();ctx.arc(rx,ry,rr2,0,Math.PI*2);ctx.fill();
+  ctx.shadowBlur = 0;
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  for (var i = 0; i < 260; i++) {
+    var rx = pad + (Math.abs(Math.sin(i * 13.7)) * 0.88 + 0.06) * (size - pad * 2);
+    var ry = pad + (Math.abs(Math.cos(i * 7.3)) * 0.88 + 0.06) * (size - pad * 2);
+    var rr2 = (Math.abs(Math.sin(i * 2.1)) * 0.5 + 0.2) * size * 0.011;
+    ctx.beginPath(); ctx.arc(rx, ry, rr2, 0, Math.PI * 2); ctx.fill();
   }
   return c.toDataURL('image/png');
 }
 
-function buildDocHTML(d,stampImg){
-  var metaRight='';
-  if(d.type==='estimate') metaRight='有効期限：'+fmtDate(d.expire);
-  if(d.type==='invoice')  metaRight='支払期限：'+fmtDate(d.payment);
-  if(d.type==='contract') metaRight='契約期間：'+(d.contractPeriod||'');
+// ====================================
+// プレビュー・印刷HTML生成
+// ====================================
+function buildDocHTML(d, stampImg) {
+  var metaRight = '';
+  if (d.type === 'estimate') metaRight = '有効期限：' + fmtDate(d.expire);
+  if (d.type === 'invoice') metaRight = '支払期限：' + fmtDate(d.payment);
+  if (d.type === 'contract') metaRight = '契約期間：' + (d.contractPeriod || '');
 
-  var bodyHTML='';
-  if(d.type==='contract'){
-    // 明細テーブル（プラン＋追加明細）
-    var ctr='';var rowNo=1;
-    for(var pi=0;pi<d.plans.length;pi++){
-      var pl=d.plans[pi];
-      ctr+='<tr style="background:#f0f4ff">'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">'+rowNo+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;font-weight:600">'+pl.name+'<span style="font-size:10px;color:#e07b00;margin-left:6px">'+pl.nick+'</span></td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">1</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">年</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td>'+
-        '</tr>';
-      rowNo++;
-    }
-    for(var ci=0;ci<d.rows.length;ci++){
-      var cr=d.rows[ci];
-      var cbg=rowNo%2===0?'#fafafa':'#fff';
-      ctr+='<tr style="background:'+cbg+'">'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">'+rowNo+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee">'+(cr.item||'―')+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+cr.qty+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">'+cr.unit+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+fmt(cr.price)+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+fmt(cr.subtotal)+'</td>'+
-        '</tr>';
-      rowNo++;
-    }
-    var itemsTable=(d.plans.length>0||d.rows.length>0)?
-      '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:8px">'+
-        '<thead><tr>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:center;font-size:10px;width:36px">No</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:left;font-size:10px">品目・内容</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:right;font-size:10px;width:50px">数量</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:center;font-size:10px;width:44px">単位</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:right;font-size:10px;width:90px">単価（円）</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:right;font-size:10px;width:90px">小計（円）</th>'+
-        '</tr></thead><tbody>'+ctr+'</tbody></table>'+
-        '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:10px;font-size:11px">'+
-          '<div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">小計</span><span style="min-width:90px;text-align:right">¥'+fmt(d.sub)+'</span></div>'+
-          '<div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">消費税（10%）</span><span style="min-width:90px;text-align:right">¥'+fmt(d.tax)+'</span></div>'+
-          '<div style="display:flex;gap:8px;border-top:1px solid #aaa;padding-top:4px;margin-top:2px">'+
-            '<span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">合計金額</span>'+
-            '<span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">¥'+fmt(d.total)+'</span></div>'+
-        '</div>':'';
-    bodyHTML=itemsTable+'<div style="font-size:10.5px;line-height:1.85;white-space:pre-wrap;border:1px solid #ccc;padding:12px;border-radius:3px;margin-bottom:8px">'+(d.contractBody||'').replace(/</g,'&lt;')+'</div>';
-  } else {
-    var tr='';
-    var rowNo=1;
-    // プラン行
-    for(var pi=0;pi<d.plans.length;pi++){
-      var pl=d.plans[pi];
-      tr+='<tr style="background:#f0f4ff">'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">'+rowNo+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;font-weight:600">'+pl.name+'<span style="font-size:10px;color:#e07b00;margin-left:6px">'+pl.nick+'</span></td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">1</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">年</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td>'+
-        '</tr>';
-      rowNo++;
-    }
-    // 追加明細行（空行除外済み）
-    for(var i=0;i<d.rows.length;i++){
-      var r=d.rows[i];
-      var bg=rowNo%2===0?'#fafafa':'#fff';
-      tr+='<tr style="background:'+bg+'">'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">'+rowNo+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee">'+(r.item||'―')+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+r.qty+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">'+r.unit+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+fmt(r.price)+'</td>'+
-        '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+fmt(r.subtotal)+'</td>'+
-        '</tr>';
-      rowNo++;
-    }
-    bodyHTML=
-      '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">'+
-        '<thead><tr>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:center;font-size:10px;width:36px">No</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:left;font-size:10px">品目・内容</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:right;font-size:10px;width:50px">数量</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:center;font-size:10px;width:44px">単位</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:right;font-size:10px;width:90px">単価（円）</th>'+
-          '<th style="background:#1a56b0;color:#fff;padding:5px 7px;text-align:right;font-size:10px;width:90px">小計（円）</th>'+
-        '</tr></thead><tbody>'+tr+'</tbody></table>'+
-      '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:12px;font-size:11px">'+
-        '<div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">小計</span><span style="min-width:90px;text-align:right">¥'+fmt(d.sub)+'</span></div>'+
-        '<div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">消費税（10%）</span><span style="min-width:90px;text-align:right">¥'+fmt(d.tax)+'</span></div>'+
-        '<div style="display:flex;gap:8px;border-top:1px solid #aaa;padding-top:4px;margin-top:2px">'+
-          '<span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">合計金額</span>'+
-          '<span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">¥'+fmt(d.total)+'</span></div>'+
-      '</div>';
+  var stampHTML = stampImg ? '<img src="' + stampImg + '" style="width:68px;height:68px;opacity:0.88;display:block;flex-shrink:0;align-self:center">' : '';
+
+  function thStyle(extra) { return 'style="background:#1a56b0;color:#fff;padding:5px 7px;font-size:10px;' + (extra || '') + '"'; }
+  function makeTable(tbody) {
+    return '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px">' +
+      '<thead><tr>' +
+      '<th ' + thStyle('text-align:center;width:36px') + '>No</th>' +
+      '<th ' + thStyle('text-align:left') + '>品目・内容</th>' +
+      '<th ' + thStyle('text-align:right;width:50px') + '>数量</th>' +
+      '<th ' + thStyle('text-align:center;width:44px') + '>単位</th>' +
+      '<th ' + thStyle('text-align:right;width:90px') + '>単価（円）</th>' +
+      '<th ' + thStyle('text-align:right;width:90px') + '>小計（円）</th>' +
+      '</tr></thead><tbody>' + tbody + '</tbody></table>';
+  }
+  function makeTotals() {
+    return '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:12px;font-size:11px">' +
+      '<div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">小計</span><span style="min-width:90px;text-align:right">¥' + fmt(d.sub) + '</span></div>' +
+      '<div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">消費税（10%）</span><span style="min-width:90px;text-align:right">¥' + fmt(d.tax) + '</span></div>' +
+      '<div style="display:flex;gap:8px;border-top:1px solid #aaa;padding-top:4px;margin-top:2px">' +
+      '<span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">合計金額</span>' +
+      '<span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">¥' + fmt(d.total) + '</span></div></div>';
   }
 
-  var bankHTML=d.type==='invoice'
-    ?'<div style="border:1px solid #ccc;border-radius:3px;padding:7px 9px;font-size:11px;margin-bottom:8px;line-height:1.8"><div style="font-size:9px;color:#888;margin-bottom:3px">振込先</div>'+BANK.replace(/\n/g,'<br>')+'</div>':'';
-  var notesHTML=d.notes
-    ?'<div style="border:1px solid #ccc;border-radius:3px;padding:7px 9px;font-size:11px;margin-bottom:8px;line-height:1.8"><div style="font-size:9px;color:#888;margin-bottom:3px">備考</div>'+d.notes.replace(/\n/g,'<br>')+'</div>':'';
-  var stampHTML=stampImg
-    ?'<img src="'+stampImg+'" style="width:68px;height:68px;opacity:0.88;display:block;flex-shrink:0;align-self:center">':'';
+  var bodyHTML = '';
+  var tr = ''; var rowNo = 1;
+  for (var pi = 0; pi < d.plans.length; pi++) {
+    var pl = d.plans[pi];
+    tr += '<tr style="background:#f0f4ff">' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">' + rowNo + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;font-weight:600">' + pl.name + '<span style="font-size:10px;color:#e07b00;margin-left:6px">' + pl.nick + '</span></td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">1</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">年</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">' + fmt(pl.price) + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">' + fmt(pl.price) + '</td></tr>';
+    rowNo++;
+  }
+  for (var i = 0; i < d.rows.length; i++) {
+    var r = d.rows[i];
+    var bg = rowNo % 2 === 0 ? '#fafafa' : '#fff';
+    tr += '<tr style="background:' + bg + '">' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">' + rowNo + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #eee">' + (r.item || '―') + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">' + r.qty + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">' + r.unit + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">' + fmt(r.price) + '</td>' +
+      '<td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">' + fmt(r.subtotal) + '</td></tr>';
+    rowNo++;
+  }
 
-  return (
-    '<div style="background:#1a56b0;color:#fff;text-align:center;padding:8px;margin-bottom:10px;position:relative">'+
-      '<h1 style="font-size:18px;letter-spacing:4px;font-weight:700;margin:0">'+d.label+'</h1>'+
-      '<span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:10px">'+d.no+'</span>'+
-    '</div>'+
-    '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px">'+
-      '<span>発行日：'+fmtDate(d.date)+'</span><span>'+metaRight+'</span>'+
-    '</div>'+
-    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">'+
-      '<div style="border:1px solid #ccc;padding:8px 10px;font-size:11px">'+
-        '<div style="font-size:9px;color:#888;margin-bottom:3px">お客様</div>'+
-        '<div style="font-size:13px;font-weight:700;margin-bottom:2px">'+(d.custCompany||'（顧客名未入力）')+' 御中</div>'+
-        (d.custPerson?'<div style="font-size:10px;color:#444">'+d.custPerson+' 様</div>':'')+
-        (d.custAddress?'<div style="font-size:10px;color:#444">'+d.custAddress+'</div>':'')+
-      '</div>'+
-      '<div style="border:1px solid #ccc;padding:8px 10px;font-size:11px;display:flex;gap:6px">'+
-        '<div style="flex:1">'+
-          '<div style="font-size:9px;color:#888;margin-bottom:3px">発行者</div>'+
-          '<div style="font-size:13px;font-weight:700;margin-bottom:2px">'+d.myCompany+'</div>'+
-          '<div style="font-size:10px;color:#444;line-height:1.6">'+d.myPerson+'</div>'+
-          '<div style="font-size:10px;color:#444;line-height:1.6">'+d.myAddress+'</div>'+
-          '<div style="font-size:10px;color:#444;line-height:1.6">'+d.myTel+'　'+d.myEmail+'</div>'+
-        '</div>'+
-        '<div style="display:flex;align-items:center">'+stampHTML+'</div>'+
-      '</div>'+
-    '</div>'+
-    bodyHTML+bankHTML+notesHTML+
-    '<div style="text-align:center;font-size:9px;color:#aaa;margin-top:16px;border-top:1px solid #eee;padding-top:6px">'+
-      d.myCompany+' | '+d.myAddress+' | TEL: '+d.myTel+'</div>'
-  );
+  if (d.type === 'contract') {
+    bodyHTML = (tr ? makeTable(tr) + makeTotals() : '') +
+      '<div style="font-size:10.5px;line-height:1.85;white-space:pre-wrap;border:1px solid #ccc;padding:12px;border-radius:3px;margin-bottom:8px">' + (d.contractBody || '').replace(/</g, '&lt;') + '</div>';
+  } else {
+    bodyHTML = makeTable(tr) + makeTotals();
+  }
+
+  var bankHTML = d.type === 'invoice' ? '<div style="border:1px solid #ccc;border-radius:3px;padding:7px 9px;font-size:11px;margin-bottom:8px;line-height:1.8"><div style="font-size:9px;color:#888;margin-bottom:3px">振込先</div>' + BANK.replace(/\n/g, '<br>') + '</div>' : '';
+  var notesHTML = d.notes ? '<div style="border:1px solid #ccc;border-radius:3px;padding:7px 9px;font-size:11px;margin-bottom:8px;line-height:1.8"><div style="font-size:9px;color:#888;margin-bottom:3px">備考</div>' + d.notes.replace(/\n/g, '<br>') + '</div>' : '';
+
+  return '<div style="background:#1a56b0;color:#fff;text-align:center;padding:8px;margin-bottom:10px;position:relative">' +
+    '<h1 style="font-size:18px;letter-spacing:4px;font-weight:700;margin:0">' + d.label + '</h1>' +
+    '<span style="position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:10px">' + d.no + '</span></div>' +
+    '<div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:8px"><span>発行日：' + fmtDate(d.date) + '</span><span>' + metaRight + '</span></div>' +
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">' +
+    '<div style="border:1px solid #ccc;padding:8px 10px;font-size:11px">' +
+    '<div style="font-size:9px;color:#888;margin-bottom:3px">お客様</div>' +
+    '<div style="font-size:13px;font-weight:700;margin-bottom:2px">' + (d.custCompany || '（顧客名未入力）') + ' 御中</div>' +
+    (d.custPerson ? '<div style="font-size:10px;color:#444">' + d.custPerson + ' 様</div>' : '') +
+    (d.custAddress ? '<div style="font-size:10px;color:#444">' + d.custAddress + '</div>' : '') + '</div>' +
+    '<div style="border:1px solid #ccc;padding:8px 10px;font-size:11px;display:flex;gap:6px">' +
+    '<div style="flex:1"><div style="font-size:9px;color:#888;margin-bottom:3px">発行者</div>' +
+    '<div style="font-size:13px;font-weight:700;margin-bottom:2px">' + d.myCompany + '</div>' +
+    '<div style="font-size:10px;color:#444;line-height:1.6">' + d.myPerson + '</div>' +
+    '<div style="font-size:10px;color:#444;line-height:1.6">' + d.myAddress + '</div>' +
+    '<div style="font-size:10px;color:#444;line-height:1.6">' + d.myTel + '　' + d.myEmail + '</div></div>' +
+    '<div style="display:flex;align-items:center">' + stampHTML + '</div></div></div>' +
+    bodyHTML + bankHTML + notesHTML +
+    '<div style="text-align:center;font-size:9px;color:#aaa;margin-top:16px;border-top:1px solid #eee;padding-top:6px">' + d.myCompany + ' | ' + d.myAddress + ' | TEL: ' + d.myTel + '</div>';
 }
 
-var CSS='body{font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;margin:0;padding:20px;color:#222;font-size:12px}@page{size:A4;margin:15mm}@media print{body{padding:0}}';
+var PRINT_CSS = 'body{font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;margin:0;padding:20px;color:#222;font-size:12px}@page{size:A4;margin:15mm}@media print{body{padding:0}}';
 
-function showPreview(){
-  var stampImg=makeStamp(240);
-  var d=getDocData();
-  document.getElementById('preview-content').innerHTML=buildDocHTML(d,stampImg);
-  document.getElementById('modal-overlay').style.display='flex';
+function showPreview() {
+  var d = getDocData();
+  document.getElementById('preview-content').innerHTML = buildDocHTML(d, makeStamp(240));
+  document.getElementById('modal-overlay').style.display = 'flex';
 }
-function closeModal(e){if(e.target.id==='modal-overlay')document.getElementById('modal-overlay').style.display='none';}
+function closeModal(e) { if (e.target.id === 'modal-overlay') document.getElementById('modal-overlay').style.display = 'none'; }
 
-function printPDF(){
-  var stampImg=makeStamp(240);
-  var d=getDocData();
-  var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>'+d.label+'_'+d.no+'</title><style>'+CSS+'</style></head><body>'+buildDocHTML(d,stampImg)+'<script>window.onload=function(){window.print();}<\/script></body></html>';
-  var blob=new Blob([html],{type:'text/html'});
-  var url=URL.createObjectURL(blob);
-  var win=window.open(url,'_blank');
-  if(!win)alert('ポップアップを許可してください。');
+function printPDF() {
+  var d = getDocData();
+  var html = '<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>' + d.label + '_' + d.no + '</title><style>' + PRINT_CSS + '</style></head><body>' + buildDocHTML(d, makeStamp(240)) + '<script>window.onload=function(){window.print();}<\/script></body></html>';
+  var blob = new Blob([html], { type: 'text/html' });
+  var url = URL.createObjectURL(blob);
+  var win = window.open(url, '_blank');
+  if (!win) alert('ポップアップを許可してください。');
 }
 
-function clearForm(){
-  if(!confirm('入力内容をクリアしますか？'))return;
-  ['cust-company','cust-person','cust-address','doc-notes','con-period'].forEach(function(id){var el=document.getElementById(id);if(el)el.value='';});
-  var td=today();
-  sv('est-date',td);sv('est-expire',addDays(td,14));sv('con-date',td);sv('inv-date',td);sv('inv-payment',addDays(td,30));
-  updateNos();
-  selectedPlans={};
-  for(var i=0;i<3;i++){document.getElementById('pr-'+i).checked=false;document.getElementById('pc-'+i).classList.remove('selected');}
-  document.getElementById('pr-none').checked=false;document.getElementById('pc-none').classList.remove('selected');
+function clearForm() {
+  if (!confirm('入力内容をクリアしますか？')) return;
+  ['cust-company', 'cust-person', 'cust-address', 'doc-notes', 'con-period'].forEach(function(id) { var el = document.getElementById(id); if (el) el.value = ''; });
+  var td = today();
+  sv('est-date', td); sv('est-expire', addDays(td, 14)); sv('con-date', td); sv('inv-date', td); sv('inv-payment', addDays(td, 30));
+  sv('est-no', ''); sv('con-no', ''); sv('inv-no', '');
+  selectedPlans = {};
+  for (var i = 0; i < 3; i++) { document.getElementById('pr-' + i).checked = false; document.getElementById('pc-' + i).classList.remove('selected'); }
+  document.getElementById('pr-none').checked = false; document.getElementById('pc-none').classList.remove('selected');
   updateContractBody();
-  rows=[];addRow();addRow();addRow();switchTab('estimate');
+  rows = []; addRow(); addRow(); addRow(); switchTab('estimate');
 }
 </script>
 </body>
