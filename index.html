@@ -1029,8 +1029,12 @@
   });
   // 初期状態を履歴に登録
   var initPage = location.hash ? location.hash.replace('#','') : 'home';
-  showPage(initPage, false);
+  var initEl = document.getElementById(initPage);
+  if(!initEl) initPage = 'home';
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById(initPage).classList.add('active');
   history.replaceState({page:initPage}, '', '#'+initPage);
+  window.scrollTo(0,0);
 </script>
 <script id='sc_access_analysis' src='https://sales-crowd.jp/js/sc-web-access-analysis.js' data-token='89143cdc731e36930ae161fc83c634bf719f4b3f36b55d5c1920da4c411ea641'></script>
 </body>
