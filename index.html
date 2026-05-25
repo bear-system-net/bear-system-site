@@ -472,6 +472,7 @@
         <h3 style="font-size:1.2rem;font-weight:900;color:var(--ink);letter-spacing:-.01em;">オリジナル業務アプリ開発</h3>
       </div>
       <!-- オリジナル業務アプリ開発セクション -->
+
       <div style="background:linear-gradient(135deg,#1a2340,#1e2d50);border-radius:20px;padding:48px 40px;margin-bottom:48px;position:relative;overflow:hidden;">
         <div style="position:absolute;inset:0;background-image:linear-gradient(rgba(45,107,228,.05) 1px,transparent 1px),linear-gradient(90deg,rgba(45,107,228,.05) 1px,transparent 1px);background-size:40px 40px;pointer-events:none;"></div>
         <div style="position:relative;">
@@ -480,26 +481,45 @@
           <p style="font-size:1rem;font-weight:700;color:var(--blue2);margin-bottom:20px;line-height:1.6;">SaaSでは解決できない、あなたの会社だけの業務フローをアプリにします。</p>
           <p style="font-size:.9rem;color:rgba(255,255,255,.7);line-height:2;max-width:700px;margin-bottom:36px;">市販のSaaSツールは汎用品です。あなたの会社固有の業務フロー、独自の計算ルール、現場だけに通じるやり方——そういった「うちだけの仕事の仕方」には対応できません。ベアシステムは、その「うちだけ」をそのままアプリにします。圧倒的な低コストで、貴社だけの業務アプリを実現します。</p>
 
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px;">
+          <div class="app-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-bottom:36px;">
             <div>
-              <p style="font-size:.72rem;letter-spacing:.2em;color:var(--blue2);font-weight:700;margin-bottom:16px;">こんな課題に対応</p>
-              <div style="display:flex;flex-direction:column;gap:10px;">
-                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;">
-                  <span style="color:var(--cyan);flex-shrink:0;margin-top:2px;">▸</span>
-                  <p style="font-size:.83rem;color:rgba(255,255,255,.8);line-height:1.7;">工程管理・日報・現場写真をスマホで一元管理したい<span style="font-size:.75rem;color:rgba(255,255,255,.4);display:block;">建設・工務店</span></p>
-                </div>
-                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;">
-                  <span style="color:var(--cyan);flex-shrink:0;margin-top:2px;">▸</span>
-                  <p style="font-size:.83rem;color:rgba(255,255,255,.8);line-height:1.7;">ワークショップや予約受付をLINEの手動管理から脱却したい</p>
-                </div>
-                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;">
-                  <span style="color:var(--cyan);flex-shrink:0;margin-top:2px;">▸</span>
-                  <p style="font-size:.83rem;color:rgba(255,255,255,.8);line-height:1.7;">取引先ごとに異なる単価・書類フォーマットをシステム化したい</p>
-                </div>
-                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px 16px;">
-                  <span style="color:var(--cyan);flex-shrink:0;margin-top:2px;">▸</span>
-                  <p style="font-size:.83rem;color:rgba(255,255,255,.8);line-height:1.7;">紙やExcelでやっている業務をそのままアプリにしたい</p>
-                </div>
+              <p style="font-size:.72rem;letter-spacing:.2em;color:var(--blue2);font-weight:700;margin-bottom:16px;">業種別 開発事例</p>
+              <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px;">
+                <button onclick="showTab('k')" id="tab-k" style="font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:100px;border:1px solid var(--blue);background:var(--blue);color:#fff;cursor:pointer;">建設・工務店</button>
+                <button onclick="showTab('s')" id="tab-s" style="font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;">設備・工事系</button>
+                <button onclick="showTab('h')" id="tab-h" style="font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;">士業・コンサル</button>
+                <button onclick="showTab('f')" id="tab-f" style="font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;">飲食・小売</button>
+                <button onclick="showTab('i')" id="tab-i" style="font-size:.72rem;font-weight:700;padding:5px 12px;border-radius:100px;border:1px solid rgba(255,255,255,.2);background:transparent;color:rgba(255,255,255,.6);cursor:pointer;">介護・福祉</button>
+              </div>
+              <div id="cases-k" style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">職人別日報アプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">現場・職人ごとに異なるフォーマット、写真付き提出</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">工程×天気連動管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">雨天で工程が変わる、自動で関係者にLINE通知</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">下請け業者への発注管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">口頭・FAXでやってる発注を記録化</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">現場写真＋コメント管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">着工前・中・完了の写真を顧客に自動共有</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">職人の資格・保険証期限管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">期限切れをアラートで通知</p></div></div>
+              </div>
+              <div id="cases-s" style="display:none;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">緊急対応依頼受付アプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">夜間・休日の問い合わせをフォームで受けて担当者に自動通知</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">点検スケジュール管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">定期点検の顧客リストと次回予定を一元管理</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">修理履歴カルテ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">物件ごとの修理・交換履歴を蓄積</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">材料発注メモアプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">現場で足りない材料をスマホで登録、事務所に即共有</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">顧客別単価管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">取引先ごとに異なる単価をExcelではなくアプリで管理</p></div></div>
+              </div>
+              <div id="cases-h" style="display:none;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">顧問先別タスク管理</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">顧問先ごとの対応状況・次回訪問予定を一覧管理</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">相談記録アプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">面談内容・アドバイス履歴を顧問先ごとに蓄積</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">書類提出期限アラート</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">申告期限・更新期限を自動でリマインド</p></div></div>
+              </div>
+              <div id="cases-f" style="display:none;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">独自レシピ原価計算</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">仕入れ価格変動を反映した原価をリアルタイム計算</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">スタッフシフト希望収集</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">LINEいらず、スマホで希望提出→自動集計</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">常連客メモアプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">好み・アレルギー・誕生日を店員全員で共有</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">棚卸しアプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">バーコードなしでも商品名検索→数量入力→集計</p></div></div>
+              </div>
+              <div id="cases-i" style="display:none;flex-direction:column;gap:8px;">
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">利用者ケア記録</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">紙の記録をスマホ入力に置き換え、家族にも共有</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">ヒヤリハット報告</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">事故未満の気になる出来事をその場でスマホ報告</p></div></div>
+                <div style="display:flex;gap:10px;align-items:flex-start;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:11px 14px;"><span style="color:var(--cyan);flex-shrink:0;">▸</span><div><p style="font-size:.8rem;font-weight:700;color:#fff;margin:0;">送迎ルート確認アプリ</p><p style="font-size:.75rem;color:rgba(255,255,255,.55);margin:2px 0 0;">ドライバーごとの送迎順・時間をスマホで確認</p></div></div>
               </div>
             </div>
 
@@ -968,23 +988,6 @@
 </footer>
 
 <script>
-  function showTab(id){
-    ['k','s','h','f','i'].forEach(function(t){
-      var c=document.getElementById('cases-'+t);
-      var b=document.getElementById('tab-'+t);
-      if(t===id){
-        c.style.display='flex';
-        b.style.background='var(--blue)';
-        b.style.color='#fff';
-        b.style.borderColor='var(--blue)';
-      } else {
-        c.style.display='none';
-        b.style.background='transparent';
-        b.style.color='rgba(255,255,255,.6)';
-        b.style.borderColor='rgba(255,255,255,.2)';
-      }
-    });
-  }
   function showTab(id){
     ['k','s','h','f','i'].forEach(function(t){
       var c=document.getElementById('cases-'+t);
