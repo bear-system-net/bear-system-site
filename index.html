@@ -985,6 +985,23 @@
       }
     });
   }
+  function showTab(id){
+    ['k','s','h','f','i'].forEach(function(t){
+      var c=document.getElementById('cases-'+t);
+      var b=document.getElementById('tab-'+t);
+      if(t===id){
+        c.style.display='flex';
+        b.style.background='var(--blue)';
+        b.style.color='#fff';
+        b.style.borderColor='var(--blue)';
+      } else {
+        c.style.display='none';
+        b.style.background='transparent';
+        b.style.color='rgba(255,255,255,.6)';
+        b.style.borderColor='rgba(255,255,255,.2)';
+      }
+    });
+  }
   function showPage(id){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     var el=document.getElementById(id);
