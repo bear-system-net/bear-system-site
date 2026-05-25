@@ -1013,7 +1013,7 @@
     window.scrollTo(0,0);
     document.getElementById('navLinks').classList.remove('open');
     if(pushHistory !== false){
-      history.pushState({page:id}, '', '#'+id);
+      history.pushState({page:id}, '', location.pathname + '?p=' + id);
     }
   }
   document.addEventListener('click',function(e){
@@ -1027,14 +1027,12 @@
     var id = e.state && e.state.page ? e.state.page : 'home';
     showPage(id, false);
   });
-  // 初期状態を履歴に登録
-  var initPage = location.hash ? location.hash.replace('#','') : 'home';
-  var initEl = document.getElementById(initPage);
-  if(!initEl) initPage = 'home';
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  // 初期表示
+  var params = new URLSearchParams(location.search);
+  var initPage = params.get('p') || 'home';
+  if(!document.getElementById(initPage)) initPage = 'home';
   document.getElementById(initPage).classList.add('active');
-  history.replaceState({page:initPage}, '', '#'+initPage);
-  window.scrollTo(0,0);
+  history.replaceState({page:initPage}, '', location.pathname + (initPage !== 'home' ? '?p=' + initPage : ''));
 </script>
 <script id='sc_access_analysis' src='https://sales-crowd.jp/js/sc-web-access-analysis.js' data-token='89143cdc731e36930ae161fc83c634bf719f4b3f36b55d5c1920da4c411ea641'></script>
 </body>
