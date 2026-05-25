@@ -372,7 +372,7 @@
     .nav-links{display:none;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:var(--ink);padding:12px;border-top:1px solid rgba(255,255,255,.08);}
     .nav-links.open{display:flex;}
     .hamburger{display:flex;}
-    .mission-grid,.about-grid,.voice-header,.contact-layout,.jobs-grid,.case-grid,.perks-grid,.numbers-grid,.partner-intro{grid-template-columns:1fr;}
+    .mission-grid,.about-grid,.voice-header,.contact-layout,.jobs-grid,.case-grid,.perks-grid,.numbers-grid,.partner-intro,.app-grid{grid-template-columns:1fr;}
     .flow-wrap{grid-template-columns:1fr 1fr;}
     .flow-wrap::before{display:none;}
     .ni{grid-template-columns:1fr;}
@@ -1005,12 +1005,15 @@
       }
     });
   }
-  function showPage(id){
+  function showPage(id, pushHistory){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     var el=document.getElementById(id);
     if(el)el.classList.add('active');
     window.scrollTo(0,0);
     document.getElementById('navLinks').classList.remove('open');
+    if(pushHistory !== false){
+      history.pushState({page:id}, '', '#'+id);
+    }
   }
   document.addEventListener('click',function(e){
     var t=e.target.closest('[data-page]');
@@ -1019,6 +1022,14 @@
   document.getElementById('hbg').addEventListener('click',function(){
     document.getElementById('navLinks').classList.toggle('open');
   });
+  window.addEventListener('popstate',function(e){
+    var id = e.state && e.state.page ? e.state.page : 'home';
+    showPage(id, false);
+  });
+  // 初期状態を履歴に登録
+  var initPage = location.hash ? location.hash.replace('#','') : 'home';
+  showPage(initPage, false);
+  history.replaceState({page:initPage}, '', '#'+initPage);
 </script>
 <script id='sc_access_analysis' src='https://sales-crowd.jp/js/sc-web-access-analysis.js' data-token='89143cdc731e36930ae161fc83c634bf719f4b3f36b55d5c1920da4c411ea641'></script>
 </body>
