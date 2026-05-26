@@ -8,8 +8,7 @@
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;font-size:14px;background:#f0f2f5;color:#333}
 .layout{display:flex;min-height:100vh}
-/* サイドバー */
-.sidebar{width:260px;min-width:260px;background:#1a2744;color:#fff;display:flex;flex-direction:column;padding:0}
+.sidebar{width:260px;min-width:260px;background:#1a2744;color:#fff;display:flex;flex-direction:column}
 .sidebar-header{padding:16px 14px 12px;border-bottom:1px solid rgba(255,255,255,0.1)}
 .sidebar-header h2{font-size:13px;font-weight:700;color:#7eb3ff;margin-bottom:2px}
 .sidebar-header p{font-size:11px;color:rgba(255,255,255,0.5)}
@@ -20,21 +19,18 @@ body{font-family:'Hiragino Kaku Gothic ProN','Meiryo',sans-serif;font-size:14px;
 .doc-list-item:hover{background:rgba(255,255,255,0.08)}
 .doc-list-item.active{background:rgba(30,86,176,0.4);border-color:#1a56b0}
 .doc-list-item .dli-no{font-size:10px;color:#7eb3ff;margin-bottom:2px}
-.doc-list-item .dli-cust{font-size:12px;font-weight:600;color:#fff;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.doc-list-item .dli-cust{font-size:12px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .doc-list-item .dli-date{font-size:10px;color:rgba(255,255,255,0.45)}
 .doc-list-item .dli-del{float:right;background:none;border:none;color:rgba(255,255,255,0.3);cursor:pointer;font-size:14px;padding:0 2px;margin-top:-2px}
 .doc-list-item .dli-del:hover{color:#ff6b6b}
 .sidebar-footer{padding:10px 14px;border-top:1px solid rgba(255,255,255,0.1)}
 .logout-btn{width:100%;padding:6px;background:transparent;color:rgba(255,255,255,0.5);border:1px solid rgba(255,255,255,0.2);border-radius:4px;font-size:11px;cursor:pointer;font-family:inherit}
 .logout-btn:hover{background:rgba(255,255,255,0.08)}
-/* メイン */
 .main{flex:1;padding:16px;overflow-y:auto}
 .top-bar{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
 .top-bar h1{font-size:14px;font-weight:700;color:#1a56b0}
 .save-btn{padding:7px 20px;background:#2e7d32;color:#fff;border:none;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit}
 .save-btn:hover{background:#1b5e20}
-.save-btn:disabled{background:#aaa;cursor:default}
-/* フォーム */
 .tabs{display:flex;gap:4px}
 .tab{padding:8px 24px;border:1px solid #ccc;background:#f0f0f0;cursor:pointer;border-radius:6px 6px 0 0;font-size:13px;color:#666;border-bottom:none}
 .tab.active{background:#fff;color:#1a56b0;font-weight:600}
@@ -50,13 +46,25 @@ textarea{resize:vertical}
 .section-title{font-size:13px;font-weight:600;color:#1a56b0;border-bottom:1px solid #e0e8f5;padding-bottom:6px;margin:16px 0 12px}
 .fixed-badge{font-size:10px;background:#e8f0fe;color:#1a56b0;padding:2px 6px;border-radius:3px;margin-left:6px}
 .linked-badge{font-size:10px;background:#e8f5e8;color:#2e7d32;padding:2px 6px;border-radius:3px;margin-left:6px}
+
+/* プランカード */
 .plan-cards{display:flex;flex-direction:column;gap:8px;margin-bottom:16px}
-.plan-card{border:1px solid #ddd;border-radius:8px;padding:12px 16px;cursor:pointer;display:flex;align-items:center;gap:14px}
-.plan-card:hover{border-color:#1a56b0;background:#f8faff}
+.plan-card{border:1px solid #ddd;border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px}
 .plan-card.selected{border:2px solid #1a56b0;background:#f0f4ff}
+.plan-card-check{display:flex;align-items:center;gap:8px;cursor:pointer;flex:1}
+.plan-card-check:hover .plan-name{color:#1342a0}
 .plan-name{font-size:13px;font-weight:700;color:#1a56b0}
 .plan-nick{font-size:11px;color:#e07b00;font-weight:600;margin:1px 0}
-.plan-price{font-size:13px;font-weight:600;color:#333}
+.plan-price-disp{font-size:13px;font-weight:600;color:#333}
+/* 年額/月額トグル */
+.billing-toggle{display:flex;border:1px solid #ccc;border-radius:5px;overflow:hidden;margin-left:auto;flex-shrink:0}
+.billing-toggle button{padding:4px 10px;font-size:11px;border:none;background:#f5f5f5;color:#666;cursor:pointer;font-family:inherit;transition:all 0.15s}
+.billing-toggle button.active{background:#1a56b0;color:#fff}
+.plan-card-none{border:1px solid #ddd;border-radius:8px;padding:12px 16px;display:flex;align-items:center;gap:12px;cursor:pointer}
+.plan-card-none:hover{background:#f8f8f8}
+.plan-card-none.selected{border:2px solid #555;background:#f5f5f5}
+
+/* 明細 */
 table.items{width:100%;border-collapse:collapse;margin-bottom:8px}
 table.items th{background:#f0f4fa;font-size:12px;padding:8px;text-align:left;border:1px solid #ddd}
 table.items td{padding:6px 4px;border:1px solid #eee;vertical-align:middle}
@@ -67,8 +75,8 @@ table.items td input:focus{background:#f0f4fa;outline:none}
 .totals{display:flex;flex-direction:column;align-items:flex-end;gap:4px;margin-bottom:16px}
 .total-row{display:flex;gap:12px;font-size:13px}
 .total-row.grand{font-size:15px;font-weight:700;color:#1a56b0;border-top:1px solid #ccc;padding-top:6px;margin-top:4px}
-.total-label{min-width:140px;text-align:right;color:#666}
-.total-val{min-width:110px;text-align:right}
+.total-label{min-width:160px;text-align:right;color:#666}
+.total-val{min-width:120px;text-align:right}
 .actions{display:flex;gap:10px;justify-content:flex-end;margin-top:16px}
 .btn{padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;font-family:inherit;border:none}
 .btn-preview{background:#fff;border:1px solid #1a56b0;color:#1a56b0}.btn-preview:hover{background:#f0f4fa}
@@ -78,7 +86,6 @@ table.items td input:focus{background:#f0f4fa;outline:none}
 .info-box{background:#fffbe6;border:1px solid #ffe58f;border-radius:6px;padding:10px 14px;font-size:12px;color:#7c5800;margin-bottom:14px}
 .bank-box{background:#f5f7fa;border:1px solid #ddd;border-radius:6px;padding:10px 14px;font-size:13px;margin-bottom:16px;color:#444;line-height:2}
 .empty-list{font-size:11px;color:rgba(255,255,255,0.35);text-align:center;padding:20px 0}
-/* ログイン */
 #login-screen{position:fixed;inset:0;background:#f0f4ff;display:flex;align-items:center;justify-content:center;z-index:200}
 </style>
 </head>
@@ -98,9 +105,8 @@ table.items td input:focus{background:#f0f4fa;outline:none}
   </div>
 </div>
 
-<!-- メインレイアウト -->
+<!-- メイン -->
 <div class="layout" id="main-app" style="display:none">
-  <!-- サイドバー -->
   <div class="sidebar">
     <div class="sidebar-header">
       <h2>書類作成ツール</h2>
@@ -115,13 +121,11 @@ table.items td input:focus{background:#f0f4fa;outline:none}
     </div>
   </div>
 
-  <!-- メインエリア -->
   <div class="main">
     <div class="top-bar">
       <h1 id="current-doc-label">新規書類</h1>
-      <button class="save-btn" onclick="saveDoc()" id="save-btn">💾 保存</button>
+      <button class="save-btn" onclick="saveDoc()">💾 保存</button>
     </div>
-
     <div class="tabs">
       <div class="tab active" onclick="switchTab('estimate')">見積書</div>
       <div class="tab" onclick="switchTab('contract')">契約書</div>
@@ -155,7 +159,7 @@ table.items td input:focus{background:#f0f4fa;outline:none}
           <div class="form-group"><label>発行日</label><input id="con-date" type="date"></div>
           <div class="form-group full"><label>契約期間</label><input id="con-period" placeholder="例: 2026年6月1日〜2027年5月31日"></div>
         </div>
-        <div class="form-group full" style="margin-bottom:10px"><label>契約条項（修正可）</label><textarea id="con-body" rows="20"></textarea></div>
+        <div class="form-group full" style="margin-bottom:10px"><label>契約条項（修正可）</label><textarea id="con-body" rows="22"></textarea></div>
       </div>
       <div id="invoice-info" style="display:none">
         <div class="info-box">顧客情報・プラン・明細は見積書タブで編集してください。</div>
@@ -176,16 +180,13 @@ table.items td input:focus{background:#f0f4fa;outline:none}
 
       <div id="plan-section">
         <div class="section-title">契約プラン <span id="linked-badge-plan" style="display:none" class="linked-badge">見積書から連動</span></div>
-        <div class="plan-cards">
-          <div class="plan-card" id="pc-0" onclick="togglePlan(0)"><input type="checkbox" id="pr-0" onclick="event.stopPropagation();togglePlan(0)" style="width:16px;height:16px;flex-shrink:0;accent-color:#1a56b0;cursor:pointer"><div><div class="plan-name">IT／DX推進室プラン</div><div class="plan-nick">【どぎゃしこでんあっですプラン】</div><div class="plan-price">年額 ¥2,400,000（税別）</div></div></div>
-          <div class="plan-card" id="pc-1" onclick="togglePlan(1)"><input type="checkbox" id="pr-1" onclick="event.stopPropagation();togglePlan(1)" style="width:16px;height:16px;flex-shrink:0;accent-color:#1a56b0;cursor:pointer"><div><div class="plan-name">カスタムAIエージェント構築プラン</div><div class="plan-nick">【むしゃんよかプラン】</div><div class="plan-price">年額 ¥1,200,000（税別）</div></div></div>
-          <div class="plan-card" id="pc-2" onclick="togglePlan(2)"><input type="checkbox" id="pr-2" onclick="event.stopPropagation();togglePlan(2)" style="width:16px;height:16px;flex-shrink:0;accent-color:#1a56b0;cursor:pointer"><div><div class="plan-name">ITツール定着・活用プラン</div><div class="plan-nick">【たいぎゃよかプラン】</div><div class="plan-price">年額 ¥600,000（税別）</div></div></div>
-          <div class="plan-card" id="pc-none" onclick="togglePlan(-1)"><input type="checkbox" id="pr-none" onclick="event.stopPropagation();togglePlan(-1)" style="width:16px;height:16px;flex-shrink:0;accent-color:#555;cursor:pointer"><div><div class="plan-name" style="color:#444">その他（個別明細）</div><div class="plan-nick" style="color:#888">追加明細欄に品目を入力してください</div></div></div>
+        <div class="plan-cards" id="plan-cards-wrap">
+          <!-- JS で描画 -->
         </div>
       </div>
 
       <div id="items-section">
-        <div class="section-title">追加明細 <span id="linked-badge-items" style="display:none" class="linked-badge">見積書から連動</span></div>
+        <div class="section-title">追加明細・スポット <span id="linked-badge-items" style="display:none" class="linked-badge">見積書から連動</span></div>
         <table class="items">
           <thead><tr>
             <th class="col-no">No</th><th>品目・内容</th>
@@ -236,24 +237,23 @@ var FB_BASE = 'https://bear-system-docs-default-rtdb.asia-southeast1.firebasedat
 var FB_NOS  = FB_BASE + '/docNos';
 var FB_DOCS = FB_BASE + '/docs';
 
-// ====================================
-// 定数
-// ====================================
 var BANK = 'みずほ銀行 渋谷支店（210）\n普通　3316122\n株式会社ベアシステム';
 var MY   = {company:'株式会社ベアシステム',address:'東京都渋谷区円山町5−3 MIEUX渋谷ビル8階',tel:'03-6367-2529'};
+
+// プラン定義（年額）
 var PLANS = [
-  {name:'IT／DX推進室プラン',nick:'どぎゃしこでんあっですプラン',price:2400000,desc:'IT・DX推進室機能を包括的に代行します。AI活用、ITツール導入・定着、社内情シス対応をワンストップで提供します。'},
-  {name:'カスタムAIエージェント構築プラン',nick:'むしゃんよかプラン',price:1200000,desc:'貴社専用のAIエージェントを構築・運用します。業務データを活用したAIアシスタントの設計・開発・保守を提供します。'},
-  {name:'ITツール定着・活用プラン',nick:'たいぎゃよかプラン',price:600000,desc:'導入済みITツールの定着・活用を支援します。利用状況の診断、活用研修、継続的なサポートを提供します。'}
+  {name:'IT／DX推進室プラン',       nick:'どぎゃしこでんあっですプラン', yearPrice:2400000},
+  {name:'カスタムAIエージェント構築プラン', nick:'むしゃんよかプラン',          yearPrice:1200000},
+  {name:'ITツール定着・活用プラン',   nick:'たいぎゃよかプラン',          yearPrice: 600000}
 ];
 
-// ====================================
 // 状態
-// ====================================
-var selectedPlans = {};
+// planStates[i] = {checked: bool, billing: 'year'|'month'}
+var planStates = [{checked:false,billing:'year'},{checked:false,billing:'year'},{checked:false,billing:'year'}];
+var noneChecked = false;
 var currentTab = 'estimate';
 var rows = [];
-var currentDocId = null; // 現在編集中のFirebase key
+var currentDocId = null;
 
 // ====================================
 // ユーティリティ
@@ -266,6 +266,13 @@ function g(id){var el=document.getElementById(id);return el?el.value:'';}
 function sv(id,v){var el=document.getElementById(id);if(el)el.value=v;}
 function esc(s){return(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;');}
 function fmtInput(n){return n?fmt(n):'';}
+
+function planPrice(i){
+  return planStates[i].billing==='month'
+    ? Math.round(PLANS[i].yearPrice/12)
+    : PLANS[i].yearPrice;
+}
+function planUnit(i){return planStates[i].billing==='month'?'月':'年';}
 
 // ====================================
 // ログイン
@@ -311,10 +318,8 @@ function getNextNo(prefix,ym){
     }).then(function(n){resolve(n);}).catch(function(){resolve(1);});
   });
 }
-
 function getYM(){var d=g('est-date')||today();var p=d.split('-');return p[0]+'-'+p[1];}
 function padNo(n){return n<10?'00'+n:n<100?'0'+n:String(n);}
-
 function issueNos(){
   var ym=getYM();
   var btn=document.getElementById('issue-btn');
@@ -324,35 +329,124 @@ function issueNos(){
     sv('con-no','CON'+ym+'-'+padNo(vals[1]));
     sv('inv-no','INV'+ym+'-'+padNo(vals[2]));
     btn.textContent='番号を発行';btn.disabled=false;
-  }).catch(function(){btn.textContent='番号を発行';btn.disabled=false;alert('番号発行に失敗しました。');});
+  }).catch(function(){btn.textContent='番号を発行';btn.disabled=false;});
 }
 function onEstDateChange(){var d=g('est-date');if(d)sv('est-expire',addDays(d,14));}
 
 // ====================================
-// Firebase 書類保存・読込・削除
+// プランカード描画
+// ====================================
+function renderPlanCards(){
+  var isEst = currentTab==='estimate';
+  var html='';
+  for(var i=0;i<3;i++){
+    var ps=planStates[i];
+    var p=PLANS[i];
+    var price=planPrice(i);
+    var unit=planUnit(i);
+    var sel=ps.checked;
+    html+='<div class="plan-card'+(sel?' selected':'')+'" id="pc-'+i+'">';
+    html+='<div class="plan-card-check" onclick="'+(isEst?'togglePlan('+i+')':'')+'">';
+    html+='<input type="checkbox" '+(sel?'checked':'')+' '+(isEst?'':'disabled')+' onclick="event.stopPropagation();'+(isEst?'togglePlan('+i+')':'')+'" style="width:16px;height:16px;flex-shrink:0;accent-color:#1a56b0;cursor:'+(isEst?'pointer':'default')+'">';
+    html+='<div><div class="plan-name">'+p.name+'</div><div class="plan-nick">【'+p.nick+'】</div>';
+    html+='<div class="plan-price-disp">'+fmt(price)+' 円／'+unit+'</div></div></div>';
+    // 年額/月額トグル
+    html+='<div class="billing-toggle">';
+    html+='<button class="'+(ps.billing==='year'?'active':'')+'" onclick="'+(isEst?'setBilling('+i+',\'year\')':'')+'" '+(isEst?'':'disabled')+'>年額</button>';
+    html+='<button class="'+(ps.billing==='month'?'active':'')+'" onclick="'+(isEst?'setBilling('+i+',\'month\')':'')+'" '+(isEst?'':'disabled')+'>月額</button>';
+    html+='</div></div>';
+  }
+  // その他（個別明細）
+  html+='<div class="plan-card-none'+(noneChecked?' selected':'')+'" onclick="'+(isEst?'toggleNone()':'')+'">';
+  html+='<input type="checkbox" '+(noneChecked?'checked':'')+' '+(isEst?'':'disabled')+' onclick="event.stopPropagation();'+(isEst?'toggleNone()':'')+'" style="width:16px;height:16px;flex-shrink:0;accent-color:#555;cursor:'+(isEst?'pointer':'default')+'">';
+  html+='<div><div class="plan-name" style="color:#444">その他（個別明細・スポット）</div><div class="plan-nick" style="color:#888">追加明細欄に品目・数量・単価を入力</div></div></div>';
+  document.getElementById('plan-cards-wrap').innerHTML=html;
+}
+
+function togglePlan(i){
+  if(currentTab!=='estimate')return;
+  planStates[i].checked=!planStates[i].checked;
+  renderPlanCards();
+  updateContractBody();
+  renderTotals();
+}
+function toggleNone(){
+  if(currentTab!=='estimate')return;
+  noneChecked=!noneChecked;
+  renderPlanCards();
+}
+function setBilling(i,type){
+  if(currentTab!=='estimate')return;
+  planStates[i].billing=type;
+  renderPlanCards();
+  updateContractBody();
+  renderTotals();
+}
+
+// ====================================
+// 契約書本文自動生成
+// ====================================
+function updateContractBody(){
+  var selected=[];
+  for(var i=0;i<3;i++){if(planStates[i].checked)selected.push({plan:PLANS[i],billing:planStates[i].billing,price:planPrice(i),unit:planUnit(i)});}
+
+  var planLine='【以下の契約条項に同意の上、本サービス利用を申し込みます】\n申込日：　　年　　月　　日\n貴社名：　　　　　　　　　　　　　　　　　　　印\n代表者名：\nご住所：〒\n担当者名：（連絡先：　　　　　　　　　）\n\n【ご契約プラン】\n';
+  if(selected.length>0){
+    for(var j=0;j<selected.length;j++){
+      var s=selected[j];
+      planLine+=s.plan.name+'（'+s.plan.nick+'）　'+s.billing==='month'?'月額':'年額'+'：¥'+fmt(s.price)+'（税別）\n';
+    }
+  } else {
+    planLine+='個別明細・スポット対応\n';
+  }
+
+  // 支払条項を年額・月額に応じて変える
+  var payClause='';
+  var cancelClause='';
+  var hasMonth=selected.some(function(s){return s.billing==='month';});
+  var hasYear=selected.some(function(s){return s.billing==='year';});
+  if(hasMonth&&hasYear){
+    payClause='月額プランは毎月末日締め翌月払い、年額プランは契約締結後2週間以内に一括前払いとします。支払遅延の場合、未払額に年14.6%の遅延損害金が加算されます。年額プランの契約期間中途中解約による既払利用料の返金は行いません。ただし、当社の責めに帰すべき事由による終了の場合は未経過期間分を日割返金します。';
+    cancelClause='月額プランは契約期間の定めはなく、解約希望日の2ヶ月前までに書面にて申し出ることで解約できます。年額プランは契約期間満了の1ヶ月前までに書面による解約申し出がない場合、同条件で自動更新されます。';
+  } else if(hasMonth){
+    payClause='利用料金は毎月末日締め翌月払いとします。支払遅延の場合、未払額に年14.6%の遅延損害金が加算されます。';
+    cancelClause='本プランは契約期間の定めはなく、解約希望日の2ヶ月前までに書面にて申し出ることで解約できます。';
+  } else {
+    payClause='利用料金は契約締結後2週間以内に一括前払いとします。支払遅延の場合、未払額に年14.6%の遅延損害金が加算されます。契約期間中の途中解約による既払利用料の返金は行いません。ただし、当社の責めに帰すべき事由による終了の場合は未経過期間分を日割返金します。';
+    cancelClause='契約期間は申込書記載の通りとします。期間満了1ヶ月前までに書面による解約申し出がない場合、同条件で自動更新されます。';
+  }
+
+  var descParts=selected.map(function(s){return s.plan.name+'のサービスを提供します。';});
+  var desc=descParts.length>0?descParts.join('また、'):'個別明細またはスポット対応として、別途合意した業務を提供します。';
+
+  sv('con-body', planLine+
+'\n【契約条項】\n'+
+'第1条（契約の成立）\n本契約は、本申込書を契約者が提出し、株式会社ベアシステム（以下「当社」）が承諾した時点で成立します。\n\n'+
+'第2条（サービス内容）\n当社は申込書記載のプランを契約期間中に提供します。'+desc+'\n\n'+
+'第3条（利用料金・支払）\n'+payClause+'\n\n'+
+'第4条（契約期間・解約）\n'+cancelClause+'\n\n'+
+'第5条（秘密保持・データ保護）\n当社は契約者の秘密情報を第三者に開示しません。入力データをAIモデルの機械学習に利用しない設定を適用し、機密性を保持します。本条の義務は契約終了後3年間存続します。\n\n'+
+'第6条（知的財産権）\n本サービスで生成された成果物の著作権は契約者に帰属します。当社が従前より保有するシステム・ノウハウ等は当社に留保されます。\n\n'+
+'第7条（免責・損害賠償）\n生成AIの特性上、当社は生成情報の完全性・正確性を保証しません。当社の損害賠償責任は過去12ヶ月の受領利用料累計額を上限とします（故意・重過失を除く）。\n\n'+
+'第8条（解除）\n相手方の規約違反が是正されない場合、催告の上で契約を解除できます。支払停止・破産申立て・反社会的勢力との関与が判明した場合は即時解除できます。\n\n'+
+'第9条（管轄）\n本契約に関する紛争は東京地方裁判所を第一審の専属的合意管轄裁判所とします。');
+}
+
+// ====================================
+// Firebase 保存・読込・削除
 // ====================================
 function saveDoc(){
-  var btn=document.getElementById('save-btn');
+  var btn=document.querySelector('.save-btn');
   btn.textContent='保存中...';btn.disabled=true;
-
-  var data=getFormState();
-  data.savedAt=new Date().toISOString();
-
-  var url,method;
-  if(currentDocId){
-    url=FB_DOCS+'/'+currentDocId+'.json';
-    method='PUT';
-  } else {
-    url=FB_DOCS+'.json';
-    method='POST';
-  }
+  var data=getFormState();data.savedAt=new Date().toISOString();
+  var url=currentDocId?FB_DOCS+'/'+currentDocId+'.json':FB_DOCS+'.json';
+  var method=currentDocId?'PUT':'POST';
   fetch(url,{method:method,headers:{'Content-Type':'application/json'},body:JSON.stringify(data)})
     .then(function(r){return r.json();})
     .then(function(res){
-      if(!currentDocId && res.name) currentDocId=res.name;
+      if(!currentDocId&&res.name)currentDocId=res.name;
       btn.textContent='💾 保存';btn.disabled=false;
-      loadDocList();
-      updateCurrentLabel();
+      loadDocList();updateCurrentLabel();
     }).catch(function(){btn.textContent='💾 保存';btn.disabled=false;alert('保存に失敗しました。');});
 }
 
@@ -362,45 +456,37 @@ function loadDocList(){
     if(!data){list.innerHTML='<div class="empty-list">保存済み書類はありません</div>';return;}
     var items=[];
     Object.keys(data).forEach(function(k){items.push({id:k,data:data[k]});});
-    // 新しい順
     items.sort(function(a,b){return(b.data.savedAt||'').localeCompare(a.data.savedAt||'');});
     list.innerHTML=items.map(function(item){
       var d=item.data;
-      var no=d.estNo||'番号未発行';
-      var cust=d.custCompany||'（顧客名未入力）';
-      var date=d.estDate?fmtDate(d.estDate):'';
       var isActive=item.id===currentDocId;
       return '<div class="doc-list-item'+(isActive?' active':'')+'" onclick="loadDoc(\''+item.id+'\')">'+
         '<button class="dli-del" onclick="event.stopPropagation();deleteDoc(\''+item.id+'\')" title="削除">×</button>'+
-        '<div class="dli-no">'+esc(no)+'</div>'+
-        '<div class="dli-cust">'+esc(cust)+'</div>'+
-        '<div class="dli-date">'+date+'</div>'+
-        '</div>';
+        '<div class="dli-no">'+(d.estNo||'番号未発行')+'</div>'+
+        '<div class="dli-cust">'+esc(d.custCompany||'（顧客名未入力）')+'</div>'+
+        '<div class="dli-date">'+(d.estDate?fmtDate(d.estDate):'')+'</div></div>';
     }).join('');
   }).catch(function(){});
 }
 
 function loadDoc(id){
   fetch(FB_DOCS+'/'+id+'.json').then(function(r){return r.json();}).then(function(data){
-    if(!data) return;
+    if(!data)return;
     currentDocId=id;
     restoreFormState(data);
-    loadDocList();
-    updateCurrentLabel();
-    switchTab('estimate');
+    loadDocList();updateCurrentLabel();switchTab('estimate');
   });
 }
 
 function deleteDoc(id){
-  if(!confirm('この書類を削除しますか？')) return;
+  if(!confirm('この書類を削除しますか？'))return;
   fetch(FB_DOCS+'/'+id+'.json',{method:'DELETE'}).then(function(){
-    if(currentDocId===id){newDocument();}
-    else{loadDocList();}
+    if(currentDocId===id)newDocument();else loadDocList();
   });
 }
 
 // ====================================
-// フォーム状態の取得・復元
+// フォーム状態取得・復元
 // ====================================
 function getFormState(){
   return {
@@ -409,9 +495,9 @@ function getFormState(){
     conDate:g('con-date'),conPeriod:g('con-period'),conBody:g('con-body'),
     invDate:g('inv-date'),invPayment:g('inv-payment'),
     custCompany:g('cust-company'),custPerson:g('cust-person'),custAddress:g('cust-address'),
-    myPerson:g('my-person'),myEmail:g('my-email'),
-    notes:g('doc-notes'),
-    selectedPlans:JSON.parse(JSON.stringify(selectedPlans)),
+    myPerson:g('my-person'),myEmail:g('my-email'),notes:g('doc-notes'),
+    planStates:JSON.parse(JSON.stringify(planStates)),
+    noneChecked:noneChecked,
     rows:rows.map(function(r){return{item:r.item,qty:r.qty,unit:r.unit,price:r.price};})
   };
 }
@@ -424,20 +510,11 @@ function restoreFormState(d){
   sv('cust-company',d.custCompany||'');sv('cust-person',d.custPerson||'');sv('cust-address',d.custAddress||'');
   sv('my-person',d.myPerson||'井上 俊');sv('my-email',d.myEmail||'info@bear-system.net');
   sv('doc-notes',d.notes||'');
-  // プラン
-  selectedPlans=d.selectedPlans||{};
-  for(var i=0;i<3;i++){
-    var sel=!!selectedPlans[i];
-    document.getElementById('pr-'+i).checked=sel;
-    document.getElementById('pc-'+i).classList.toggle('selected',sel);
-  }
-  document.getElementById('pr-none').checked=false;
-  document.getElementById('pc-none').classList.remove('selected');
-  // 明細
+  planStates=d.planStates||[{checked:false,billing:'year'},{checked:false,billing:'year'},{checked:false,billing:'year'}];
+  noneChecked=d.noneChecked||false;
   rows=(d.rows||[]).map(function(r){return{id:Date.now()+Math.random(),item:r.item||'',qty:r.qty||1,unit:r.unit||'式',price:r.price||0};});
   if(rows.length===0){addRow();addRow();addRow();}
-  else renderRows();
-  renderTotals();
+  renderPlanCards();renderRows();renderTotals();
 }
 
 function updateCurrentLabel(){
@@ -447,68 +524,38 @@ function updateCurrentLabel(){
 }
 
 // ====================================
-// 新規作成
+// 新規作成・初期化
 // ====================================
 function newDocument(){
-  if(!confirm('現在の入力内容をクリアして新規作成しますか？')) return;
+  if(!confirm('現在の入力内容をクリアして新規作成しますか？'))return;
   currentDocId=null;
   var td=today();
   sv('est-no','');sv('con-no','');sv('inv-no','');
   sv('est-date',td);sv('est-expire',addDays(td,14));
   sv('con-date',td);sv('inv-date',td);sv('inv-payment',addDays(td,30));
   sv('cust-company','');sv('cust-person','');sv('cust-address','');sv('doc-notes','');sv('con-period','');
-  selectedPlans={};
-  for(var i=0;i<3;i++){document.getElementById('pr-'+i).checked=false;document.getElementById('pc-'+i).classList.remove('selected');}
-  document.getElementById('pr-none').checked=false;document.getElementById('pc-none').classList.remove('selected');
-  updateContractBody();
+  planStates=[{checked:false,billing:'year'},{checked:false,billing:'year'},{checked:false,billing:'year'}];
+  noneChecked=false;
+  renderPlanCards();updateContractBody();
   rows=[];addRow();addRow();addRow();
   switchTab('estimate');
   document.getElementById('current-doc-label').textContent='新規書類';
   loadDocList();
 }
 
-// ====================================
-// 初期化
-// ====================================
 function initApp(){
   var td=today();
   sv('est-date',td);sv('est-expire',addDays(td,14));
   sv('con-date',td);sv('inv-date',td);sv('inv-payment',addDays(td,30));
-  selectedPlans={};
-  updateContractBody();
+  planStates=[{checked:false,billing:'year'},{checked:false,billing:'year'},{checked:false,billing:'year'}];
+  noneChecked=false;
+  renderPlanCards();updateContractBody();
   addRow();addRow();addRow();
   loadDocList();
 }
 
 // ====================================
-// プラン
-// ====================================
-function togglePlan(idx){
-  if(currentTab!=='estimate') return;
-  if(idx===-1){
-    var cur=document.getElementById('pr-none').checked;
-    document.getElementById('pr-none').checked=!cur;
-    document.getElementById('pc-none').classList.toggle('selected',!cur);
-  } else {
-    selectedPlans[idx]=!selectedPlans[idx];
-    document.getElementById('pr-'+idx).checked=selectedPlans[idx];
-    document.getElementById('pc-'+idx).classList.toggle('selected',selectedPlans[idx]);
-  }
-  updateContractBody();renderTotals();
-}
-
-function updateContractBody(){
-  var selected=[];for(var i=0;i<3;i++){if(selectedPlans[i])selected.push(PLANS[i]);}
-  var planLine='【以下の契約条項に同意の上、本サービス利用を申し込みます】\n申込日：　　年　　月　　日\n貴社名：　　　　　　　　　　　　　　　　　　　印\n代表者名：\nご住所：〒\n担当者名：（連絡先：　　　　　　　　　）\n\n【ご契約プラン】\n';
-  if(selected.length>0){for(var j=0;j<selected.length;j++){planLine+=selected[j].name+'（'+selected[j].nick+'）　年額：¥'+fmt(selected[j].price)+'（税別）\n';}}
-  else{planLine+='個別明細による\n';}
-  var descParts=[];for(var k=0;k<selected.length;k++)descParts.push(selected[k].desc);
-  var desc=descParts.length>0?descParts.join('また、'):'サービスの詳細は別途協議の上決定します。';
-  sv('con-body',planLine+'\n【契約条項】\n第1条（契約の成立）\n本契約は、本申込書を契約者が提出し、株式会社ベアシステム（以下「当社」）が承諾した時点で成立します。\n\n第2条（サービス内容）\n当社は申込書記載のプランを契約期間中に提供します。'+desc+'\n\n第3条（利用料金・支払）\n契約者は請求書受領後、指定期日までに利用料金を一括前払いするものとします。支払遅延の場合、未払額に年14.6%の遅延損害金が加算されます。契約期間中の途中解約による既払利用料の返金は行いません。ただし、当社の責めに帰すべき事由による終了の場合は未経過期間分を日割返金します。\n\n第4条（契約期間・更新）\n契約期間は1年間とし、期間満了1ヶ月前までに書面による解約申し出がない場合、同条件で自動更新されます。\n\n第5条（秘密保持・データ保護）\n当社は契約者の秘密情報を第三者に開示しません。入力データをAIモデルの機械学習に利用しない設定を適用し、機密性を保持します。本条の義務は契約終了後3年間存続します。\n\n第6条（知的財産権）\n本サービスで生成された成果物の著作権は契約者に帰属します。当社が従前より保有するシステム・ノウハウ等は当社に留保されます。\n\n第7条（免責・損害賠償）\n生成AIの特性上、当社は生成情報の完全性・正確性を保証しません。当社の損害賠償責任は過去12ヶ月の受領利用料累計額を上限とします（故意・重過失を除く）。\n\n第8条（解除）\n相手方の規約違反が是正されない場合、催告の上で契約を解除できます。支払停止・破産申立て・反社会的勢力との関与が判明した場合は即時解除できます。\n\n第9条（管轄）\n本契約に関する紛争は東京地方裁判所を第一審の専属的合意管轄裁判所とします。');
-}
-
-// ====================================
-// タブ
+// タブ切り替え
 // ====================================
 function switchTab(tab){
   currentTab=tab;
@@ -521,13 +568,11 @@ function switchTab(tab){
   ['cust-company','cust-person','cust-address'].forEach(function(id){var el=document.getElementById(id);if(!el)return;el.readOnly=tab!=='estimate';el.style.background=tab!=='estimate'?'#f5f7fa':'';});
   document.getElementById('linked-badge-cust').style.display=tab!=='estimate'?'':'none';
   document.getElementById('linked-badge-plan').style.display=tab!=='estimate'?'':'none';
-  var cbs=document.querySelectorAll('input[type="checkbox"][id^="pr-"]');for(var i=0;i<cbs.length;i++)cbs[i].disabled=(tab!=='estimate');
-  var cards=document.querySelectorAll('.plan-card');for(var j=0;j<cards.length;j++)cards[j].style.cursor=(tab!=='estimate'?'default':'pointer');
   document.getElementById('linked-badge-items').style.display=tab!=='estimate'?'':'none';
   document.getElementById('add-row-btn-wrap').style.display=tab==='estimate'?'':'none';
   document.getElementById('bank-section').style.display=tab==='invoice'?'':'none';
   var notesEl=document.getElementById('doc-notes');notesEl.readOnly=tab!=='estimate';notesEl.style.background=tab!=='estimate'?'#f5f7fa':'';
-  renderRows();
+  renderPlanCards();renderRows();
 }
 
 // ====================================
@@ -558,12 +603,18 @@ function renderRows(){
 }
 
 function renderTotals(){
-  var planSub=0;for(var p=0;p<3;p++){if(selectedPlans[p])planSub+=PLANS[p].price;}
-  var rowSub=0;for(var i=0;i<rows.length;i++)rowSub+=rows[i].qty*rows[i].price;
-  var sub=planSub+rowSub;var tax=Math.floor(sub*0.1);
+  var planSub=0;
   var html='';
-  for(var q=0;q<3;q++){if(selectedPlans[q])html+='<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">'+PLANS[q].name+'</span><span class="total-val">'+fmt(PLANS[q].price)+' 円</span></div>';}
-  if(rowSub!==0)html+='<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">追加明細 小計</span><span class="total-val">'+fmt(rowSub)+' 円</span></div>';
+  for(var i=0;i<3;i++){
+    if(planStates[i].checked){
+      var pr=planPrice(i);var pu=planUnit(i);
+      planSub+=pr;
+      html+='<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">'+PLANS[i].name+'（'+pu+'額）</span><span class="total-val">'+fmt(pr)+' 円</span></div>';
+    }
+  }
+  var rowSub=0;for(var j=0;j<rows.length;j++)rowSub+=rows[j].qty*rows[j].price;
+  var sub=planSub+rowSub;var tax=Math.floor(sub*0.1);
+  if(rowSub!==0)html+='<div class="total-row" style="font-size:12px;color:#555"><span class="total-label">追加明細・スポット 小計</span><span class="total-val">'+fmt(rowSub)+' 円</span></div>';
   html+='<div class="total-row"><span class="total-label">小計</span><span class="total-val">'+fmt(sub)+' 円</span></div>'+
     '<div class="total-row"><span class="total-label">消費税（10%）</span><span class="total-val">'+fmt(tax)+' 円</span></div>'+
     '<div class="total-row grand"><span class="total-label">合計金額</span><span class="total-val">'+fmt(sub+tax)+' 円</span></div>';
@@ -571,8 +622,8 @@ function renderTotals(){
 }
 
 function calcTotals(){
-  var planSub=0;for(var p=0;p<3;p++){if(selectedPlans[p])planSub+=PLANS[p].price;}
-  var rowSub=0;for(var i=0;i<rows.length;i++)rowSub+=rows[i].qty*rows[i].price;
+  var planSub=0;for(var i=0;i<3;i++){if(planStates[i].checked)planSub+=planPrice(i);}
+  var rowSub=0;for(var j=0;j<rows.length;j++)rowSub+=rows[j].qty*rows[j].price;
   var sub=planSub+rowSub;return{sub:sub,tax:Math.floor(sub*0.1),total:sub+Math.floor(sub*0.1)};
 }
 
@@ -581,8 +632,9 @@ function getDocData(){
   var noKey={estimate:'est-no',contract:'con-no',invoice:'inv-no'};
   var dtKey={estimate:'est-date',contract:'con-date',invoice:'inv-date'};
   var labels={estimate:'見積書',contract:'契約書 兼 サービス利用申込書',invoice:'請求書'};
-  var selPlans=[];for(var p=0;p<3;p++){if(selectedPlans[p])selPlans.push(PLANS[p]);}
-  var rr=[];for(var i=0;i<rows.length;i++){if(rows[i].item||rows[i].price!==0)rr.push({item:rows[i].item,qty:rows[i].qty,unit:rows[i].unit,price:rows[i].price,subtotal:rows[i].qty*rows[i].price});}
+  var selPlans=[];
+  for(var i=0;i<3;i++){if(planStates[i].checked)selPlans.push({name:PLANS[i].name,nick:PLANS[i].nick,price:planPrice(i),unit:planUnit(i),billing:planStates[i].billing});}
+  var rr=[];for(var j=0;j<rows.length;j++){if(rows[j].item||rows[j].price!==0)rr.push({item:rows[j].item,qty:rows[j].qty,unit:rows[j].unit,price:rows[j].price,subtotal:rows[j].qty*rows[j].price});}
   return{type:currentTab,label:labels[currentTab],no:g(noKey[currentTab]),date:g(dtKey[currentTab]),expire:g('est-expire'),payment:g('inv-payment'),contractPeriod:g('con-period'),contractBody:g('con-body'),myCompany:MY.company,myAddress:MY.address,myTel:MY.tel,myPerson:g('my-person'),myEmail:g('my-email'),custCompany:g('cust-company'),custPerson:g('cust-person'),custAddress:g('cust-address'),notes:g('doc-notes'),plans:selPlans,rows:rr,sub:t.sub,tax:t.tax,total:t.total};
 }
 
@@ -623,11 +675,20 @@ function buildDocHTML(d,stampImg){
   if(d.type==='invoice')metaRight='支払期限：'+fmtDate(d.payment);
   if(d.type==='contract')metaRight='契約期間：'+(d.contractPeriod||'');
   var stampHTML=stampImg?'<img src="'+stampImg+'" style="width:68px;height:68px;opacity:0.88;display:block;flex-shrink:0;align-self:center">':'';
-  function th(extra){return 'style="background:#1a56b0;color:#fff;padding:5px 7px;font-size:10px;'+(extra||'')+'"';}
+  function th(ex){return 'style="background:#1a56b0;color:#fff;padding:5px 7px;font-size:10px;'+(ex||'')+'"';}
   function makeTable(tb){return '<table style="width:100%;border-collapse:collapse;font-size:11px;margin-bottom:10px"><thead><tr><th '+th('text-align:center;width:36px')+'>No</th><th '+th('text-align:left')+'>品目・内容</th><th '+th('text-align:right;width:50px')+'>数量</th><th '+th('text-align:center;width:44px')+'>単位</th><th '+th('text-align:right;width:90px')+'>単価（円）</th><th '+th('text-align:right;width:90px')+'>小計（円）</th></tr></thead><tbody>'+tb+'</tbody></table>';}
   function makeTotals(){return '<div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px;margin-bottom:12px;font-size:11px"><div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">小計</span><span style="min-width:90px;text-align:right">¥'+fmt(d.sub)+'</span></div><div style="display:flex;gap:8px"><span style="min-width:90px;text-align:right;color:#666">消費税（10%）</span><span style="min-width:90px;text-align:right">¥'+fmt(d.tax)+'</span></div><div style="display:flex;gap:8px;border-top:1px solid #aaa;padding-top:4px;margin-top:2px"><span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">合計金額</span><span style="min-width:90px;text-align:right;font-weight:700;font-size:13px;color:#1a56b0">¥'+fmt(d.total)+'</span></div></div>';}
   var tr='';var rowNo=1;
-  for(var pi=0;pi<d.plans.length;pi++){var pl=d.plans[pi];tr+='<tr style="background:#f0f4ff"><td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">'+rowNo+'</td><td style="padding:5px 7px;border-bottom:1px solid #ddd;font-weight:600">'+pl.name+'<span style="font-size:10px;color:#e07b00;margin-left:6px">'+pl.nick+'</span></td><td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">1</td><td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">年</td><td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td><td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td></tr>';rowNo++;}
+  for(var pi=0;pi<d.plans.length;pi++){
+    var pl=d.plans[pi];
+    tr+='<tr style="background:#f0f4ff"><td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">'+rowNo+'</td>'+
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;font-weight:600">'+pl.name+'<span style="font-size:10px;color:#e07b00;margin-left:6px">'+pl.nick+'</span></td>'+
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">1</td>'+
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:center">'+pl.unit+'</td>'+
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td>'+
+      '<td style="padding:5px 7px;border-bottom:1px solid #ddd;text-align:right">'+fmt(pl.price)+'</td></tr>';
+    rowNo++;
+  }
   for(var i=0;i<d.rows.length;i++){var r=d.rows[i];var bg=rowNo%2===0?'#fafafa':'#fff';tr+='<tr style="background:'+bg+'"><td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">'+rowNo+'</td><td style="padding:5px 7px;border-bottom:1px solid #eee">'+(r.item||'―')+'</td><td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+r.qty+'</td><td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:center">'+r.unit+'</td><td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+fmt(r.price)+'</td><td style="padding:5px 7px;border-bottom:1px solid #eee;text-align:right">'+fmt(r.subtotal)+'</td></tr>';rowNo++;}
   var bodyHTML='';
   if(d.type==='contract'){bodyHTML=(tr?makeTable(tr)+makeTotals():'')+  '<div style="font-size:10.5px;line-height:1.85;white-space:pre-wrap;border:1px solid #ccc;padding:12px;border-radius:3px;margin-bottom:8px">'+(d.contractBody||'').replace(/</g,'&lt;')+'</div>';}
@@ -644,7 +705,6 @@ function buildDocHTML(d,stampImg){
 }
 
 var PCSS='body{font-family:"Hiragino Kaku Gothic ProN","Meiryo",sans-serif;margin:0;padding:20px;color:#222;font-size:12px}@page{size:A4;margin:15mm}@media print{body{padding:0}}';
-
 function showPreview(){var d=getDocData();document.getElementById('preview-content').innerHTML=buildDocHTML(d,makeStamp(240));document.getElementById('modal-overlay').style.display='flex';}
 function closeModal(e){if(e.target.id==='modal-overlay')document.getElementById('modal-overlay').style.display='none';}
 function printPDF(){var d=getDocData();var html='<!DOCTYPE html><html lang="ja"><head><meta charset="UTF-8"><title>'+d.label+'_'+d.no+'</title><style>'+PCSS+'</style></head><body>'+buildDocHTML(d,makeStamp(240))+'<script>window.onload=function(){window.print();}<\/script></body></html>';var blob=new Blob([html],{type:'text/html'});var url=URL.createObjectURL(blob);var win=window.open(url,'_blank');if(!win)alert('ポップアップを許可してください。');}
