@@ -242,9 +242,9 @@ var MY   = {company:'株式会社ベアシステム',address:'東京都渋谷区
 
 // プラン定義（年額）
 var PLANS = [
-  {name:'IT／DX推進室プラン',       nick:'どぎゃしこでんあっですプラン', yearPrice:2400000},
-  {name:'カスタムAIエージェント構築プラン', nick:'むしゃんよかプラン',          yearPrice:1200000},
-  {name:'ITツール定着・活用プラン',   nick:'たいぎゃよかプラン',          yearPrice: 600000}
+  {name:'IT／DX推進室プラン',       nick:'どぎゃしこでんあっですプラン', yearPrice:4000000, monthPrice:400000},
+  {name:'カスタムAIエージェント構築プラン', nick:'むしゃんよかプラン',          yearPrice:2000000, monthPrice:200000},
+  {name:'ITツール定着・活用プラン',   nick:'たいぎゃよかプラン',          yearPrice:1000000, monthPrice:100000}
 ];
 
 // 状態
@@ -269,7 +269,7 @@ function fmtInput(n){return n?fmt(n):'';}
 
 function planPrice(i){
   return planStates[i].billing==='month'
-    ? Math.round(PLANS[i].yearPrice/12)
+    ? PLANS[i].monthPrice
     : PLANS[i].yearPrice;
 }
 function planUnit(i){return planStates[i].billing==='month'?'月':'年';}
