@@ -94,6 +94,10 @@
   .ni:hover{background:var(--light);}
   .ni-img{min-height:140px;}
   .ni-body{padding:20px 24px;}
+  @media(max-width:768px){
+    .ni{grid-template-columns:1fr;}
+    .ni-img{height:180px;}
+  }
   .nd{font-size:.72rem;color:var(--blue);font-weight:700;margin-bottom:4px;}
   .nt{font-size:.92rem;font-weight:700;color:var(--ink);margin-bottom:4px;}
   .nb{font-size:.8rem;color:var(--gray);}
@@ -262,8 +266,7 @@
     .flow-wrap{grid-template-columns:1fr 1fr;}
     .flow-wrap::before{display:none;}
     .ni{grid-template-columns:1fr;}
-    .services-grid,.val-grid,.phil-grid,.prob-grid,.sol-grid{grid-template-columns:1fr;}
-    .cases-8grid{grid-template-columns:1fr 1fr !important;}
+    .services-grid,.val-grid,.phil-grid,.prob-grid,.sol-grid,.cases-8grid{grid-template-columns:1fr !important;}
     .hero-foot{flex-direction:column;gap:12px;}
     .hero-foot .btn-primary,.hero-foot .btn-ghost{width:100%;text-align:center;}
     .p-companies{flex-direction:column;}
@@ -496,11 +499,11 @@
   <div class="page-banner"><div class="banner-grid"></div><div class="banner-glow"></div><div class="overlay"></div><h1><small>NEWS</small>お知らせ</h1></div>
   <div class="pb">
     <div class="news-list">
-      <div class="ni"><div class="ni-img img-wrap"><img src="news-1.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.07.03</p><p class="nt">浜松にてAI活用セミナーを開催しました</p><p class="nb">株式会社Voostと共催で、静岡・浜松の中小企業の皆様を対象にAI・DX活用セミナーをクリエート浜松にて開催しました。多くの方にご参加いただき、現場でのAI活用について活発な議論が行われました。</p></div></div>
-      <div class="ni"><div class="ni-img img-wrap"><img src="news-2.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.06.09</p><p class="nt">長崎県壱岐島にてAI活用セミナーを開催しました</p><p class="nb">壱岐交通株式会社との共催で、壱岐島の中小企業の皆様を対象にAI活用セミナーを開催しました。地域を巻き込んだAI活用モデルケースとして、多くの方にご参加いただきました。</p></div></div>
-      <div class="ni"><div class="ni-img img-wrap"><img src="news-3.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.04.17</p><p class="nt">日本一泥臭いIT・AI支援プランをリリースしました</p><p class="nb">中小企業の「人手不足」と「IT化の壁」を打破するため、サービスラインナップを全面刷新いたしました。</p></div></div>
-      <div class="ni"><div class="ni-img img-wrap"><img src="news-4.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.02.25</p><p class="nt">特別対談記事を追加しました</p><p class="nb">株式会社コミュニティ・ケア代表取締役・北楯利宗様との対談記事を「お客様の声」に追加しました。</p></div></div>
-      <div class="ni"><div class="ni-img img-wrap"><img src="news-5.jpg" alt="" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.01.13</p><p class="nt">クリエイティブ・ワークスタイルの導入について</p><p class="nb">服装・時間・場所に捉われない働き方で、充実したプライベートと成果の出せる仕事を両立することを目指します。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><img src="news-hamamatsu.jpg" alt="浜松AI活用セミナー" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.07.03</p><p class="nt">浜松にてAI活用セミナーを開催しました</p><p class="nb">株式会社Voostと共催で、静岡・浜松の中小企業の皆様を対象にAI・DX活用セミナーをクリエート浜松にて開催しました。多くの方にご参加いただき、現場でのAI活用について活発な議論が行われました。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><img src="news-iki.jpg" alt="壱岐島AI活用セミナー" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.06.09</p><p class="nt">長崎県壱岐島にてAI活用セミナーを開催しました</p><p class="nb">壱岐交通株式会社との共催で、壱岐島の中小企業の皆様を対象にAI活用セミナーを開催しました。地域を巻き込んだAI活用モデルケースとして、多くの方にご参加いただきました。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><img src="news-plan.jpg" alt="プランリリース" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.04.17</p><p class="nt">日本一泥臭いIT・AI支援プランをリリースしました</p><p class="nb">中小企業の「人手足」と「IT化の壁」を打破するため、サービスラインナップを全面刷新いたしました。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><img src="news-interview.jpg" alt="対談記事" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.02.25</p><p class="nt">特別対談記事を追加しました</p><p class="nb">株式会社コミュニティ・ケア代表取締役・北楯利宗様との対談記事を「お客様の声」に追加しました。</p></div></div>
+      <div class="ni"><div class="ni-img img-wrap"><img src="news-workstyle.jpg" alt="ワークスタイル" style="width:100%;height:100%;object-fit:cover;"></div><div class="ni-body"><p class="nd">2026.01.13</p><p class="nt">クリエイティブ・ワークスタイルの導入について</p><p class="nb">服装・時間・場所に捉われない働き方で、充実したプライベートと成果の出せる仕事を両立することを目指します。</p></div></div>
     </div>
   </div>
 </div>
