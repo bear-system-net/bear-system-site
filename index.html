@@ -705,7 +705,7 @@
         <h2>🔐 管理者ログイン</h2>
         <div class="admin-form">
           <div class="fg"><label>パスワード</label><input type="password" id="adminPass" placeholder="パスワードを入力"></div>
-          <button class="btn-primary" onclick="adminLogin()" style="width:100%;padding:12px;">ログイン</button>
+          <button class="btn-primary" onclick="doAdminLogin()" style="width:100%;padding:12px;">ログイン</button>
           <p class="admin-err" id="adminErr"></p>
         </div>
       </div>
@@ -714,7 +714,7 @@
           <h2 style="font-size:1.1rem;font-weight:800;color:var(--ink);">お知らせ一覧</h2>
           <div style="display:flex;gap:12px;align-items:center;">
             <button class="btn-new" onclick="showEditor()">＋ 新規作成</button>
-            <button class="btn-logout" onclick="adminLogout()">ログアウト</button>
+            <button class="btn-logout" onclick="doAdminLogout()">ログアウト</button>
           </div>
         </div>
         <div class="news-admin-list" id="newsAdminList"></div>
@@ -897,7 +897,7 @@
   var ADMIN_PASS = 'byon7037';
   var editingId = null;
 
-  function adminLogin(){
+  function doAdminLogin(){
     var p = document.getElementById('adminPass').value;
     if(p === ADMIN_PASS){
       document.getElementById('adminLogin').style.display = 'none';
@@ -907,7 +907,7 @@
       document.getElementById('adminErr').textContent = 'パスワードが違います';
     }
   }
-  function adminLogout(){
+  function doAdminLogout(){
     document.getElementById('adminLogin').style.display = 'block';
     document.getElementById('adminPanel').style.display = 'none';
     document.getElementById('adminPass').value = '';
@@ -972,7 +972,7 @@
       return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb">'+a.body+'</p></div>';
     }).join('');
   }
-  document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('adminPass')===document.activeElement) adminLogin(); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('adminPass')===document.activeElement) doAdminLogin(); });
   // ──────────────
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     var el=document.getElementById(id);
