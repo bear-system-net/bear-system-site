@@ -990,7 +990,7 @@
     if(!el) return;
     if(!arts.length){ el.innerHTML=''; return; }
     el.innerHTML = arts.map(function(a){
-      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb">'+a.body+'</p></div>';
+      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+a.body+'</p></div>';
     }).join('');
   }
   function renderBlogList(){
@@ -1001,7 +1001,7 @@
     if(!arts.length){ el.innerHTML=''; if(empty) empty.style.display='block'; return; }
     if(empty) empty.style.display='none';
     el.innerHTML = arts.map(function(a){
-      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb">'+a.body+'</p></div>';
+      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+a.body+'</p></div>';
     }).join('');
   }
   document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('adminPass')===document.activeElement) doAdminLogin(); });
