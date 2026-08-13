@@ -295,7 +295,7 @@
   <div class="nav-inner">
     <div class="logo" data-page="home"><div class="logo-mark">B</div>株式会社ベアシステム</div>
     <ul class="nav-links" id="navLinks">
-      <li data-page="home">ホーム</li><li data-page="news">お知らせ</li><li data-page="voices">お客様の声</li><li data-page="cases">活用事例</li><li data-page="about">当社について</li><li data-page="partner">パートナー</li><li data-page="contact">お問い合わせ</li><li data-page="recruit">採用</li><li data-page="privacy">個人情報保護方針</li>
+      <li data-page="home">ホーム</li><li data-page="news">お知らせ</li><li data-page="voices">お客様の声</li><li data-page="cases">活用事例</li><li data-page="about">当社について</li><li data-page="partner">パートナー</li><li data-page="contact">お問い合わせ</li><li data-page="recruit">採用</li><li data-page="privacy">個人情報保護方針</li><li data-page="admin" style="color:rgba(255,255,255,.3);">管理</li>
     </ul>
     <div class="hamburger" id="hbg"><span></span><span></span><span></span></div>
   </div>
@@ -508,6 +508,7 @@
   <div class="page-banner"><div class="banner-grid"></div><div class="banner-glow"></div><div class="overlay"></div><h1><small>NEWS</small>お知らせ</h1></div>
   <div class="pb">
     <div class="news-list">
+      <div id="dynamicNews"></div>
       <div class="ni-text"><p class="nd">2026.07.28</p><p class="nt">令和8年熊本地震により被災された皆様へ</p><p class="nb">このたびの令和8年熊本地震により被災された皆様に、心よりお見舞い申し上げます。一日も早い復旧・復興を心よりお祈り申し上げます。代表の井上の地元である熊本の復興のために、ベアシステムとしてできることであれば全力でお力添えいたします。ご相談やお困りのことがあれば、どうぞお気軽にお声がけください。</p></div>
       <div class="ni-text"><p class="nd">2026.07.03</p><p class="nt">浜松にてAI活用セミナーを開催しました</p><p class="nb">株式会社Voostと共催で、静岡・浜松の中小企業の皆様を対象にAI・DX活用セミナーをクリエート浜松にて開催しました。多くの方にご参加いただき、現場でのAI活用について活発な議論が行われました。</p></div>
       <div class="ni-text"><p class="nd">2026.06.09</p><p class="nt">長崎県壱岐島にてAI活用セミナーを開催しました</p><p class="nb">壱岐交通株式会社との共催で、壱岐島の中小企業の皆様を対象にAI活用セミナーを開催しました。地域を巻き込んだAI活用モデルケースとして、多くの方にご参加いただきました。</p></div>
@@ -695,6 +696,46 @@
   </div>
 </div>
 
+<!-- ADMIN -->
+<div id="admin" class="page">
+  <div class="page-banner"><div class="banner-grid"></div><div class="banner-glow"></div><div class="overlay"></div><h1><small>ADMIN</small>お知らせ管理</h1></div>
+  <div class="pb">
+    <div class="admin-wrap">
+      <!-- ログイン画面 -->
+      <div id="adminLogin" class="admin-login">
+        <h2>🔐 管理者ログイン</h2>
+        <div class="admin-form">
+          <div class="fg"><label>パスワード</label><input type="password" id="adminPass" placeholder="パスワードを入力"></div>
+          <button class="btn-primary" onclick="adminLogin()" style="width:100%;padding:12px;">ログイン</button>
+          <p class="admin-err" id="adminErr"></p>
+        </div>
+      </div>
+      <!-- 管理画面 -->
+      <div id="adminPanel" style="display:none;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;">
+          <h2 style="font-size:1.1rem;font-weight:800;color:var(--ink);">お知らせ一覧</h2>
+          <div style="display:flex;gap:12px;align-items:center;">
+            <button class="btn-new" onclick="showEditor()">＋ 新規作成</button>
+            <button class="btn-logout" onclick="adminLogout()">ログアウト</button>
+          </div>
+        </div>
+        <div class="news-admin-list" id="newsAdminList"></div>
+        <!-- エディタ -->
+        <div class="news-editor" id="newsEditor" style="display:none;">
+          <h3 id="editorTitle">新規作成</h3>
+          <div class="fg"><label>日付 <span style="color:var(--blue)">*</span></label><input type="date" id="editorDate"></div>
+          <div class="fg"><label>タイトル <span style="color:var(--blue)">*</span></label><input type="text" id="editorHeadline" placeholder="タイトルを入力"></div>
+          <div class="fg"><label>本文 <span style="color:var(--blue)">*</span></label><textarea id="editorBody" placeholder="本文を入力"></textarea></div>
+          <div>
+            <button class="btn-save" onclick="saveArticle()">保存する</button>
+            <button class="btn-cancel" onclick="hideEditor()">キャンセル</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- PARTNER -->
 <div id="partner" class="page">
   <div class="page-banner"><div class="banner-grid"></div><div class="banner-glow"></div><div class="overlay"></div><h1><small>PARTNER</small>社長の隣に、IT と財務のプロを。</h1></div>
@@ -855,12 +896,93 @@
 </footer>
 
 <script>
-  function showPage(id, pushHistory){
+  // ── ブログ管理 ──
+  var ADMIN_PASS = 'byon7037';
+  var editingId = null;
+
+  function adminLogin(){
+    var p = document.getElementById('adminPass').value;
+    if(p === ADMIN_PASS){
+      document.getElementById('adminLogin').style.display = 'none';
+      document.getElementById('adminPanel').style.display = 'block';
+      renderAdminList();
+    } else {
+      document.getElementById('adminErr').textContent = 'パスワードが違います';
+    }
+  }
+  function adminLogout(){
+    document.getElementById('adminLogin').style.display = 'block';
+    document.getElementById('adminPanel').style.display = 'none';
+    document.getElementById('adminPass').value = '';
+    document.getElementById('adminErr').textContent = '';
+  }
+  function getArticles(){
+    try{ return JSON.parse(localStorage.getItem('bs_news')||'[]'); }catch(e){ return []; }
+  }
+  function saveArticles(arr){
+    localStorage.setItem('bs_news', JSON.stringify(arr));
+  }
+  function renderAdminList(){
+    var arts = getArticles();
+    var el = document.getElementById('newsAdminList');
+    if(!arts.length){ el.innerHTML = '<p style="color:var(--gray);font-size:.88rem;">記事がまだありません。</p>'; return; }
+    el.innerHTML = arts.sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(a){
+      return '<div class="news-admin-item"><div class="news-admin-item-body"><p class="news-admin-item-date">'+a.date+'</p><p class="news-admin-item-title">'+a.title+'</p></div><div class="news-admin-btns"><button class="btn-edit" onclick="editArticle(\''+a.id+'\')">編集</button><button class="btn-del" onclick="deleteArticle(\''+a.id+'\')">削除</button></div></div>';
+    }).join('');
+    renderNewsList();
+  }
+  function showEditor(){ document.getElementById('newsEditor').style.display='block'; document.getElementById('editorTitle').textContent='新規作成'; document.getElementById('editorDate').value=''; document.getElementById('editorHeadline').value=''; document.getElementById('editorBody').value=''; editingId=null; }
+  function hideEditor(){ document.getElementById('newsEditor').style.display='none'; editingId=null; }
+  function editArticle(id){
+    var arts = getArticles();
+    var a = arts.find(function(x){return x.id===id;});
+    if(!a) return;
+    editingId = id;
+    document.getElementById('editorTitle').textContent = '編集';
+    document.getElementById('editorDate').value = a.date;
+    document.getElementById('editorHeadline').value = a.title;
+    document.getElementById('editorBody').value = a.body;
+    document.getElementById('newsEditor').style.display = 'block';
+    document.getElementById('newsEditor').scrollIntoView({behavior:'smooth'});
+  }
+  function deleteArticle(id){
+    if(!confirm('この記事を削除しますか？')) return;
+    var arts = getArticles().filter(function(a){return a.id!==id;});
+    saveArticles(arts);
+    renderAdminList();
+  }
+  function saveArticle(){
+    var date = document.getElementById('editorDate').value;
+    var title = document.getElementById('editorHeadline').value.trim();
+    var body = document.getElementById('editorBody').value.trim();
+    if(!date||!title||!body){ alert('日付・タイトル・本文は必須です'); return; }
+    var arts = getArticles();
+    if(editingId){
+      arts = arts.map(function(a){ return a.id===editingId ? {id:a.id,date:date,title:title,body:body} : a; });
+    } else {
+      arts.push({id:Date.now().toString(),date:date,title:title,body:body});
+    }
+    saveArticles(arts);
+    hideEditor();
+    renderAdminList();
+  }
+  function renderNewsList(){
+    var arts = getArticles().sort(function(a,b){return b.date.localeCompare(a.date);});
+    var el = document.getElementById('dynamicNews');
+    if(!el) return;
+    if(!arts.length){ el.innerHTML=''; return; }
+    el.innerHTML = arts.map(function(a){
+      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb">'+a.body+'</p></div>';
+    }).join('');
+  }
+  document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('adminPass')===document.activeElement) adminLogin(); });
+  // ──────────────
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     var el=document.getElementById(id);
     if(el)el.classList.add('active');
     window.scrollTo(0,0);
     document.getElementById('navLinks').classList.remove('open');
+    if(id==='news') renderNewsList();
     if(pushHistory!==false){
       history.pushState({page:id},'',location.pathname+'?p='+id);
     }
