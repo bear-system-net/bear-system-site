@@ -910,48 +910,73 @@
 </footer>
 
 <script>
-  // ── ブログ管理 ──
-  var ADMIN_PASS = 'byon7037';
   var editingId = null;
+  var adminPassword = null;
+  var articlesCache = [];
 
-  function doAdminLogin(){
+  async function fetchArticles(){
+    try{
+      const r = await fetch('/api/articles');
+      articlesCache = await r.json();
+    }catch(e){ articlesCache = []; }
+    return articlesCache;
+  }
+
+  async function doAdminLogin(){
     var p = document.getElementById('adminPass').value;
-    if(p === ADMIN_PASS){
-      document.getElementById('adminLogin').style.display = 'none';
-      document.getElementById('adminPanel').style.display = 'block';
-      renderAdminList();
-    } else {
-      document.getElementById('adminErr').textContent = 'パスワードが違います';
+    document.getElementById('adminErr').textContent = '';
+    try{
+      const r = await fetch('/api/articles', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({password:p, action:'verify'})
+      });
+      const data = await r.json();
+      if(data.ok){
+        adminPassword = p;
+        document.getElementById('adminLogin').style.display='none';
+        document.getElementById('adminPanel').style.display='block';
+        renderAdminList();
+      } else {
+        document.getElementById('adminErr').textContent='パスワードが違います';
+      }
+    }catch(e){
+      document.getElementById('adminErr').textContent='通信エラーが発生しました';
     }
   }
   function doAdminLogout(){
-    document.getElementById('adminLogin').style.display = 'block';
-    document.getElementById('adminPanel').style.display = 'none';
-    document.getElementById('adminPass').value = '';
-    document.getElementById('adminErr').textContent = '';
+    adminPassword = null;
+    document.getElementById('adminLogin').style.display='block';
+    document.getElementById('adminPanel').style.display='none';
+    document.getElementById('adminPass').value='';
+    document.getElementById('adminErr').textContent='';
   }
-  function getArticles(){
-    try{ return JSON.parse(localStorage.getItem('bs_news')||'[]'); }catch(e){ return []; }
+  async function saveArticlesToServer(arr){
+    const r = await fetch('/api/articles', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({password: adminPassword, action:'save', articles: arr})
+    });
+    if(!r.ok){ throw new Error('save failed'); }
   }
-  function saveArticles(arr){
-    localStorage.setItem('bs_news', JSON.stringify(arr));
-  }
-  function renderAdminList(){
-    var arts = getArticles();
+  async function renderAdminList(){
+    await fetchArticles();
+    var arts = articlesCache;
     var el = document.getElementById('newsAdminList');
-    if(!arts.length){ el.innerHTML = '<p style="color:var(--gray);font-size:.88rem;">記事がまだありません。</p>'; return; }
-    el.innerHTML = arts.sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(a){
-      var typeLabel = a.type==='blog' ? '<span style="font-size:.65rem;font-weight:700;color:#fff;background:var(--blue);padding:2px 8px;border-radius:100px;margin-right:8px;">ブログ</span>' : '<span style="font-size:.65rem;font-weight:700;color:var(--gray);background:var(--light);padding:2px 8px;border-radius:100px;margin-right:8px;">お知らせ</span>';
-      return '<div class="news-admin-item"><div class="news-admin-item-body"><p class="news-admin-item-date">'+typeLabel+a.date+'</p><p class="news-admin-item-title">'+a.title+'</p></div><div class="news-admin-btns"><button class="btn-edit" onclick="editArticle(\''+a.id+'\')">編集</button><button class="btn-del" onclick="deleteArticle(\''+a.id+'\')">削除</button></div></div>';
-    }).join('');
-    renderNewsList();
-    renderBlogList();
+    if(!arts.length){ el.innerHTML = '<p style="color:var(--gray);font-size:.88rem;">記事がまだありません。</p>'; }
+    else {
+      el.innerHTML = arts.slice().sort(function(a,b){return b.date.localeCompare(a.date);}).map(function(a){
+        var typeLabel = a.type==='blog' ? '<span style="font-size:.65rem;font-weight:700;color:#fff;background:var(--blue);padding:2px 8px;border-radius:100px;margin-right:8px;">ブログ</span>' : '<span style="font-size:.65rem;font-weight:700;color:var(--gray);background:var(--light);padding:2px 8px;border-radius:100px;margin-right:8px;">お知らせ</span>';
+        return '<div class="news-admin-item"><div class="news-admin-item-body"><p class="news-admin-item-date">'+typeLabel+a.date+'</p><p class="news-admin-item-title">'+a.title+'</p></div><div class="news-admin-btns"><button class="btn-edit" onclick="editArticle(\''+a.id+'\')">編集</button><button class="btn-del" onclick="deleteArticle(\''+a.id+'\')">削除</button></div></div>';
+      }).join('');
+    }
+    renderNewsListFromCache();
+    renderBlogListFromCache();
   }
   function showEditor(){ document.getElementById('newsEditor').style.display='block'; document.getElementById('editorTitle').textContent='新規作成'; document.getElementById('editorType').value='news'; document.getElementById('editorDate').value=''; document.getElementById('editorHeadline').value=''; document.getElementById('editorBody').value=''; editingId=null; }
   function hideEditor(){ document.getElementById('newsEditor').style.display='none'; editingId=null; }
   function editArticle(id){
-    var arts = getArticles();
-    var a = arts.find(function(x){return x.id===id;});
+    var a = articlesCache.find(function(x){return x.id===id;});
     if(!a) return;
     editingId = id;
     document.getElementById('editorTitle').textContent = '編集';
@@ -962,27 +987,31 @@
     document.getElementById('newsEditor').style.display = 'block';
     document.getElementById('newsEditor').scrollIntoView({behavior:'smooth'});
   }
-  function deleteArticle(id){
+  async function deleteArticle(id){
     if(!confirm('この記事を削除しますか？')) return;
-    var arts = getArticles().filter(function(a){return a.id!==id;});
-    saveArticles(arts);
-    renderAdminList();
+    var arts = articlesCache.filter(function(a){return a.id!==id;});
+    try{
+      await saveArticlesToServer(arts);
+      await renderAdminList();
+    }catch(e){ alert('削除に失敗しました'); }
   }
-  function saveArticle(){
+  async function saveArticle(){
     var type = document.getElementById('editorType').value;
     var date = document.getElementById('editorDate').value;
     var title = document.getElementById('editorHeadline').value.trim();
     var body = document.getElementById('editorBody').value.trim();
     if(!date||!title||!body){ alert('日付・タイトル・本文は必須です'); return; }
-    var arts = getArticles();
+    var arts = articlesCache.slice();
     if(editingId){
       arts = arts.map(function(a){ return a.id===editingId ? {id:a.id,type:type,date:date,title:title,body:body} : a; });
     } else {
       arts.push({id:Date.now().toString(),type:type,date:date,title:title,body:body});
     }
-    saveArticles(arts);
-    hideEditor();
-    renderAdminList();
+    try{
+      await saveArticlesToServer(arts);
+      hideEditor();
+      await renderAdminList();
+    }catch(e){ alert('保存に失敗しました'); }
   }
   function linkify(text){
     var urlRegex = /(https?:\/\/[^\s<>"]+)/g;
@@ -992,26 +1021,29 @@
       return '<a href="'+clean+'" target="_blank" style="color:var(--blue);text-decoration:underline;">'+clean+'</a>'+trail;
     });
   }
-  function renderNewsList(){
-    var arts = getArticles().filter(function(a){return (a.type||'news')==='news';}).sort(function(a,b){return b.date.localeCompare(a.date);});
+  function renderNewsListFromCache(){
+    var arts = articlesCache.filter(function(a){return (a.type||'news')==='news';}).sort(function(a,b){return b.date.localeCompare(a.date);});
     var el = document.getElementById('dynamicNews');
     if(!el) return;
-    if(!arts.length){ el.innerHTML=''; return; }
     el.innerHTML = arts.map(function(a){
       return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
     }).join('');
   }
-  function renderBlogList(){
-    var arts = getArticles().filter(function(a){return a.type==='blog';}).sort(function(a,b){return b.date.localeCompare(a.date);});
+  function renderBlogListFromCache(){
+    var arts = articlesCache.filter(function(a){return a.type==='blog';}).sort(function(a,b){return b.date.localeCompare(a.date);});
     var el = document.getElementById('dynamicBlog');
     var empty = document.getElementById('blogEmpty');
     if(!el) return;
-    if(!arts.length){ el.innerHTML=''; if(empty) empty.style.display='block'; return; }
-    if(empty) empty.style.display='none';
-    el.innerHTML = arts.map(function(a){
-      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
-    }).join('');
+    if(!arts.length){ el.innerHTML=''; if(empty) empty.style.display='block'; }
+    else {
+      if(empty) empty.style.display='none';
+      el.innerHTML = arts.map(function(a){
+        return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
+      }).join('');
+    }
   }
+  async function renderNewsList(){ await fetchArticles(); renderNewsListFromCache(); }
+  async function renderBlogList(){ await fetchArticles(); renderBlogListFromCache(); }
   document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('adminPass')===document.activeElement) doAdminLogin(); });
   // ──────────────
   function showPage(id, pushHistory){
