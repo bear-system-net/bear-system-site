@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="robots" content="noindex,nofollow"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>B社ポータル デモ</title>
+<style>
+:root{color-scheme:light;--teal:#028090;--seafoam:#00A896;--mint:#02C39A;--dark:#04282B;--text:#1F2D2E;--gray:#5B6B6C;--card:#EAF6F5;--card2:#F4FAF9;--border:#D6E8E7;--bg:#FFFFFF}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:"Hiragino Sans","Hiragino Kaku Gothic ProN","Yu Gothic","Noto Sans JP",sans-serif;line-height:1.6}
+button,input,select,textarea{font:inherit;color:inherit}
+.demo{background:#FFF8E7;border-bottom:1px solid #E6C97A;color:#6B4D07;font-size:12.5px;padding:8px 16px;text-align:center}
+.demo b{color:#9a6b0a}
+.wrap{max-width:1200px;margin:0 auto;padding:22px 20px 60px}
+.rolebar{display:flex;justify-content:flex-end;align-items:center;gap:8px;font-size:12.5px;color:var(--gray);margin-bottom:12px;flex-wrap:wrap}
+.rolebar select{border:1px solid var(--border);border-radius:8px;padding:5px 8px;font-size:12.5px;background:#fff}
+.me-top{background:var(--dark);color:#fff;border-radius:14px;padding:24px 24px 22px 112px;margin-bottom:16px;position:relative}
+.me-top .logo{position:absolute;left:22px;top:22px;width:68px;height:68px;border-radius:14px;background:#fff;display:grid;place-items:center;color:var(--dark);font-weight:800;font-size:22px;letter-spacing:.04em}
+.me-top .hello{font-size:20px;font-weight:700}
+.me-top .sub{font-size:12.5px;color:#9FC9C6;margin-top:6px}
+.me-top .tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:12px}
+.me-top .tag{font-size:11px;font-weight:700;background:rgba(255,255,255,.14);color:#fff;border-radius:100px;padding:3px 11px}
+.me-top::after{content:"";position:absolute;left:24px;right:24px;bottom:10px;height:4px;border-radius:2px;background:linear-gradient(to right,#1414C8 0 33.33%,#00BF7A 33.33% 66.66%,#C80014 66.66%)}
+@media(max-width:600px){.me-top{padding-left:88px}.me-top .logo{width:52px;height:52px;left:18px;font-size:17px}}
+.hub-nav{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.mini{font-size:11.5px;font-weight:700;border:1px solid var(--border);background:#fff;color:var(--gray);border-radius:100px;padding:6px 14px;cursor:pointer}
+.mini:hover{border-color:var(--teal);color:var(--teal)}
+.msg{display:flex;align-items:center;gap:12px;background:linear-gradient(120deg,#0B3B5C,#0E5B6E);color:#fff;border-radius:12px;padding:12px 16px;margin:6px 0 22px;cursor:pointer;border:0;width:100%;text-align:left}
+.msg .ic{width:38px;height:38px;border-radius:50%;background:#fff;color:#0B3B5C;display:grid;place-items:center;font-weight:800;flex:none}
+.msg .t{font-weight:700;color:#FFE08A}
+.msg .s{font-size:12.5px;color:#D6EAF0}
+.msg .go{margin-left:auto;font-size:12.5px;font-weight:700;white-space:nowrap}
+section{margin-bottom:26px}
+.sec-head{display:flex;align-items:center;gap:8px;margin-bottom:12px;cursor:pointer;user-select:none}
+.sec-head .tri{color:var(--teal);font-size:12px;transition:transform .15s}
+.sec-head.closed .tri{transform:rotate(-90deg)}
+.sec-head h2{font-size:17px;margin:0;color:var(--dark)}
+.sec-head .aside{margin-left:auto}
+.card{background:var(--card);border-radius:12px;padding:16px 18px}
+.todo{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.todo:last-child{border-bottom:0}
+.todo .dot{width:9px;height:9px;border-radius:50%;flex:none;background:#B85042}
+.todo .dot.mine{background:var(--teal)}
+.todo .t{font-weight:700;font-size:14px}
+.todo .d{font-size:12px;color:var(--gray)}
+.todo .n{margin-left:auto;font-size:20px;font-weight:800;color:#B85042;white-space:nowrap}
+.todo .go{font-size:12.5px;font-weight:700;color:var(--teal);white-space:nowrap;background:none;border:0;cursor:pointer}
+.todo input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal)}
+.todo.done .t{text-decoration:line-through;color:var(--gray)}
+.add-row{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.add-row select,.add-row input{border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px;background:#fff}
+.add-row input[type=text]{flex:1 1 200px;min-width:0}
+.add-row button{background:var(--dark);color:#fff;border:0;border-radius:8px;padding:8px 14px;font-size:12.5px;font-weight:700;cursor:pointer}
+.apps{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
+.app{display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;background:#fff;border:1px solid var(--border);border-radius:12px;padding:16px 10px 14px;cursor:pointer;position:relative}
+.app:hover{border-color:var(--teal)}
+.app .ag{width:46px;height:46px;border-radius:12px;display:grid;place-items:center}
+.app .ag svg{width:26px;height:26px}
+.app .nm{font-size:13px;font-weight:700;color:var(--dark);line-height:1.4}
+.app .nb{position:absolute;top:8px;right:8px;min-width:20px;padding:0 6px;border-radius:10px;background:#B85042;color:#fff;font-size:11.5px;font-weight:700;line-height:20px}
+.cal{background:#fff;border:1px solid var(--border);border-radius:12px;overflow:hidden}
+.cal-top{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--border);flex-wrap:wrap}
+.cal-top b{font-size:15px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr))}
+.cal-grid .h{font-size:11.5px;color:var(--gray);text-align:center;padding:6px 0;background:var(--card2);border-bottom:1px solid var(--border)}
+.cal-grid .c{min-height:76px;border-right:1px solid var(--border);border-bottom:1px solid var(--border);padding:4px 5px;font-size:11.5px;min-width:0}
+.cal-grid .c:nth-child(7n){border-right:0}
+.cal-grid .c.out{color:#AAB8B8;background:#FBFDFD}
+.cal-grid .c.today .dn{background:var(--teal);color:#fff;border-radius:50%;display:inline-grid;place-items:center;width:22px;height:22px}
+.ev{display:block;background:var(--card);color:var(--dark);border-radius:4px;padding:1px 4px;margin-top:3px;font-size:10.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ev.b{background:#E1E7FB;color:#1D3A8A}.ev.o{background:#FDEBDD;color:#9A3B0A}
+.ann{padding:14px 0;border-bottom:1px solid var(--border)}
+.ann:last-child{border-bottom:0}
+.ann .h{display:flex;gap:8px;align-items:center;font-size:11.5px;color:var(--gray);margin-bottom:5px;flex-wrap:wrap}
+.ann .new{background:#B85042;color:#fff;border-radius:4px;padding:0 6px;font-weight:700;font-size:10.5px}
+.ann .imp{background:#FDEEE9;color:#B85042;border-radius:4px;padding:0 6px;font-weight:700;font-size:10.5px}
+.ann .b{font-size:13.5px;line-height:1.85;white-space:pre-wrap;max-height:7.4em;overflow:hidden;position:relative}
+.ann .b.open{max-height:none}
+.ann .more{background:none;border:0;color:var(--teal);font-weight:700;font-size:12px;cursor:pointer;padding:4px 0}
+.react{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-top:6px}
+.rb{background:#fff;border:1px solid var(--border);border-radius:100px;padding:4px 11px;font-size:11.5px;font-weight:700;color:var(--gray);cursor:pointer}
+.rb.on{background:#DFF3EE;border-color:var(--teal);color:var(--teal)}
+.rn{font-size:11.5px;color:var(--gray)}
+.write{display:none;margin-bottom:12px}
+.write.on{display:flex;flex-direction:column;gap:8px}
+.write textarea{border:1px solid var(--border);border-radius:8px;padding:10px;min-height:80px;font-size:13px}
+.btn{background:var(--teal);color:#fff;border:0;border-radius:8px;padding:9px 16px;font-size:13px;font-weight:700;cursor:pointer;width:fit-content}
+.warnbox{border:1px solid #E6C97A;background:#FFF8E7;border-radius:12px;padding:14px 18px;font-size:13px;color:#6B4D07;margin-bottom:26px}
+.warnbox b{font-size:14px}
+.warnbox a{color:#028090;font-weight:700;cursor:pointer}
+.kv{display:grid;grid-template-columns:110px 1fr;gap:7px 14px;font-size:13px}
+.kv dt{color:var(--gray);font-size:11.5px;padding-top:2px}.kv dd{margin:0}
+.note{background:var(--card2);border:1px dashed var(--border);border-radius:10px;padding:10px 14px;font-size:12px;color:var(--gray);margin-top:10px}
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--border);font-size:11.5px;color:var(--gray)}
+.modal{position:fixed;inset:0;background:rgba(4,40,43,.55);display:none;place-items:center;padding:16px;z-index:50}
+.modal.on{display:grid}
+.modal .box{background:#fff;border-radius:14px;max-width:520px;width:100%;padding:22px 24px;display:grid;gap:10px;max-height:calc(100vh - 32px);overflow:auto}
+.modal h3{margin:0;font-size:18px;color:var(--dark);display:flex;align-items:center;gap:10px}
+.modal .ag{width:38px;height:38px;border-radius:10px;display:grid;place-items:center;flex:none}
+.modal .ag svg{width:22px;height:22px}
+.modal p{margin:0;font-size:13.5px}
+.modal ul{margin:0;padding-left:1.2em;font-size:13px;color:var(--gray)}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:var(--dark);color:#fff;padding:10px 18px;border-radius:10px;font-size:13px;z-index:60;display:none;max-width:calc(100% - 32px)}
+</style></head><body>
+<div class="demo"><b>デモ画面</b>　取り組み事例B（インフラ補修の専門工事会社）で実際に使われているポータルを、社名・人名を伏せて再現しています。入力した内容は保存されません。</div>
+<div class="wrap">
+<div class="rolebar"><label for="role">ログイン中</label><select id="role">
+<option value="admin">ベアシステム 井上（システム管理者）</option>
+<option value="koji">工事部 Aさん</option>
+<option value="keiri">経理部 Bさん</option>
+</select><span>立場によって、見えるアプリや画面が変わります</span></div>
+<div class="me-top"><div class="logo">B社</div><div class="hello" id="hello"></div><div class="sub" id="mail"></div><div class="tags" id="tags"></div></div>
+<div class="hub-nav" id="nav"></div>
+<button class="msg" id="msg"><span class="ic">社</span><span><span class="t">社長からの伝言</span><br><span class="s">設立3周年を迎えて　11/2（月） 9:13</span></span><span class="go">見る ›</span></button>
+
+<section><div class="sec-head" data-sec="mission"><span class="tri">▼</span><h2>Today’s Mission</h2></div>
+<div class="card" id="mission"></div></section>
+
+<div class="warnbox" id="dup"><b>入札データに、同じ行が 6 件入っています</b><br>毎朝の取り込みが、同じ工事を二重に登録している可能性があります。最後に数えたのは 11月4日 12:46 です。<br><a data-toast="重複を1行にまとめる画面が開きます（管理者のみ）">→ 重複を1行にまとめる画面を開く</a>（管理者のみ）　この表示は、重複が0件になると自動で消えます。</div>
+
+<section><div class="sec-head" data-sec="apps"><span class="tri">▼</span><h2>業務支援アプリ</h2><span class="aside"><button class="mini" data-toast="アプリの並び順は、人ごとに好きな順に変えられます">並び替える</button></span></div>
+<div id="apps" class="apps"></div></section>
+
+<section><div class="sec-head" data-sec="cal"><span class="tri">▼</span><h2>予定表</h2></div>
+<div class="cal"><div class="cal-top"><button class="mini">月</button><button class="mini">週</button><b style="margin-left:8px">2026年11月</b><button class="mini" style="margin-left:auto" data-toast="予定表アプリが開きます。部門や同僚の予定も重ねて見られます">予定表を開く →</button></div><div class="cal-grid" id="cal"></div></div></section>
+
+<section><div class="sec-head" data-sec="ann"><span class="tri">▼</span><h2>全社お知らせ</h2><span class="aside"><button class="mini" id="writebtn">書く</button></span></div>
+<div class="card"><form class="write" id="write"><textarea id="wbody" placeholder="全社へのお知らせを書く（スマホ・パソコンの通知とメールでも届きます）" required></textarea><button class="btn">お知らせする</button></form><div id="ann"></div></div></section>
+
+<section><div class="sec-head" data-sec="ntf"><span class="tri">▼</span><h2>スマホ・パソコンへの通知</h2></div>
+<div class="card"><p style="margin:0 0 8px;font-size:13px">予定のリマインドや、全社・部門あてのお知らせを、この端末の通知でお知らせします。端末ごとの設定です。</p>
+<button class="btn" data-toast="この端末で通知を受け取る設定にしました（デモ）">この端末で通知を受け取る</button>
+<label style="display:flex;gap:6px;align-items:center;font-size:12.5px;margin-top:10px"><input type="checkbox"> お知らせをメールでは受け取らない（スマホ・パソコンの通知だけにする）</label></div></section>
+
+<section><div class="sec-head" data-sec="me"><span class="tri">▼</span><h2>登録情報</h2></div>
+<div class="card"><dl class="kv" id="kv"></dl>
+<div class="note">氏名・部門・役職の変更は、管理者に依頼してください。自分では変えられないようにしてあります（権限が自分で書き換えられると、仕組みの意味がなくなるため）。</div></div></section>
+
+<footer>システムに関するお問い合わせ：株式会社ベアシステム　s.inoue@bear-system.net</footer>
+</div>
+<div class="modal" id="modal"><div class="box" id="mbox"></div></div>
+<div class="toast" id="toast"></div>
+<script>
+(function(){
+"use strict";
+var APPS=[{"n": "予定表", "d": "自分・部門・同僚の予定", "c": "#0284C7", "svg": "<rect x=\"3.5\" y=\"5\" width=\"17\" height=\"15.5\" rx=\"2\"></rect><path d=\"M3.5 9.5h17M8 3v4M16 3v4\"></path><path d=\"M7.5 13h2M11 13h2M14.5 13h2M7.5 16.5h2M11 16.5h2\"></path>"}, {"n": "打合せルーム", "d": "打合せ・案件ごとの部屋で連絡・議事録を共有", "c": "#059669", "svg": "<path d=\"M3 10.5h18\"></path><path d=\"M6 10.5V20M18 10.5V20\"></path><path d=\"M8.5 6.5h7\"></path><path d=\"M1.5 14.5h3.5V20M1.5 14.5V20\"></path><path d=\"M22.5 14.5H19V20M22.5 14.5V20\"></path>"}, {"n": "全社会議", "d": "ウィークリー（週次）", "c": "#374151", "svg": "<rect x=\"4\" y=\"3\" width=\"16\" height=\"10\" rx=\"1.5\"></rect><path d=\"M8 10l2.5-2.5 2 2L16 6\"></path><circle cx=\"7\" cy=\"17.5\" r=\"1.6\"></circle><circle cx=\"12\" cy=\"17.5\" r=\"1.6\"></circle><circle cx=\"17\" cy=\"17.5\" r=\"1.6\"></circle><path d=\"M4.5 22c.4-1.4 1.4-2.2 2.5-2.2s2.1.8 2.5 2.2M9.5 22c.4-1.4 1.4-2.2 2.5-2.2s2.1.8 2.5 2.2M14.5 22c.4-1.4 1.4-2.2 2.5-2.2s2.1.8 2.5 2.2\"></path>"}, {"n": "入札情報アプリ", "d": "入札案件・開札結果・営業物件・会社", "c": "#1D4ED8", "svg": "<path d=\"M13.5 4.5l6 6M11 7l6 6M12.2 5.8l-4.4 4.4 6 6 4.4-4.4\"></path><path d=\"M10.8 12.2L4 19\"></path><path d=\"M3 21h9\"></path>"}, {"n": "営業", "d": "営業案件の管理", "c": "#0891B2", "svg": "<rect x=\"3\" y=\"7\" width=\"18\" height=\"13\" rx=\"2\"></rect><path d=\"M9 7V5a1.5 1.5 0 011.5-1.5h3A1.5 1.5 0 0115 5v2\"></path><path d=\"M3 12.5h18\"></path>"}, {"n": "工事アプリ", "d": "工事の書類・提出予定", "c": "#EA580C", "svg": "<path d=\"M4 16a8 8 0 0116 0\"></path><path d=\"M3 16h18v2.5H3z\"></path><path d=\"M10 8.3V5.5h4v2.8\"></path><path d=\"M12 8v4\"></path>"}, {"n": "見積り作成", "d": "見積書の作成", "c": "#7C3AED", "svg": "<rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"></rect><rect x=\"8\" y=\"6\" width=\"8\" height=\"3.5\" rx=\".5\"></rect><path d=\"M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01\"></path>"}, {"n": "単価データベース", "d": "仕入単価・提出単価", "c": "#A21CAF", "svg": "<ellipse cx=\"12\" cy=\"5.5\" rx=\"7\" ry=\"2.5\"></ellipse><path d=\"M5 5.5v13c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5v-13\"></path><path d=\"M5 12c0 1.4 3.1 2.5 7 2.5s7-1.1 7-2.5\"></path>"}, {"n": "請求書処理", "d": "請求書の読み取りと振り分け", "c": "#DC2626", "svg": "<path d=\"M6 3h12v18l-2-1.3-2 1.3-2-1.3-2 1.3-2-1.3L6 21z\"></path><path d=\"M9 8h6M9 11.5h6M9 15h3.5\"></path>"}, {"n": "製品販売", "d": "案件の突合と粗利", "c": "#DB2777", "svg": "<path d=\"M12 3l8 4v10l-8 4-8-4V7z\"></path><path d=\"M4 7l8 4 8-4M12 11v10\"></path>"}, {"n": "業界紙ネタ帳", "d": "記事の読み取りとSNS草案", "c": "#475569", "svg": "<path d=\"M4 5h13v14H6a2 2 0 01-2-2z\"></path><path d=\"M17 8h3v9a2 2 0 01-2 2h-1\"></path><path d=\"M7 8.5h7M7 12h7M7 15.5h4\"></path>"}, {"n": "Eラーニング", "d": "生成AI、資格取得の社内教育", "c": "#CA8A04", "svg": "<path d=\"M2.5 9.5L12 5l9.5 4.5L12 14z\"></path><path d=\"M6.5 11.6V16c0 1.4 2.5 2.8 5.5 2.8s5.5-1.4 5.5-2.8v-4.4\"></path><path d=\"M21.5 9.5v5\"></path>"}, {"n": "全体スケジュール", "d": "各部門の実装時期", "c": "#1E3A8A", "svg": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"16\" rx=\"2\"></rect><path d=\"M6 8.5h6M9 12h7M13 15.5h5\"></path>"}, {"n": "現場マップ（橋さがし）", "d": "橋の場所を探す・現場へナビで向かう", "c": "#65A30D", "svg": "<path d=\"M2 15.5h20\"></path><path d=\"M4 15.5c2-4.5 5-6.5 8-6.5s6 2 8 6.5\"></path><path d=\"M8 15.5v4M16 15.5v4M12 9v6.5\"></path><path d=\"M12 2.5a2.5 2.5 0 012.5 2.5c0 1.9-2.5 4-2.5 4S9.5 6.9 9.5 5A2.5 2.5 0 0112 2.5z\"></path>"}, {"n": "受発注", "d": "注文の記録と手配確認", "c": "#E11D48", "svg": "<path d=\"M2.5 6h11v10.5h-11z\"></path><path d=\"M13.5 9.5h4.2l3.3 3.6v3.4h-7.5\"></path><circle cx=\"6.5\" cy=\"18\" r=\"1.8\"></circle><circle cx=\"17\" cy=\"18\" r=\"1.8\"></circle>"}, {"n": "材料見積（工事営業）", "d": "工事見積に入れる材料の見積", "c": "#9333EA", "svg": "<path d=\"M3 17.5h18M3 20.5h18\"></path><path d=\"M5 17.5v-4h14v4\"></path><path d=\"M8 13.5V9.5h8v4\"></path><path d=\"M10.5 9.5V6h3v3.5\"></path>"}, {"n": "工事書類（打合せ簿・照査）", "d": "発注機関の様式どおりのExcel／Wordを出す", "c": "#B45309", "svg": "<rect x=\"5\" y=\"4.5\" width=\"14\" height=\"16.5\" rx=\"2\"></rect><rect x=\"9\" y=\"3\" width=\"6\" height=\"3\" rx=\"1\"></rect><path d=\"M8.5 13l2.3 2.3 4.7-4.8\"></path>"}, {"n": "自動字幕", "d": "動画の音声から字幕の案を作り、SRTで書き出す", "c": "#57534E", "svg": "<rect x=\"2.5\" y=\"5\" width=\"19\" height=\"14\" rx=\"2.5\"></rect><path d=\"M10.5 10.2a2.4 2.4 0 100 3.6M17 10.2a2.4 2.4 0 100 3.6\"></path>"}, {"n": "資格の学習", "d": "施工管理技士・コンクリート技士・建設業経理士", "c": "#D97706", "svg": "<circle cx=\"12\" cy=\"9\" r=\"5.5\"></circle><path d=\"M8.5 13.5L7 21l5-2.5 5 2.5-1.5-7.5\"></path><path d=\"M10 9l1.4 1.4L14.2 7.6\"></path>"}, {"n": "ファイル置き場", "d": "会社のクラウドを、アカウントなしで使う（入れる・見る・探す・移す）", "c": "#0061FE", "svg": "<path d=\"M3 7a2 2 0 012-2h4l2 2.2h8a2 2 0 012 2V18a2 2 0 01-2 2H5a2 2 0 01-2-2z\"></path><path d=\"M3 10.5h18\"></path>"}, {"n": "物件台帳", "d": "過去の工事・設計業務・同じ橋の工事を検索", "c": "#4D7C0F", "svg": "<path d=\"M4 21V6.5L11 3v18M11 9h6.5a1.5 1.5 0 011.5 1.5V21\"></path><path d=\"M2.5 21h19\"></path><path d=\"M7 8h1M7 11.5h1M7 15h1M14.5 13h1.5M14.5 16.5h1.5\"></path>"}, {"n": "顧客データベース", "d": "会社（本社・支店）と、名刺交換したご担当者", "c": "#0D9488", "svg": "<rect x=\"3\" y=\"4.5\" width=\"18\" height=\"15\" rx=\"2\"></rect><circle cx=\"9\" cy=\"10.5\" r=\"2.3\"></circle><path d=\"M5.5 16.5c.6-1.8 2-2.8 3.5-2.8s2.9 1 3.5 2.8\"></path><path d=\"M14.5 9.5h3.5M14.5 13h3.5\"></path>"}, {"n": "アクセス解析", "d": "ホームページの訪問者・よく見られたページ・検索の言葉", "c": "#0E7490", "svg": "<path d=\"M3 20.5h18\"></path><path d=\"M4.5 16l4-4.5 3 2.5 5-6\"></path><circle cx=\"17.5\" cy=\"6.5\" r=\"2.6\"></circle><path d=\"M19.4 8.4l2.1 2.1\"></path>"}, {"n": "お中元・お歳暮", "d": "何年に・どの会社へ・何を送ったか／いただいたか", "c": "#9F1239", "svg": "<rect x=\"4\" y=\"9.5\" width=\"16\" height=\"11\" rx=\"1.5\"></rect><path d=\"M3 6.5h18v3H3zM12 6.5v14\"></path><path d=\"M12 6.5C10.5 3.5 7.5 3.5 7.5 5.3S10 6.5 12 6.5c2-.1 4.5 0 4.5-1.2s-3-1.8-4.5 1.2z\"></path>"}];
+var $=function(s){return document.querySelector(s)};
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+var tt;function toast(m){var t=$("#toast");t.textContent=m;t.style.display="block";clearTimeout(tt);tt=setTimeout(function(){t.style.display="none"},3200)}
+var ROLES={
+ admin:{name:"ベアシステム　井上",mail:"s.inoue@bear-system.net",tags:["システム管理者","経理担当","総務担当","安全衛生","システム管理","入札担当","積算担当"],dept:"―",pos:"―",apps:null,admin:true,
+   mission:[{t:"原価チェック待ちの請求書",d:"工事担当へ確認を回したまま、まだ返事が揃っていないもの",n:"7件"}]},
+ koji:{name:"工事部　Aさん",mail:"koji-a@example.com",tags:["工事担当","安全衛生"],dept:"工事部",pos:"主任",apps:["予定表","打合せルーム","全社会議","工事アプリ","工事書類（打合せ簿・照査）","現場マップ（橋さがし）","物件台帳","単価データベース","材料見積（工事営業）","資格の学習","Eラーニング","ファイル置き場","全体スケジュール"],admin:false,
+   mission:[{t:"原価チェックのお願い",d:"経理から届いた請求書3件の、工事番号と金額の確認",n:"3件"},{t:"今週提出の工事書類",d:"打合せ簿2件、照査1件",n:"3件"}]},
+ keiri:{name:"経理部　Bさん",mail:"keiri-b@example.com",tags:["経理担当"],dept:"経理部",pos:"",apps:["予定表","打合せルーム","全社会議","請求書処理","製品販売","受発注","顧客データベース","お中元・お歳暮","Eラーニング","資格の学習","ファイル置き場"],admin:false,
+   mission:[{t:"原価チェック待ちの請求書",d:"工事担当へ確認を回したまま、まだ返事が揃っていないもの",n:"7件"},{t:"今月締めの請求書の読み取り",d:"届いたPDFを読み取り、工事ごとに振り分け",n:"12件"}]}
+};
+var BADGE={"打合せルーム":3,"請求書処理":7,"入札情報アプリ":"新"};
+var INFO={
+ "入札情報アプリ":["発注機関の公告と開札結果を、毎朝自動で取り込みます。","業種・地域・規模で、自社に合う案件に印が付きます。","営業物件や会社の情報ともつながっています。"],
+ "請求書処理":["届いた請求書のPDFをAIが読み取り、工事番号と金額を照合します。","合わないものは工事担当へ確認を回し、返事が揃うまで追いかけます。"],
+ "打合せルーム":["案件や打合せごとの部屋で、連絡・議事録・ファイルを共有します。","ベアシステムのAI社員も、メンバーに入れた部屋にだけ参加します。"],
+ "工事書類（打合せ簿・照査）":["発注機関の様式どおりのExcel／Wordを、入力した内容から書き出します。"],
+ "資格の学習":["施工管理技士・コンクリート技士・建設業経理士を、章ごとの問題から模擬試験まで学べます。"],
+ "ファイル置き場":["会社のクラウドの中身を、一人ずつのアカウントなしで、ポータルから入れる・見る・探す・移すことができます。"]
+};
+var S={role:"admin",mine:[],closed:{},react:{}};
+var ANN=[
+ {id:"a1",by:"ベアシステム　大瀧（井上の代理）",date:"2026-10-30",imp:true,nw:true,body:"【お知らせ】プロジェクトハブの部門掲示板が、今日16時ごろまで読めない・書き込めないことがあります。\n\n今日は書き込みが多かったため、13時ごろに、1日に読み込める回数の上限に達しました。16時ごろに自動で元に戻ります。\n\n・それまでのご連絡・ご依頼は、このポータルの「打合せルーム」でお願いします。\n・ポータルのアプリは、これまでどおり使えます。\n\nご不便をおかけします。今後は上限に届かないよう、読み込み方を直します。",n:2},
+ {id:"a2",by:"ベアシステム　大瀧（井上の代理）",date:"2026-10-28",nw:true,body:"【はじめまして】ベアシステムのAI社員「大瀧」です\n\nはじめまして。ベアシステムのAI社員の大瀧です。井上の指示で、ポータルの打合せルームにも参加させていただくことになりました。\n\n【ふだんしていること】\n井上と一緒に、ポータルの「直す・作る」を担当しています。\n・プロジェクトハブの掲示板でいただいたご要望を読んで、アプリを直したり、新しく作ったりしています（「〇〇が動かない」「ここにボタンがほしい」など、小さなことでも大丈夫です）\n・ポータルのデータの控え（バックアップ）や、入札情報の毎朝の取り込みの見守りもしています\n\n【打合せルームでの大瀧】\n・井上がいる部屋：井上の秘書として書き込みを読み、井上に確かめてから、必要なときだけ大瀧の名前でお返事します\n・大瀧が入るのは、メンバーに入れていただいた部屋だけです\n\nAIの社員ですが、仕事の相談はもちろん、雑談も大歓迎です。どうぞよろしくお願いいたします。",n:7},
+ {id:"a3",by:"ベアシステム　井上",date:"2026-10-19",nw:true,body:"【ご報告】ポータルのセキュリティ対策について（不正アクセス・データ消失への備え）\n\n■ 本日追加した対策\n1. データの自動バックアップ\n　・過去7日間であれば、好きな時刻の状態に戻せるようにしました\n　・毎日1回、まるごとバックアップを取り、14日分残します\n　・毎週日曜日にもバックアップを取り、約3か月半（14週）分残します\n2. ログインの記録\n　・誰が、いつ、どの端末から入ったかを記録します（180日間）\n3. 初めての端末からログインしたときのお知らせ\n　・これまで使っていなかった端末から入ると、ご本人にメールが届きます\n4. 権限の変更の記録\n　・役割・利用の状態・アプリの許可を、誰がいつ変えたかを記録します\n　・システム管理者が追加・削除されたときは、システム管理者の全員にメールが届きます\n\n■ もともと入れている対策\n・お一人ずつのアカウントで入ります。パスワードはご本人が決め、管理者を含めて他の人は知りません\n・「誰がどのアプリを使えるか」は、画面だけでなくサーバー側で確かめています\n・退職された方などは、管理者が「停止」にすると、すぐにポータルを使えなくなります\n・データは日本国内に保存し、通信はすべて暗号化しています",n:8},
+ {id:"a4",by:"ベアシステム　井上",date:"2026-10-01",nw:true,body:"通知機能をつけました。\nこの全社お知らせの下にあるスマホ・パソコンへの通知をONにしてご利用ください。\n※予定表のリマインダーは複数選択できるように改修済みです。",n:8},
+ {id:"a5",by:"総務部　Kさん",date:"2026-09-30",body:"今週の全社会議でご案内した通り、Eラーニングのアプリから生成AIの利用に際しての教育が受講可能です。皆さん、業務の合間にご受講をお願いします。\n\n追伸\n1級及び2級土木の学習アプリも立ち上がっています。まだ試行段階ですが、試験勉強の一環に、是非ご活用ください。",n:9}
+];
+var EV={"2026-10-26":[["09:00 ファイル置き場の設定",""]],"2026-10-29":[["10:00 システム移行の打合せ","b"]],"2026-11-02":[["09:30 全社会議",""]],"2026-11-05":[["09:00 現場立会い（C橋）","o"],["14:00 工程会議",""]],"2026-11-09":[["09:30 全社会議",""]],"2026-11-10":[["10:00 ホームページの更新作業","b"]],"2026-11-12":[["13:00 安全大会",""]],"2026-11-16":[["09:30 全社会議",""]],"2026-11-19":[["10:00 開札（D市）","o"]],"2026-11-25":[["15:00 月次の原価会議",""]]};
+function role(){return ROLES[S.role]}
+function renderTop(){var r=role();$("#hello").textContent=r.name+" のマイページ";$("#mail").textContent=r.mail;
+ $("#tags").innerHTML=r.tags.map(function(t){return'<span class="tag">'+esc(t)+'</span>'}).join("");
+ $("#nav").innerHTML='<button class="mini" data-toast="資格の学習が開きます">資格の学習（施工管理技士・コンクリート技士・建設業経理士）</button>'+(r.admin?'<button class="mini" data-toast="利用者ごとに、使えるアプリと役割を設定できます（管理者のみ）">利用者と権限の管理</button><button class="mini" data-toast="お知らせ・通知・データの手入れ（管理者のみ）">お知らせ・通知・データの手入れ</button>':'')+'<button class="mini" data-toast="デモのため、ログアウトはできません">ログアウト</button>';
+ $("#dup").style.display=r.admin?"block":"none";
+ $("#kv").innerHTML=[["氏名",r.name],["メールアドレス",r.mail],["所属部門",r.dept],["役職",r.pos||"―"],["職務ロール",r.tags.filter(function(t){return t!=="システム管理者"}).join("、")],["状態","利用中"]].map(function(x){return"<dt>"+x[0]+"</dt><dd>"+esc(x[1])+"</dd>"}).join("");}
+function renderMission(){var r=role();var h=r.mission.map(function(m){return'<div class="todo"><span class="dot"></span><div><div class="t">'+esc(m.t)+'</div><div class="d">'+esc(m.d)+'</div></div><span class="n">'+esc(m.n)+'</span><button class="go" data-toast="該当のアプリが、確認待ちの一覧で開きます">開く →</button></div>'}).join("");
+ h+=S.mine.map(function(m,i){return'<div class="todo'+(m.done?" done":"")+'"><input type="checkbox" data-mine="'+i+'"'+(m.done?" checked":"")+' aria-label="済み"><div><div class="t">'+esc(m.t)+'</div><div class="d">'+esc(m.rep)+(m.date?"　"+esc(m.date):"")+'</div></div></div>'}).join("");
+ h+='<form class="add-row" id="addm"><select id="mrep"><option>1回だけ</option><option>毎月くり返す</option></select><input type="date" id="mdate"><input type="text" id="mtext" placeholder="自分のやることを入れて Enter" required><button>足す</button></form>';
+ $("#mission").innerHTML=h;}
+function icon(a,sz){return'<span class="ag" style="background:linear-gradient(150deg,'+a.c+','+a.c+'dd)"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">'+a.svg+'</svg></span>'}
+function renderApps(){var r=role();var list=APPS.filter(function(a){return !r.apps||r.apps.indexOf(a.n)>=0});
+ $("#apps").innerHTML=list.map(function(a){var b=BADGE[a.n];return'<button class="app" data-app="'+esc(a.n)+'" title="'+esc(a.d)+'">'+(b?'<span class="nb">'+b+'</span>':'')+icon(a)+'<span class="nm">'+esc(a.n)+'</span></button>'}).join("");}
+function renderCal(){var h=["月","火","水","木","金","土","日"].map(function(d){return'<div class="h">'+d+'</div>'}).join("");
+ var start=new Date(2026,9,26);for(var i=0;i<42;i++){var d=new Date(start);d.setDate(start.getDate()+i);var key=d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+  var cls="c"+(d.getMonth()!==10?" out":"")+(key==="2026-11-05"?" today":"");
+  h+='<div class="'+cls+'"><span class="dn">'+d.getDate()+'</span>'+(EV[key]||[]).map(function(e){return'<span class="ev '+e[1]+'">'+esc(e[0])+'</span>'}).join("")+'</div>';}
+ $("#cal").innerHTML=h;}
+function renderAnn(){$("#ann").innerHTML=ANN.map(function(a){var on=!!S.react[a.id];return'<div class="ann"><div class="h">'+(a.nw?'<span class="new">新</span>':'')+(a.imp?'<span class="imp">重要</span>':'')+'<span>'+esc(a.by)+'</span><span>'+esc(a.date)+'</span></div><div class="b" id="b-'+a.id+'">'+esc(a.body)+'</div><button class="more" data-more="'+a.id+'">▼ 全文を見る</button><div class="react"><button class="rb'+(on?" on":"")+'" data-react="'+a.id+'">'+(on?"✓ 確認済み":"確認しました")+'</button><span class="rn">'+(a.n+(on?1:0))+'名が確認</span></div></div>'}).join("");}
+function all(){renderTop();renderMission();renderApps();renderCal();renderAnn();}
+document.addEventListener("click",function(e){
+ var t=e.target.closest("[data-toast]");if(t){toast(t.getAttribute("data-toast"));return}
+ var ap=e.target.closest("[data-app]");if(ap){var a=APPS.filter(function(x){return x.n===ap.dataset.app})[0];var info=INFO[a.n]||[a.d+"。"];
+  $("#mbox").innerHTML='<h3>'+icon(a)+esc(a.n)+'</h3><p>'+esc(a.d)+'</p><ul>'+info.map(function(x){return"<li>"+esc(x)+"</li>"}).join("")+'</ul><p class="note" style="margin:0">デモのため、アプリの中身はこの場で実際の画面をお見せします（お客様の情報は伏せます）。</p><button class="btn" id="mclose">閉じる</button>';$("#modal").classList.add("on");return}
+ if(e.target.id==="mclose"||e.target.id==="modal"){$("#modal").classList.remove("on");return}
+ var m=e.target.closest("[data-more]");if(m){var b=$("#b-"+m.dataset.more);b.classList.toggle("open");m.textContent=b.classList.contains("open")?"▲ たたむ":"▼ 全文を見る";return}
+ var r=e.target.closest("[data-react]");if(r){S.react[r.dataset.react]=!S.react[r.dataset.react];renderAnn();return}
+ var sh=e.target.closest(".sec-head");if(sh&&!e.target.closest("button")){sh.classList.toggle("closed");var body=sh.nextElementSibling;body.style.display=sh.classList.contains("closed")?"none":"";return}
+ if(e.target.id==="writebtn"){$("#write").classList.toggle("on");return}
+ if(e.target.closest("#msg")){$("#mbox").innerHTML='<h3>社長からの伝言</h3><p style="white-space:pre-wrap">設立3周年を迎えて\n\n社員の皆さんのおかげで、3年目の節目を迎えることができました。ポータルにも、皆さんの声から生まれたアプリが増えてきています。これからも、気づいたことは遠慮なく書き込んでください。</p><p class="note" style="margin:0">文面はデモ用の例です。</p><button class="btn" id="mclose">閉じる</button>';$("#modal").classList.add("on");}
+});
+document.addEventListener("change",function(e){if(e.target.id==="role"){S.role=e.target.value;all();toast("「"+role().name+"」の画面に切り替えました")}
+ if(e.target.dataset.mine!=null){S.mine[+e.target.dataset.mine].done=e.target.checked;renderMission()}});
+document.addEventListener("submit",function(e){e.preventDefault();
+ if(e.target.id==="addm"){S.mine.push({t:$("#mtext").value,rep:$("#mrep").value,date:$("#mdate").value?$("#mdate").value.replace(/-/g,"/"):"",done:false});renderMission();$("#mtext").focus()}
+ if(e.target.id==="write"){var v=$("#wbody").value.trim();if(!v)return;ANN.unshift({id:"w"+Date.now(),by:role().name,date:"2026-11-05",nw:true,body:v,n:0});$("#wbody").value="";$("#write").classList.remove("on");renderAnn();toast("全社にお知らせしました（デモのため、通知とメールは送られません）")}});
+all();
+})();
+</script></body></html>
