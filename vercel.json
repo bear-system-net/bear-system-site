@@ -1,8 +1,20 @@
 {
   "rewrites": [
-    { "source": "/shindan/api/:path*", "destination": "https://ai-shindan-app-one.vercel.app/api/:path*" },
-    { "source": "/shindan", "destination": "https://ai-shindan-app-one.vercel.app/" },
-    { "source": "/shindan/:path*", "destination": "https://ai-shindan-app-one.vercel.app/:path*" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    {
+      "source": "/shindan/api/:path*",
+      "destination": "https://ai-shindan-app-one.vercel.app/api/:path*"
+    },
+    {
+      "source": "/shindan",
+      "destination": "https://ai-shindan-app-one.vercel.app/"
+    },
+    {
+      "source": "/shindan/:path*",
+      "destination": "https://ai-shindan-app-one.vercel.app/:path*"
+    },
+    {
+      "source": "/((?!demo/).*)",
+      "destination": "/index.html"
+    }
   ]
 }
