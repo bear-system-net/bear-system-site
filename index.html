@@ -80,8 +80,8 @@
   .svc-tag{display:inline-block;border:1px solid var(--border);color:var(--gray);font-size:.7rem;padding:4px 12px;border-radius:100px;font-weight:600;transition:all .3s;}
   .numbers-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:rgba(255,255,255,.1);border-radius:16px;overflow:hidden;}
   .num-card{padding:24px 32px;text-align:center;background:rgba(255,255,255,.04);}
-  .num-val{font-size:clamp(2rem,4vw,3.2rem);font-weight:900;background:linear-gradient(135deg,#fff,var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:8px;}
-  .num-label{font-size:.8rem;color:rgba(255,255,255,.5);}
+  .num-val{font-size:clamp(1.6rem,3.2vw,2.6rem);font-weight:900;background:linear-gradient(135deg,#fff,var(--blue2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;line-height:1;margin-bottom:10px;white-space:nowrap;}
+  .num-label{font-size:.8rem;color:rgba(255,255,255,.5);line-height:1.6;}
   .flow-wrap{display:grid;grid-template-columns:repeat(5,1fr);position:relative;}
   .flow-wrap::before{content:'';position:absolute;top:28px;left:10%;right:10%;height:1px;background:linear-gradient(to right,var(--blue),var(--cyan));z-index:0;}
   .fs{text-align:center;padding:0 8px;position:relative;z-index:1;}
@@ -261,11 +261,15 @@
   .vdesc{font-size:.87rem;color:var(--gray);line-height:2;margin-bottom:20px;}
   .vtags{display:flex;flex-wrap:wrap;gap:7px;}
   .vtag{background:var(--light);border:1px solid var(--border);border-radius:6px;padding:4px 11px;font-size:.75rem;}
+  @media(min-width:769px) and (max-width:1024px){
+    .numbers-grid{grid-template-columns:1fr 1fr;}
+  }
   @media(max-width:768px){
     .nav-links{display:none;flex-direction:column;position:absolute;top:68px;left:0;right:0;background:var(--ink);padding:12px;border-top:1px solid rgba(255,255,255,.08);}
     .nav-links.open{display:flex;}
     .hamburger{display:flex;}
     .mission-grid,.about-grid,.voice-header,.contact-layout,.jobs-grid,.case-grid,.perks-grid,.numbers-grid,.partner-intro{grid-template-columns:1fr;}
+    .numbers-grid{grid-template-columns:1fr 1fr;}
     .flow-wrap{grid-template-columns:1fr 1fr;}
     .flow-wrap::before{display:none;}
     .ni{grid-template-columns:1fr;}
@@ -322,7 +326,7 @@
       <div class="numbers-grid">
         <div class="num-card"><div class="num-val">約3,000件</div><div class="num-label">3か月間に1社で対応した要望の数</div></div>
         <div class="num-card"><div class="num-val">約2時間</div><div class="num-label">書き込みから直るまで（多くの場合）</div></div>
-        <div class="num-card"><div class="num-val">30本以上</div><div class="num-label">3か月でできた業務アプリ</div></div>
+        <div class="num-card"><div class="num-val">30本以上</div><div class="num-label">3か月間で1社に提供した業務アプリ</div></div>
         <div class="num-card"><div class="num-val">追加0円</div><div class="num-label">何度頼んでも、制作・改修の追加費用なし</div></div>
       </div>
     </div>
