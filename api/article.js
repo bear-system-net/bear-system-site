@@ -2,6 +2,8 @@ const { loadArticles } = require('./_articles');
 
 const ORIGIN = 'https://www.bear-system.net';
 const SITE = '株式会社ベアシステム';
+const AUTHOR_NAME = '井上 俊';
+const AUTHOR_TITLE = '代表取締役';
 
 function esc(s) {
   return String(s == null ? '' : s)
@@ -63,7 +65,7 @@ module.exports = async (req, res) => {
       '@context': 'https://schema.org', '@type': type === 'blog' ? 'BlogPosting' : 'NewsArticle',
       headline: a.title, description: desc, datePublished: a.date, dateModified: a.date,
       inLanguage: 'ja', mainEntityOfPage: url, image: ORIGIN + '/hero-top.jpg',
-      author: { '@type': 'Organization', name: SITE, url: ORIGIN + '/' },
+      author: { '@type': 'Person', name: AUTHOR_NAME, jobTitle: AUTHOR_TITLE, worksFor: { '@type': 'Organization', name: SITE, url: ORIGIN + '/' }, url: ORIGIN + '/about' },
       publisher: { '@type': 'Organization', name: SITE, logo: { '@type': 'ImageObject', url: ORIGIN + '/icon-512.png' } }
     },
     {
@@ -119,6 +121,7 @@ main{max-width:760px;margin:0 auto;padding:40px 20px 72px}
 .crumb a{color:#6b7080;text-decoration:none}
 .crumb a:hover{color:#8A6D33}
 .date{font-size:.82rem;letter-spacing:.14em;color:#8A6D33;margin-bottom:10px}
+.byline{font-size:.82rem;color:#6b7080;margin:-20px 0 32px;line-height:1.7}
 h1{font-family:'Noto Serif JP','Hiragino Mincho ProN',serif;font-weight:600;font-size:clamp(1.4rem,3.4vw,2rem);line-height:1.6;color:#0B1020;margin-bottom:36px;text-wrap:balance}
 article p{margin-bottom:1.5em}
 article h2{font-family:'Noto Serif JP','Hiragino Mincho ProN',serif;font-weight:600;font-size:1.15rem;line-height:1.6;color:#0B1020;margin:2.2em 0 .8em;padding-left:14px;border-left:3px solid #B89B5E}
@@ -148,8 +151,9 @@ footer a{color:rgba(255,255,255,.75);text-decoration:none}
 <main>
 <div class="crumb"><a href="/">ホーム</a> ＞ <a href="/${type}">${listLabel}</a> ＞ ${esc(a.title)}</div>
 <article>
-<p class="date">${esc(dateDot)}</p>
+<p class="date"><time datetime="${esc(a.date)}">${esc(dateDot)}</time></p>
 <h1>${esc(a.title)}</h1>
+<p class="byline">著者：<a href="/about">${SITE} ${AUTHOR_TITLE} ${AUTHOR_NAME}</a>　公開日：<time datetime="${esc(a.date)}">${esc(dateDot)}</time></p>
 ${renderBody(a.body)}
 </article>
 <div class="cta">

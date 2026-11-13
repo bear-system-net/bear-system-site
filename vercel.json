@@ -25,7 +25,15 @@
       "destination": "/api/article?type=news&id=:id"
     },
     {
-      "source": "/((?!demo/).*)",
+      "source": "/",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:page(home|news|blog|voices|cases|about|partner|contact|recruit|privacy|shiryo|admin)",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/:page(home|news|blog|voices|cases|about|partner|contact|recruit|privacy|shiryo|admin)/",
       "destination": "/index.html"
     }
   ],
