@@ -137,6 +137,8 @@ article h2{font-family:'Noto Serif JP','Hiragino Mincho ProN',serif;font-weight:
 footer{background:#0B1020;color:rgba(255,255,255,.6);text-align:center;font-size:.78rem;padding:28px 20px;letter-spacing:.08em}
 footer a{color:rgba(255,255,255,.75);text-decoration:none}
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-FMRVBGED89"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-FMRVBGED89');</script>
 </head>
 <body>
 <header><div class="hd">

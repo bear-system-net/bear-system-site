@@ -541,6 +541,15 @@ footer{padding:56px 24px;letter-spacing:.06em;}
 .ni-text .nt a:hover{color:var(--gold);}
 @media(max-width:520px){.hero-img-wrap img{height:76vw;object-fit:cover;object-position:73% 50%;}}
 </style>
+<script>
+(function(){
+  if(location.pathname.indexOf('/admin')===0||/[?&]p=admin/.test(location.search))return;
+  var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-FMRVBGED89';document.head.appendChild(s);
+  window.dataLayer=window.dataLayer||[];
+  window.gtag=function(){dataLayer.push(arguments);};
+  gtag('js',new Date());gtag('config','G-FMRVBGED89');
+})();
+</script>
 </head>
 <body>
 <!-- お見舞いバナー -->
