@@ -334,7 +334,9 @@ nav{background:rgba(11,16,32,.96);border-bottom:1px solid rgba(216,191,138,.18);
 .hero-badge{background:transparent;border:0;border-radius:0;color:var(--gold-hi);letter-spacing:.38em;font-size:.68rem;font-weight:500;padding:0;margin-bottom:28px;}
 .hero-badge::before{width:5px;height:5px;background:var(--gold);}
 .hero-badge::after{content:'';display:block;width:56px;height:1px;background:var(--gold);margin-left:8px;opacity:.6;}
-.hero-h1{font-family:var(--serif);color:#fff;font-size:clamp(1.55rem,3.5vw,2.9rem);font-weight:600;letter-spacing:.08em;text-align:center;line-height:1.75;margin-bottom:44px;text-shadow:0 2px 24px rgba(0,0,0,.35);}
+.hero-h1{font-family:var(--serif);color:#fff;font-size:clamp(1.3rem,2.5vw,2.1rem);font-weight:600;letter-spacing:.07em;text-align:center;line-height:1.9;margin-bottom:44px;text-shadow:0 2px 24px rgba(0,0,0,.35);text-wrap:balance;max-width:1100px;}
+.hero-h1::first-line{font-size:1.45em;letter-spacing:.14em;}
+.sp-br{display:none;}
 .hero-foot-btns{gap:14px;margin-bottom:16px;}
 
 /* --- stats band --- */
@@ -502,7 +504,8 @@ footer{padding:56px 24px;letter-spacing:.06em;}
   .hero-foot{margin-top:-72px;}
   .hero-badge{letter-spacing:.2em;font-size:.62rem;margin-bottom:22px;}
   .hero-badge::after{display:none;}
-  .hero-h1{margin-bottom:32px;letter-spacing:.04em;font-size:1.45rem;line-height:1.8;}
+  .hero-h1{margin-bottom:32px;letter-spacing:.03em;font-size:1.12rem;line-height:1.9;}
+  .sp-br{display:inline;}
   .dark-section{padding:16px 20px 72px;}
   .num-card{padding:30px 12px;}
   .num-card:nth-child(odd){border-left:0;}
@@ -550,7 +553,7 @@ footer{padding:56px 24px;letter-spacing:.06em;}
     <div class="hero-img-wrap"><img src="hero-top.jpg" alt="株式会社ベアシステム — 中小企業・大企業各部門のDX・AI活用支援パートナー（東京・渋谷）"></div>
     <div class="hero-foot">
       <div class="hero-badge">TOKYO · SHIBUYA ● DX PARTNER</div>
-      <h1 class="hero-h1">AIをもっと身近に。<br>中小企業にも、大企業の各部門にも、<br>現場に寄り添うDXのあたりまえを。</h1>
+      <h1 class="hero-h1">ITに体温を。<br>一人ひとりの「あったらいいな」を、<br class="sp-br">その日のうちに仕組みにする。<br>AI社員が泥臭く動く、<br class="sp-br">現場に寄り添うDXのあたりまえを。</h1>
       <div class="hero-foot-btns">
         <button class="btn-primary" data-page="contact">まずは無料相談する</button>
         <a href="https://www.bear-system.net/shindan" class="btn-ghost">🤖 無料AI診断を試す</a>
