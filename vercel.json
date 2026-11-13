@@ -13,8 +13,28 @@
       "destination": "https://ai-shindan-app-one.vercel.app/:path*"
     },
     {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
+    },
+    {
+      "source": "/blog/:id",
+      "destination": "/api/article?type=blog&id=:id"
+    },
+    {
+      "source": "/news/:id",
+      "destination": "/api/article?type=news&id=:id"
+    },
+    {
       "source": "/((?!demo/).*)",
       "destination": "/index.html"
     }
-  ]
+  ],
+  "functions": {
+    "api/article.js": {
+      "includeFiles": "data/**"
+    },
+    "api/sitemap.js": {
+      "includeFiles": "data/**"
+    }
+  }
 }

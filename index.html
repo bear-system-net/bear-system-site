@@ -534,6 +534,11 @@ footer{padding:56px 24px;letter-spacing:.06em;}
   .pb{padding:56px 20px;}
   .btn-row .btn-primary,.btn-row .btn-ghost{width:100%;text-align:center;}
 }
+
+.nav-links li a,.fl span a{color:inherit;text-decoration:none;display:block;}
+.logo a{color:inherit;text-decoration:none;}
+.ni-text .nt a{color:inherit;text-decoration:none;}
+.ni-text .nt a:hover{color:var(--gold);}
 </style>
 </head>
 <body>
@@ -545,7 +550,7 @@ footer{padding:56px 24px;letter-spacing:.06em;}
   <div class="nav-inner">
     <div class="logo" data-page="home"><img class="logo-img" src="/logo-mark-nav.png" alt="" width="45" height="32">株式会社ベアシステム</div>
     <ul class="nav-links" id="navLinks">
-      <li data-page="home">ホーム</li><li data-page="news">お知らせ</li><li data-page="blog">ブログ</li><li data-page="voices">お客様の声</li><li data-page="cases">活用事例</li><li data-page="about">当社について</li><li data-page="partner">パートナー</li><li data-page="contact">お問い合わせ</li><li data-page="recruit">採用</li><li data-page="privacy">個人情報保護方針</li>
+      <li data-page="home"><a href="/">ホーム</a></li><li data-page="news"><a href="/news">お知らせ</a></li><li data-page="blog"><a href="/blog">ブログ</a></li><li data-page="voices"><a href="/voices">お客様の声</a></li><li data-page="cases"><a href="/cases">活用事例</a></li><li data-page="about"><a href="/about">当社について</a></li><li data-page="partner"><a href="/partner">パートナー</a></li><li data-page="contact"><a href="/contact">お問い合わせ</a></li><li data-page="recruit"><a href="/recruit">採用</a></li><li data-page="privacy"><a href="/privacy">個人情報保護方針</a></li>
     </ul>
     <div class="hamburger" id="hbg"><span></span><span></span><span></span></div>
   </div>
@@ -1225,7 +1230,7 @@ footer{padding:56px 24px;letter-spacing:.06em;}
 
 <footer>
   <div class="fl">
-    <span data-page="home">ホーム</span><span data-page="news">お知らせ</span><span data-page="voices">お客様の声</span><span data-page="cases">活用事例</span><span data-page="about">当社について</span><span data-page="partner">パートナー</span><span data-page="contact">お問い合わせ</span><span data-page="recruit">採用</span><span data-page="privacy">個人情報保護方針</span>
+    <span data-page="home"><a href="/">ホーム</a></span><span data-page="news"><a href="/news">お知らせ</a></span><span data-page="voices"><a href="/voices">お客様の声</a></span><span data-page="cases"><a href="/cases">活用事例</a></span><span data-page="about"><a href="/about">当社について</a></span><span data-page="partner"><a href="/partner">パートナー</a></span><span data-page="contact"><a href="/contact">お問い合わせ</a></span><span data-page="recruit"><a href="/recruit">採用</a></span><span data-page="privacy"><a href="/privacy">個人情報保護方針</a></span>
   </div>
   <p>〒150-0044 東京都渋谷区円山町５番３号 MIEUX渋谷ビル８階　TEL: <a href="tel:0363672529" style="color:inherit;text-decoration:none;">03－6367－2529</a></p>
   <p style="margin-top:6px;">© 2026 株式会社ベアシステム. All rights reserved.</p>
@@ -1348,7 +1353,7 @@ footer{padding:56px 24px;letter-spacing:.06em;}
     var el = document.getElementById('dynamicNews');
     if(!el) return;
     el.innerHTML = arts.map(function(a){
-      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
+      return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt"><a href="/news/'+a.id+'">'+a.title+'</a></p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
     }).join('');
   }
   function renderBlogListFromCache(){
@@ -1360,7 +1365,7 @@ footer{padding:56px 24px;letter-spacing:.06em;}
     else {
       if(empty) empty.style.display='none';
       el.innerHTML = arts.map(function(a){
-        return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt">'+a.title+'</p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
+        return '<div class="ni-text"><p class="nd">'+a.date.replace(/-/g,'.')+'</p><p class="nt"><a href="/blog/'+a.id+'">'+a.title+'</a></p><p class="nb" style="white-space:pre-wrap;">'+linkify(a.body)+'</p></div>';
       }).join('');
     }
   }
@@ -1368,6 +1373,34 @@ footer{padding:56px 24px;letter-spacing:.06em;}
   async function renderBlogList(){ await fetchArticles(); renderBlogListFromCache(); }
   document.addEventListener('keydown',function(e){ if(e.key==='Enter' && document.getElementById('adminPass')===document.activeElement) doAdminLogin(); });
   // ──────────────
+  var SITE_NAME='株式会社ベアシステム';
+  var descEl=document.querySelector('meta[name="description"]');
+  var canonEl=document.querySelector('link[rel="canonical"]');
+  var ogUrlEl=document.querySelector('meta[property="og:url"]');
+  var robotsEl=document.querySelector('meta[name="robots"]');
+  var HOME_META={t:document.title,d:descEl?descEl.getAttribute('content'):''};
+  var PAGE_META={
+    news:['お知らせ','株式会社ベアシステム（東京・渋谷）からのお知らせです。セミナー開催やサービスのご案内などを掲載しています。'],
+    blog:['ブログ','中小企業のDX・AI活用、業務効率化、生成AIの使い方などについて、株式会社ベアシステムが書いているブログです。'],
+    voices:['お客様の声','株式会社ベアシステムをご利用いただいているお客様の声をご紹介します。'],
+    cases:['活用事例','株式会社ベアシステムのDX・AI活用支援の事例をご紹介します。'],
+    about:['当社について','株式会社ベアシステムの会社概要です。東京・渋谷を拠点に、中小企業から大企業の各部門まで、DX・AI活用を支援しています。'],
+    partner:['パートナー','株式会社ベアシステムのパートナーサービスのご案内です。社長の隣に、ITと財務のプロを。'],
+    contact:['お問い合わせ','株式会社ベアシステムへのお問い合わせ・ご相談はこちらから。'],
+    recruit:['採用情報','株式会社ベアシステムの採用情報です。'],
+    privacy:['個人情報保護方針','株式会社ベアシステムの個人情報保護方針です。'],
+    shiryo:['ご紹介資料のダウンロード','株式会社ベアシステムのご紹介資料（全11ページ・PDF）をダウンロードできます。'],
+    admin:['お知らせ管理','']
+  };
+  function applyMeta(id){
+    var m=PAGE_META[id];
+    var url='https://www.bear-system.net/'+(id==='home'||!m?'':id);
+    document.title=m?m[0]+'｜'+SITE_NAME:HOME_META.t;
+    if(descEl) descEl.setAttribute('content',m?m[1]:HOME_META.d);
+    if(canonEl) canonEl.setAttribute('href',url);
+    if(ogUrlEl) ogUrlEl.setAttribute('content',url);
+    if(robotsEl) robotsEl.setAttribute('content',id==='admin'?'noindex, nofollow':'index, follow');
+  }
   function showPage(id, pushHistory){
     document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
     var el=document.getElementById(id);
@@ -1376,8 +1409,9 @@ footer{padding:56px 24px;letter-spacing:.06em;}
     document.getElementById('navLinks').classList.remove('open');
     if(id==='news') renderNewsList();
     if(id==='blog') renderBlogList();
+    applyMeta(id);
     if(pushHistory!==false){
-      history.pushState({page:id},'',location.pathname+'?p='+id);
+      history.pushState({page:id},'',id==='home'?'/':'/'+id);
     }
   }
   document.addEventListener('click',function(e){
@@ -1393,16 +1427,14 @@ footer{padding:56px 24px;letter-spacing:.06em;}
   });
   var params=new URLSearchParams(location.search);
   var pathSlug=location.pathname.replace(/^\/+/,'').replace(/\/+$/,'');
-  var initPage=params.get('p')||(pathSlug==='shiryo'?'shiryo':'home');
+  var initPage=params.get('p')||(pathSlug&&PAGE_META[pathSlug]&&pathSlug!=='admin'?pathSlug:'home');
   var initEl=document.getElementById(initPage);
   if(!initEl){ initPage='home'; initEl=document.getElementById('home'); }
   document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
   initEl.classList.add('active');
-  if(pathSlug==='shiryo'){
-    history.replaceState({page:initPage},'',location.pathname);
-  } else {
-    history.replaceState({page:initPage},'',location.pathname+(initPage!=='home'?'?p='+initPage:''));
-  }
+  history.replaceState({page:initPage},'',initPage==='home'?'/':'/'+initPage);
+  applyMeta(initPage);
+  if(initPage==='home'||initPage==='news'||initPage==='blog'){ if(initPage==='news') renderNewsList(); if(initPage==='blog') renderBlogList(); }
   var shiryoForm=document.getElementById('shiryoForm');
   if(shiryoForm){
     shiryoForm.addEventListener('submit',async function(e){
