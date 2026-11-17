@@ -551,6 +551,23 @@ footer{padding:56px 24px;letter-spacing:.06em;}
   gtag('js',new Date());gtag('config','G-FMRVBGEDB9');
 })();
 </script>
+<script>
+/* 成果計測：電話・メール・資料PDFのクリック、問い合わせフォーム送信 */
+(function(){
+  function ev(n,p){try{if(window.gtag)gtag('event',n,Object.assign({transport_type:'beacon'},p||{}));}catch(e){}}
+  document.addEventListener('click',function(e){
+    var a=e.target.closest&&e.target.closest('a[href]');if(!a)return;
+    var h=a.getAttribute('href')||'';
+    if(h.indexOf('tel:')===0)ev('click_tel',{link_url:h});
+    else if(h.indexOf('mailto:')===0)ev('click_mail',{link_url:h});
+    else if(/\.pdf(\?|$)/i.test(h))ev('click_pdf',{link_url:h});
+  },true);
+  document.addEventListener('submit',function(e){
+    var f=e.target;
+    if(f&&f.action&&f.action.indexOf('formspree.io')>-1)ev('generate_lead',{form_type:'contact'});
+  },true);
+})();
+</script>
 </head>
 <body>
 <!-- お見舞いバナー -->
@@ -1467,6 +1484,7 @@ footer{padding:56px 24px;letter-spacing:.06em;}
         var r=await fetch('/api/shiryo',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
         var data=await r.json().catch(function(){return {};});
         if(r.ok && data.ok){
+          try{if(window.gtag)gtag('event','generate_lead',{form_type:'shiryo'});}catch(_){}
           shiryoForm.style.display='none';
           document.getElementById('shiryoThanks').style.display='block';
         } else {
